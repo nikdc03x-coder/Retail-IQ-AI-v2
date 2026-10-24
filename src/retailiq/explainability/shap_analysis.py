@@ -127,8 +127,6 @@ def compute_shap_explanations(
         local_df[f"val_{fcol}"] = np.round(X_test[fcol].values, 4)
 
     return global_imp, local_df, base_value, raw_shap_values
-
-
 def verify_shap_reconstruction(
     local_df: pd.DataFrame,
     max_tolerance_dollars: float = 5.0,
@@ -250,3 +248,4 @@ def extract_observation_waterfall(
         "top_feature": top_drivers[0]["feature"],
         "top_impact": top_drivers[0]["shap_value"],
     }
+

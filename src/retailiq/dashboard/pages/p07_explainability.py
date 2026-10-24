@@ -377,3 +377,4 @@ def render() -> None:
             title="Sample Additive Reconstruction Log",
             description="Reconstructed predictions versus raw model outputs showing zero practical numerical drift.",
         )
+

@@ -138,3 +138,4 @@ class TestExplainabilityReportsExist:
         assert summary["total_test_observations"] == 990
         assert summary["top_global_feature"] == "lag_52"
         assert summary["reconstruction_check"]["verified"] is True
+

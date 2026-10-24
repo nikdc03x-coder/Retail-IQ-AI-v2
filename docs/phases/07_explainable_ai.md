@@ -118,3 +118,4 @@ tests/
    - Differentiate baseline capacity requirements (driven by store physical `Size` and `lag_52`) from short-term promotional adjustments (driven by `rolling_mean_4` and `is_holiday_num`).
 3. **Enterprise Model Risk Governance & Auditors:**
    - Satisfy transparency and model explainability mandates using verified additive attribution tables where the efficiency error is proven to be under 0.0001%.
+
