@@ -254,3 +254,4 @@ def render() -> None:
                 "**Data engineering decision:** Negative sales observations (1,285 rows / 0.30%) reflect real-world merchandise returns and inventory reconciliation. "
                 "In accordance with project principles, these records were **preserved without silent deletion**."
             )
+

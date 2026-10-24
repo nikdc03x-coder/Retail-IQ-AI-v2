@@ -153,3 +153,4 @@ class TestAnalyticalDataset:
         assert data["status"] == "SUCCESS"
         assert data["processed_counts"]["analytical_rows"] == 421570
         assert data["processed_counts"]["row_count_preservation_ratio"] == 1.0
+

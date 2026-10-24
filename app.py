@@ -88,7 +88,8 @@ elif page == "🗄️ Dataset Explorer":
     render()
 
 elif page == "✅ Data Quality":
-    st.info("📦 Data Quality page will be available after Phase 02 — Data Quality.")
+    from src.retailiq.dashboard.pages.p02_data_quality import render
+    render()
 
 elif page == "📊 Business Analytics":
     st.info("📦 Business Analytics will be available after Phase 03.")

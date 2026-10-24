@@ -114,3 +114,4 @@ def load_analytical_dataset(path: Path | str | None = None) -> pd.DataFrame:
         )
 
     return pd.read_parquet(file_path)
+

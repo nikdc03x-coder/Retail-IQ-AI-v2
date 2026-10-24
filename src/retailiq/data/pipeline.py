@@ -185,3 +185,4 @@ def run_ingestion_pipeline(
             json.dump(summary, f, indent=2)
 
     return analytical_df, summary
+

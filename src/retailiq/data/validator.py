@@ -259,3 +259,4 @@ def check_holiday_consistency(
         "compared_store_dates": len(merged),
         "mismatches": mismatches,
     }
+
