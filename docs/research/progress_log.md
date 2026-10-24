@@ -120,3 +120,35 @@
 
 ### Next Steps
 - Phase 04: Sales Forecasting & Model Comparison — 1-week-ahead store sales forecasting using Naive, Ridge, RF, and XGBoost with chronological evaluation
+
+## Phase 04 — Sales Forecasting & Model Evaluation
+
+**Date:** 2026-10-24
+**Branch:** `phase-04-sales-forecasting`
+**Status:** ✅ Complete
+
+### Completed
+- Implemented `features.py` constructing backward-looking lags (1, 2, 4, 52), rolling stats, and cyclical features
+- Implemented `splitter.py` enforcing strict chronological Train / Validation / Test partitions
+- Implemented `evaluation.py` computing MAE, RMSE, WAPE, and R²
+- Implemented `models.py` training Ridge, Random Forest, XGBoost, and evaluating Naive persistence baselines
+- Executed `scripts/04_sales_forecasting/run_forecasting.py` in 2.56s
+- Serialized 3 trained models to `models/` (.joblib)
+- Exported 4 forecasting reports to `reports/sales_forecasting/`:
+  - `01_model_comparison_metrics.csv`
+  - `02_test_predictions.csv` (990 store-week test predictions)
+  - `03_feature_importance.csv`
+  - `04_experiment_metadata.json`
+- Created interactive Sales Forecasting dashboard page (`src/retailiq/dashboard/pages/p04_forecasting.py`)
+- Added 6 unit and integration tests in `tests/test_sales_forecasting.py` (70 total passing tests)
+- Authored 16-section research documentation `docs/phases/04_sales_forecasting.md`
+
+### Key Empirical Findings
+- XGBoost is the champion model with a 3.83% WAPE ($39,837.61 MAE) on the held-out test set
+- 22.3% error reduction over the Previous-Week Naive baseline (4.93% WAPE)
+- Ridge linear regression is highly competitive at 3.91% WAPE
+- Random Forest achieved 4.00% WAPE
+- Primary predictive drivers: `lag_1`, `rolling_mean_4`, `Size`, and `lag_52`
+
+### Next Steps
+- Phase 05: Forecast Reliability — error breakdown by store, time, holiday, and rolling backtests

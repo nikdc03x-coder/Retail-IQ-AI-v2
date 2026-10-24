@@ -79,7 +79,8 @@ python -m streamlit run app.py
 | Phase 01 — Data Ingestion | ✅ Complete |
 | Phase 02 — Data Quality | ✅ Complete |
 | Phase 03 — Business Analytics | ✅ Complete |
-| Phase 04 — Sales Forecasting | 🔲 Pending |
+| Phase 04 — Sales Forecasting | ✅ Complete |
+| Phase 05 — Forecast Reliability | 🔲 Pending |
 | Phase 03 — Business Analytics | 🔲 Pending |
 | Phase 04 — Sales Forecasting | 🔲 Pending |
 | Phase 05 — Forecast Reliability | 🔲 Pending |
