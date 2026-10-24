@@ -1,0 +1,24 @@
+{
+  "experiment": "Phase 05 \u2014 Forecast Reliability & Error Breakdown",
+  "stores_analyzed": 45,
+  "store_win_rate_vs_naive_pct": 77.78,
+  "store_wape_range": {
+    "min_wape": 2.06,
+    "min_store": 37,
+    "max_wape": 10.59,
+    "max_store": 14,
+    "median_wape": 3.52
+  },
+  "holiday_degradation": {
+    "non_holiday_wape": 3.79,
+    "holiday_wape": 4.58,
+    "wape_change_pct": 20.84
+  },
+  "backtest_summary": {
+    "folds_evaluated": 4,
+    "folds_outperformed": 4,
+    "mean_xgb_wape": 4.17,
+    "mean_naive_wape": 5.52,
+    "mean_error_reduction_pct": 24.36
+  }
+}

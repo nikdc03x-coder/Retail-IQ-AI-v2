@@ -80,7 +80,8 @@ python -m streamlit run app.py
 | Phase 02 — Data Quality | ✅ Complete |
 | Phase 03 — Business Analytics | ✅ Complete |
 | Phase 04 — Sales Forecasting | ✅ Complete |
-| Phase 05 — Forecast Reliability | 🔲 Pending |
+| Phase 05 — Forecast Reliability | ✅ Complete |
+| Phase 06 — Anomaly Detection | 🔲 Pending |
 | Phase 03 — Business Analytics | 🔲 Pending |
 | Phase 04 — Sales Forecasting | 🔲 Pending |
 | Phase 05 — Forecast Reliability | 🔲 Pending |

@@ -152,3 +152,33 @@
 
 ### Next Steps
 - Phase 05: Forecast Reliability — error breakdown by store, time, holiday, and rolling backtests
+
+## Phase 05 — Forecast Reliability & Error Diagnostics
+
+**Date:** 2026-10-24
+**Branch:** `phase-05-forecast-reliability`
+**Status:** ✅ Complete
+
+### Completed
+- Implemented `error_analysis.py` with spatial store error rollups, weekly error tracking, holiday degradation analysis, and head-to-head baseline win rates
+- Implemented `backtest.py` executing 4-fold expanding-window rolling backtests
+- Executed `scripts/05_forecast_reliability/run_reliability.py` in 2.54s
+- Generated 5 CSV reports and 1 JSON summary in `reports/forecast_reliability/`:
+  - `01_store_error_summary.csv` (45 store profiles)
+  - `02_weekly_error_summary.csv` (22 test weeks)
+  - `03_holiday_error_summary.csv` (holiday vs non-holiday error shift)
+  - `04_store_relative_errors.csv` (store-level win rates)
+  - `05_rolling_backtest_results.csv` (4 historical folds)
+  - `06_forecast_reliability_summary.json`
+- Created interactive Forecast Reliability dashboard page (`src/retailiq/dashboard/pages/p05_reliability.py`)
+- Added 6 unit and integration tests in `tests/test_forecast_reliability.py` (76 total passing tests)
+- Authored 16-section research documentation `docs/phases/05_forecast_reliability.md`
+
+### Key Empirical Findings
+- 5x error disparity across stores: Store 37 is most reliable (2.06% WAPE); Store 14 is most volatile (10.59% WAPE)
+- XGBoost beats the Naive persistence baseline in 35 out of 45 stores (77.8% win rate)
+- Holiday weeks exhibit a +20.8% relative forecast error increase (4.58% WAPE vs 3.79% non-holiday)
+- 100% backtest consistency: XGBoost won all 4 expanding-window folds with a 24.36% average error reduction
+
+### Next Steps
+- Phase 06: Anomaly Detection — residual Z-scores, Isolation Forest, agreement matrix, and ranked investigation queue
