@@ -112,5 +112,6 @@ elif page == "🔬 Explainable AI":
     render()
 
 elif page == "🤖 AI Business Assistant":
-    st.info("📦 AI Business Assistant will be available after Phase 09.")
+    from src.retailiq.dashboard.pages.p08_assistant import render
+    render()
 
