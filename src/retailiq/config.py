@@ -86,6 +86,7 @@ class Theme:
     NAVY = "#0B0F19"         # Primary canvas background (Slate-950)
     INDIGO = "#111827"       # Card & panel background (Slate-900)
     CARD_BG = "#111827"      # Container surface
+    DARK_CARD = "#111827"    # Card surface alias
     CARD_BORDER = "#1F2937"  # Clean card border (Slate-800)
     BORDER_LIGHT = "#374151" # Hover & active border (Slate-700)
 
@@ -94,17 +95,20 @@ class Theme:
     BRAND = "#4F46E5"        # Brand solid (Indigo-600)
     CYAN = "#06B6D4"         # Secondary highlight (Cyan-500)
     TEAL = "#10B981"         # Success & positive metrics (Emerald-500)
+    GREEN = "#10B981"        # Success green
     SUCCESS = "#10B981"
     AMBER = "#F59E0B"        # Warning & caution (Amber-500)
     WARNING = "#F59E0B"
     CORAL = "#EF4444"        # Error & critical outliers (Rose-500)
     DANGER = "#EF4444"
+    RED = "#EF4444"
 
-    # High-contrast readable typography
+    # High-contrast readable typography & neutrals
     WHITE = "#F9FAFB"        # Primary headings (Slate-50)
     LIGHT_GRAY = "#CBD5E1"   # Body text & primary labels (Slate-300)
     DARK_GRAY = "#9CA3AF"    # Secondary text, subtitles & captions (Slate-400)
     MUTED = "#6B7280"        # Inactive elements (Slate-500)
+    GRAY = "#6B7280"         # Neutral gray alias (Slate-500)
 
     # Harmonized Plotly chart sequence (modern data visualization palette)
     CHART_COLORS = [

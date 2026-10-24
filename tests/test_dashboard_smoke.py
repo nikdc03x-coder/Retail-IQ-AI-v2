@@ -74,6 +74,25 @@ class TestDashboardComponents:
         assert "$6.74B" in html
         assert "+4.2% YoY" in html
 
+    def test_all_theme_attributes_exist_in_theme_class(self):
+        import re
+        from pathlib import Path
+        from src.retailiq.config import Theme
+
+        src_dir = Path("src/retailiq")
+        py_files = list(src_dir.rglob("*.py")) + [Path("app.py")]
+
+        pattern = re.compile(r"Theme\.([A-Za-z0-9_]+)")
+        accessed_attrs = set()
+        for p in py_files:
+            if p.exists():
+                text = p.read_text(encoding="utf-8")
+                matches = pattern.findall(text)
+                accessed_attrs.update(matches)
+
+        for attr in accessed_attrs:
+            assert hasattr(Theme, attr), f"Theme is missing attribute: '{attr}' accessed in code"
+
 
 
 class TestDashboardCharts:
