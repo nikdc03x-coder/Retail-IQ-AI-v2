@@ -31,6 +31,7 @@ REPORT_SUBDIRS = {
     "forecast_reliability": REPORTS_DIR / "forecast_reliability",
     "anomaly_detection": REPORTS_DIR / "anomaly_detection",
     "explainable_ai": REPORTS_DIR / "explainable_ai",
+    "strategy": REPORTS_DIR / "strategy",
 }
 
 # ── Raw data filenames ──

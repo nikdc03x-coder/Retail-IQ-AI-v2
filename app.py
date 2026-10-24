@@ -57,6 +57,7 @@ with st.sidebar:
             "🎯 Forecast Reliability",
             "⚠️ Anomaly Investigation",
             "🔬 Explainable AI",
+            "💡 Operational Strategy",
             "🤖 AI Business Assistant",
         ],
         label_visibility="collapsed",
@@ -109,6 +110,10 @@ elif page == "⚠️ Anomaly Investigation":
 
 elif page == "🔬 Explainable AI":
     from src.retailiq.dashboard.pages.p07_explainability import render
+    render()
+
+elif page == "💡 Operational Strategy":
+    from src.retailiq.dashboard.pages.p08_strategy import render
     render()
 
 elif page == "🤖 AI Business Assistant":

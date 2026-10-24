@@ -43,9 +43,12 @@ def render() -> None:
             </p>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("Open Data Quality Audit →", key="btn_open_quality", use_container_width=True):
+            st.session_state["nav_page"] = "✅ Data Quality"
+            st.rerun()
 
         st.markdown(f"""
-        <div class="section-card">
+        <div class="section-card" style="margin-top: 1rem;">
             <h3>📈 Sales Forecasting</h3>
             <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
             One-week-ahead store-level forecasts using ML models compared
@@ -53,16 +56,22 @@ def render() -> None:
             </p>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("Open Sales Forecasting →", key="btn_open_forecast", use_container_width=True):
+            st.session_state["nav_page"] = "📈 Sales Forecasting"
+            st.rerun()
 
         st.markdown(f"""
-        <div class="section-card">
-            <h3>🔬 Explainable AI</h3>
+        <div class="section-card" style="margin-top: 1rem;">
+            <h3>🔬 Explainable AI (SHAP)</h3>
             <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
             SHAP-based global and local explanations showing which features
             influence each prediction and by how much.
             </p>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("Open Explainable AI →", key="btn_open_shap", use_container_width=True):
+            st.session_state["nav_page"] = "🔬 Explainable AI"
+            st.rerun()
 
     with col2:
         st.markdown(f"""
@@ -74,9 +83,12 @@ def render() -> None:
             </p>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("Open Business Analytics →", key="btn_open_analytics", use_container_width=True):
+            st.session_state["nav_page"] = "📊 Business Analytics"
+            st.rerun()
 
         st.markdown(f"""
-        <div class="section-card">
+        <div class="section-card" style="margin-top: 1rem;">
             <h3>⚠️ Anomaly Investigation</h3>
             <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
             Statistical and Isolation Forest anomaly detectors with
@@ -84,9 +96,25 @@ def render() -> None:
             </p>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("Open Anomaly Investigation →", key="btn_open_anomalies", use_container_width=True):
+            st.session_state["nav_page"] = "⚠️ Anomaly Investigation"
+            st.rerun()
 
         st.markdown(f"""
-        <div class="section-card">
+        <div class="section-card" style="margin-top: 1rem;">
+            <h3>💡 Operational Strategy</h3>
+            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
+            Store quadrant matrix, dynamic safety stock buffer calculator,
+            and markdown clearance rules.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Open Operational Strategy →", key="btn_open_strategy", use_container_width=True):
+            st.session_state["nav_page"] = "💡 Operational Strategy"
+            st.rerun()
+
+        st.markdown(f"""
+        <div class="section-card" style="margin-top: 1rem;">
             <h3>🤖 AI Business Assistant</h3>
             <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
             Gemini-powered conversational analyst that answers free-form
@@ -94,6 +122,9 @@ def render() -> None:
             </p>
         </div>
         """, unsafe_allow_html=True)
+        if st.button("Open AI Business Assistant →", key="btn_open_assistant", use_container_width=True):
+            st.session_state["nav_page"] = "🤖 AI Business Assistant"
+            st.rerun()
 
     # ── Dataset overview ──
     st.divider()

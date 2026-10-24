@@ -1,0 +1,46 @@
+Store,Type,Size,Sales_Rank,Reliability_Rank,Mean_Weekly_Sales,WAPE_Pct,Strategic_Tier,Safety_Buffer_Pct,Recommended_Safety_Stock_Dollars,Weekly_Labor_Flex_Hours,Annual_Working_Capital_Optimization,Recommended_Action
+20,A,203742,1,25,2107676.87,3.6,Tier 2: Volatile Powerhouse,0.18,379381.84,75,887753.51,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+4,A,205863,2,6,2094712.96,2.63,Tier 1: Core Performer,0.08,167577.04,30,392130.27,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+14,A,200898,3,45,2020978.4,10.59,Tier 2: Volatile Powerhouse,0.18,363776.11,75,851236.1,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+13,A,219622,4,10,2003620.31,2.83,Tier 1: Core Performer,0.08,160289.62,30,375077.71,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+2,A,202307,5,28,1925751.34,3.78,Tier 2: Volatile Powerhouse,0.18,346635.24,75,811126.46,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+10,B,126512,6,24,1899424.57,3.57,Tier 2: Volatile Powerhouse,0.18,341896.42,75,800037.62,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+27,A,204184,7,9,1775216.2,2.82,Tier 1: Core Performer,0.08,142017.3,30,332320.48,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+6,A,202505,8,16,1564728.19,3.18,Tier 1: Core Performer,0.08,125178.26,30,292917.13,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+1,A,151315,9,13,1555264.4,2.99,Tier 1: Core Performer,0.08,124421.15,30,291145.49,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+39,A,184109,10,35,1450668.13,4.69,Tier 2: Volatile Powerhouse,0.18,261120.26,75,611021.41,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+19,A,203819,11,23,1444999.04,3.52,Tier 1: Core Performer,0.08,115599.92,30,270503.81,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+31,A,203750,12,11,1395901.44,2.88,Tier 1: Core Performer,0.08,111672.12,30,261312.76,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+23,B,114533,13,31,1389864.46,3.88,Tier 2: Volatile Powerhouse,0.18,250175.6,75,585410.9,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+24,A,203819,14,21,1356755.39,3.37,Tier 1: Core Performer,0.08,108540.43,30,253984.61,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+11,A,207499,15,15,1356383.12,3.15,Tier 1: Core Performer,0.08,108510.65,30,253914.92,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+28,A,206302,16,36,1323522.24,4.87,Tier 2: Volatile Powerhouse,0.18,238234.0,75,557467.56,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+41,A,196321,17,5,1268125.42,2.59,Tier 1: Core Performer,0.08,101450.03,30,237393.07,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+32,A,203007,18,20,1166568.15,3.31,Tier 1: Core Performer,0.08,93325.45,30,218381.55,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+18,B,120653,19,43,1084718.42,6.26,Tier 2: Volatile Powerhouse,0.18,195249.32,75,456883.41,Dynamic inventory buffer (+18%); weekly demand reviews; weekend labor flex surge.
+22,B,119557,20,17,1028501.04,3.24,Tier 1: Core Performer,0.08,82280.08,30,192535.39,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+12,B,112238,21,8,1009001.61,2.67,Tier 1: Core Performer,0.08,80720.13,30,188885.1,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+26,A,152513,22,12,1002911.84,2.88,Tier 1: Core Performer,0.08,80232.95,30,187745.1,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+34,A,158114,23,2,966781.56,2.3,Tier 1: Core Performer,0.08,77342.52,30,180981.5,Lean automated replenishment; expand high-margin premium assortment; protected supply chain SLA.
+40,A,155083,24,27,964128.04,3.71,Tier 4: Turnaround Target,0.12,115695.36,45,270727.14,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+35,B,103681,25,37,919724.98,5.17,Tier 4: Turnaround Target,0.12,110367.0,45,258258.78,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+8,A,155078,26,3,908749.52,2.41,Tier 3: Stable Mid-Market,0.05,45437.48,15,106323.7,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+17,B,93188,27,34,893581.39,4.54,Tier 4: Turnaround Target,0.12,107229.77,45,250917.66,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+45,B,118221,28,18,785981.41,3.25,Tier 3: Stable Mid-Market,0.05,39299.07,15,91959.82,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+21,B,140167,29,41,756069.08,5.59,Tier 4: Turnaround Target,0.12,90728.29,45,212304.2,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+25,B,128107,30,22,706721.53,3.45,Tier 3: Stable Mid-Market,0.05,35336.08,15,82686.43,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+43,C,41062,31,7,633324.72,2.65,Tier 3: Stable Mid-Market,0.05,31666.24,15,74099.0,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+15,B,123737,32,30,623312.47,3.81,Tier 4: Turnaround Target,0.12,74797.5,45,175026.15,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+7,B,70713,33,40,570617.31,5.57,Tier 4: Turnaround Target,0.12,68474.08,45,160229.35,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+42,C,39690,34,33,556403.86,4.53,Tier 4: Turnaround Target,0.12,66768.46,45,156238.2,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+9,B,125833,35,14,543980.55,3.0,Tier 3: Stable Mid-Market,0.05,27199.03,15,63645.73,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+29,B,93638,36,29,539451.43,3.8,Tier 4: Turnaround Target,0.12,64734.17,45,151477.96,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+16,B,57197,37,42,519247.73,6.08,Tier 4: Turnaround Target,0.12,62309.73,45,145804.77,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+37,C,39910,38,1,518900.28,2.06,Tier 3: Stable Mid-Market,0.05,25945.01,15,60711.32,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+30,C,42988,39,4,438579.62,2.48,Tier 3: Stable Mid-Market,0.05,21928.98,15,51313.81,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+3,B,37392,40,19,402704.44,3.3,Tier 3: Stable Mid-Market,0.05,20135.22,15,47116.41,Standard operating procedure; fixed weekly delivery schedule; maintain lean holding costs.
+38,C,39690,41,32,385731.65,4.52,Tier 4: Turnaround Target,0.12,46287.8,45,108313.45,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+36,A,39910,42,44,373511.99,7.22,Tier 4: Turnaround Target,0.12,44821.44,45,104882.17,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+5,B,34875,43,38,318011.81,5.23,Tier 4: Turnaround Target,0.12,38161.42,45,89297.72,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+44,C,39910,44,26,302748.87,3.66,Tier 4: Turnaround Target,0.12,36329.86,45,85011.87,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.
+33,A,39690,45,39,259861.69,5.51,Tier 4: Turnaround Target,0.12,31183.4,45,72969.16,Assortment rationalization; root-cause audit on stockouts & local demand shifts; inventory drawdown.

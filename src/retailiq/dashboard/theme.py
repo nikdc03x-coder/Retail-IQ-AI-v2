@@ -117,10 +117,17 @@ def apply_theme() -> None:
             color: {Theme.LIGHT_GRAY};
         }}
 
-        /* ── Hide Streamlit branding ── */
+        /* ── Hide Streamlit branding but keep header & sidebar toggle accessible ── */
         #MainMenu {{visibility: hidden;}}
         footer {{visibility: hidden;}}
-        header {{visibility: hidden;}}
+        header[data-testid="stHeader"] {{
+            background-color: transparent !important;
+        }}
+        [data-testid="stSidebarCollapseButton"] {{
+            visibility: visible !important;
+            display: block !important;
+            color: #FFFFFF !important;
+        }}
 
         /* ── Data table tweaks ── */
         .stDataFrame {{

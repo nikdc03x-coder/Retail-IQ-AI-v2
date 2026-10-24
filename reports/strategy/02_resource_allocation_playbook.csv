@@ -1,0 +1,5 @@
+Strategic_Tier,Store_Count,Total_Weekly_Sales,Avg_Store_Size,Avg_WAPE_Pct,Total_Safety_Stock_Dollars,Total_Weekly_Flex_Hours,Total_Annual_Optimization,Share_Of_Chain_Sales_Pct
+Tier 1: Core Performer,15,20989470.67,182942,2.96,1679157.65,450,3929228.89,44.55
+Tier 2: Volatile Powerhouse,8,13202604.43,169882,5.16,2376468.79,600,5560936.97,28.02
+Tier 3: Stable Mid-Market,8,4938942.07,86074,2.82,246947.11,120,577856.22,10.48
+Tier 4: Turnaround Target,14,7982402.3,76512,4.92,957888.28,630,2241458.58,16.94

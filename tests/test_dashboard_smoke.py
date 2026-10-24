@@ -37,6 +37,8 @@ PAGE_MODULES = [
     "src.retailiq.dashboard.pages.p05_reliability",
     "src.retailiq.dashboard.pages.p06_anomalies",
     "src.retailiq.dashboard.pages.p07_explainability",
+    "src.retailiq.dashboard.pages.p08_strategy",
+    "src.retailiq.dashboard.pages.p08_assistant",
 ]
 
 
