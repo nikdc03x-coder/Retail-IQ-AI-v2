@@ -1,0 +1,83 @@
+# RetailIQ AI V2 — System Architecture
+
+## Overview
+
+RetailIQ AI V2 is a single-process Python application with three layers:
+
+1. **Data Pipeline** (`scripts/`) — Batch processing that transforms raw CSVs into analysis reports
+2. **Source Library** (`src/retailiq/`) — Importable Python modules for data, analytics, ML, and AI
+3. **Dashboard** (`app.py` + `src/retailiq/dashboard/`) — Streamlit UI that reads pre-computed reports
+
+## Data Flow
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    RAW DATA (Immutable)                   │
+│  train.csv · features.csv · stores.csv                   │
+└───────────────────────┬──────────────────────────────────┘
+                        │ scripts/01_data_ingestion/
+                        ▼
+┌──────────────────────────────────────────────────────────┐
+│              ANALYTICAL DATASET (Parquet)                 │
+│  Validated, joined, with documented transformations       │
+└───────────────────────┬──────────────────────────────────┘
+                        │
+         ┌──────────────┼──────────────┐
+         │              │              │
+         ▼              ▼              ▼
+    ┌─────────┐   ┌──────────┐   ┌──────────┐
+    │ Quality │   │Analytics │   │Forecasting│
+    │ Reports │   │ Reports  │   │ + Models  │
+    └────┬────┘   └────┬─────┘   └────┬──────┘
+         │              │              │
+         │              │    ┌─────────┼─────────┐
+         │              │    │         │         │
+         │              │    ▼         ▼         ▼
+         │              │ ┌──────┐ ┌──────┐ ┌──────┐
+         │              │ │Reliab│ │Anomly│ │ SHAP │
+         │              │ │ility │ │  Det │ │      │
+         │              │ └──┬───┘ └──┬───┘ └──┬───┘
+         │              │    │        │        │
+         ▼              ▼    ▼        ▼        ▼
+    ┌──────────────────────────────────────────────┐
+    │           STREAMLIT DASHBOARD                 │
+    │  Reads pre-computed CSV/Parquet reports        │
+    │  Renders interactive Plotly visualizations     │
+    ├───────────────────────────────────────────────┤
+    │         GEMINI BUSINESS ASSISTANT              │
+    │  Approved Python tools → verified evidence     │
+    │  Natural language interpretation by Gemini     │
+    └──────────────────────────────────────────────┘
+```
+
+## Module Dependency Map
+
+```
+config.py          ← Central paths, constants, theme
+    ↑
+data/              ← Loading, validation, pipeline
+    ↑
+quality/           ← Data quality reporting
+analytics/         ← Business aggregations
+    ↑
+forecasting/       ← Feature engineering, models, evaluation
+    ↑
+reliability/       ← Error analysis, backtesting
+anomalies/         ← Statistical + Isolation Forest
+explainability/    ← SHAP analysis
+    ↑
+assistant/         ← Gemini tools, conversation, engine
+    ↑
+dashboard/         ← Theme, components, charts, pages
+    ↑
+app.py             ← Entry point
+```
+
+## Key Design Principles
+
+1. **Scripts produce, dashboard consumes:** Heavy computation happens in pipeline scripts, not at dashboard render time
+2. **Pre-computed reports:** All analysis results are saved as CSV files that the dashboard reads
+3. **Controlled AI:** Gemini selects from approved tool functions; Python performs calculations
+4. **No future leakage:** Chronological splits and backward-looking features only
+5. **Honest reporting:** No fabricated metrics; limitations are documented
+

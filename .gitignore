@@ -1,0 +1,47 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Virtual environment ──
+.venv/
+venv/
+env/
+
+# ── Secrets ──
+.env
+*.key
+*.pem
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Jupyter ──
+.ipynb_checkpoints/
+
+# ── Data (large generated files) ──
+data/processed/*.parquet
+models/*.joblib
+models/*.pkl
+
+# ── Caches ──
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Streamlit ──
+.streamlit/secrets.toml
+
