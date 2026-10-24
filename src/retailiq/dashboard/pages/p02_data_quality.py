@@ -1,8 +1,8 @@
 """
-RetailIQ AI V2 — Page 02: Data Quality & Readiness
+RetailIQ AI V2 — Page 02: Data Quality & Readiness Audit
 
-Comprehensive audit of missing values, statistical distributions,
-merchandise returns (negative sales), and department coverage continuity.
+Empirical health audit, missingness taxonomy, merchandise return profiling,
+and time-series observation continuity metrics.
 """
 
 import json
@@ -14,7 +14,6 @@ from src.retailiq.config import REPORT_SUBDIRS, Theme
 from src.retailiq.dashboard.components import (
     format_currency,
     format_number,
-    format_percent,
     formatted_dataframe,
     page_context,
     render_kpi_row,
@@ -26,8 +25,9 @@ from src.retailiq.dashboard.theme import context_box, page_header, section_heade
 def render() -> None:
     """Render the Data Quality & Readiness page."""
     page_header(
-        "Data Quality & Readiness",
-        "Empirical Health Audit, Missingness Profiling, and Data Integrity Analysis",
+        "Data Quality & Readiness Audit",
+        "Empirical Telemetry Health, Structural Missingness Taxonomy, and Returns Accounting",
+        category="Data Quality & Integrity",
     )
 
     page_context(
@@ -39,10 +39,9 @@ def render() -> None:
 
     out_dir = REPORT_SUBDIRS["data_quality"]
 
-    # Verify reports exist
     if not (out_dir / "06_data_quality_summary.json").exists():
         st.warning(
-            "⚠️ Data quality reports not found. Please run the quality script:\n\n"
+            "Data quality reports not found. Please run the quality script:\n\n"
             "`python scripts/02_data_quality/run_quality_checks.py`"
         )
         return
@@ -76,30 +75,29 @@ def render() -> None:
     full_pct = (full_pairs / total_pairs) if total_pairs > 0 else 0.0
 
     render_kpi_row([
-        {"label": "Economic Feature Completeness", "value": "100.0%", "subtitle": "CPI & Unemployment (0 nulls)"},
+        {"label": "Economic Completeness", "value": "100.0%", "subtitle": "CPI & Unemployment (0 nulls)"},
         {"label": "MarkDown Sparsity", "value": f"{summary['missingness']['markdown_missing_pct']:.1f}%", "subtitle": "Structural: pre-Nov 2011"},
-        {"label": "Merchandise Returns", "value": f"{summary['sales_audit']['negative_rows']:,}", "subtitle": f"{format_currency(summary['sales_audit']['total_return_amount'])} total value"},
-        {"label": "Continuous Series Pairs", "value": f"{full_pct:.1%}", "subtitle": f"{full_pairs:,} of {total_pairs:,} pairs (143 wks)"},
-        {"label": "Departments with Returns", "value": str(len(returns_df)), "subtitle": "Across 45 store locations"},
+        {"label": "Merchandise Returns", "value": f"{summary['sales_audit']['negative_rows']:,}", "subtitle": f"{format_currency(summary['sales_audit']['total_return_amount'])} cumulative"},
+        {"label": "Continuous Series", "value": f"{full_pct:.1%}", "subtitle": f"{full_pairs:,} of {total_pairs:,} pairs (143 wks)"},
+        {"label": "Return Departments", "value": str(len(returns_df)), "subtitle": "Across 45 store locations"},
     ])
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
     # ── Interactive Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🔍 Missingness Profiling",
-        "📈 Feature Distributions",
-        "↩️ Merchandise Returns Audit",
-        "⏱️ Store-Dept Continuity",
+        "Missingness Profiling",
+        "Feature Distributions",
+        "Merchandise Returns Audit",
+        "Series Continuity",
     ])
 
     # ── Tab 1: Missingness ──
     with tab1:
-        section_header("Missing Value Audit & Classification", "🔍")
+        section_header("Missing Value Audit & Classification", "Structural classification of nullity patterns across analytical features")
         context_box(
-            "**Key Finding:** Missing values are NOT random corruption. "
-            "CPI and Unemployment are 100% complete across historical observations. "
-            "MarkDown features were structurally uncollected by Walmart prior to November 11, 2011."
+            "Missing values are NOT random corruption. CPI and Unemployment are 100% complete across historical observations. MarkDown features were structurally uncollected by Walmart prior to November 11, 2011.",
+            title="Completeness Audit",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -117,26 +115,27 @@ def render() -> None:
         with c2:
             st.markdown(f"""
             <div class="section-card">
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Audit Telemetry</div>
                 <h3>Classification Assessment</h3>
-                <p><b>MarkDown1 - MarkDown5:</b> Structural missingness (~64% missing). First recorded on 2011-11-11.</p>
-                <p><b>CPI & Unemployment:</b> 0% missing in train window. Clean economic signals.</p>
-                <p><b>Weekly_Sales:</b> 0% missing. Complete historical target.</p>
-                <p><b>Store Metadata:</b> 0% missing. Complete size and type classifications.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>MarkDown1 - 5:</b> Structural missingness (~64% missing). First recorded on 2011-11-11.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>CPI & Unemployment:</b> 0% missing in train window. Clean continuous signals.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Weekly_Sales:</b> 0% missing. Complete historical target.</p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>Store Metadata:</b> 0% missing. Complete format and area metrics.</p>
             </div>
             """, unsafe_allow_html=True)
 
         formatted_dataframe(
             missing_df,
-            title="Complete Column Missingness Profile",
+            title="Complete Feature Missingness Profile",
             description="Audit classification and earliest observed non-null dates per feature.",
         )
 
     # ── Tab 2: Feature Statistics ──
     with tab2:
-        section_header("Numerical Feature Distribution Metrics", "📈")
+        section_header("Numerical Feature Distribution Metrics", "Dispersion parameters, central tendency, and distribution shapes")
         context_box(
-            "**What are we measuring?** Central tendency (Mean, Median), dispersion (Std, IQR), and distribution shape (Skewness, Kurtosis). "
-            "High positive skewness in Weekly_Sales (3.26) indicates heavy holiday demand tails."
+            "Central tendency (Mean, Median), dispersion (Std, IQR), and distribution shape (Skewness, Kurtosis). High positive skewness in Weekly_Sales (3.26) indicates heavy holiday demand tails.",
+            title="Dispersion Metrics",
         )
 
         formatted_dataframe(
@@ -147,11 +146,10 @@ def render() -> None:
 
     # ── Tab 3: Merchandise Returns ──
     with tab3:
-        section_header("Merchandise Returns & Accounting Adjustments", "↩️")
+        section_header("Merchandise Returns & Accounting Adjustments", "Analysis of negative sales transactions and return concentrations")
         context_box(
-            "**Data Engineering Decision:** 1,285 records (0.30%) contain negative Weekly_Sales values. "
-            "These represent legitimate customer returns and accounting reconciliations. "
-            "Deleting them would bias sales aggregations upward; they are preserved with full lineage."
+            "1,285 records (0.30%) contain negative Weekly_Sales values. These represent legitimate customer returns and accounting reconciliations. Deleting them would bias sales aggregations upward; they are preserved with full lineage.",
+            title="Accounting Policy",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -168,11 +166,12 @@ def render() -> None:
         with c2:
             st.markdown(f"""
             <div class="section-card">
-                <h3>Return Profile Summary</h3>
-                <p><b>Total Return Records:</b> {summary['sales_audit']['negative_rows']:,}</p>
-                <p><b>Cumulative Value:</b> {format_currency(summary['sales_audit']['total_return_amount'], 2)}</p>
-                <p><b>Top Return Dept:</b> Dept {returns_df.iloc[0]['Dept']} ({format_currency(returns_df.iloc[0]['Total_Return_Amount'], 2)})</p>
-                <p><b>Affected Locations:</b> Up to {returns_df['Affected_Stores'].max()} stores per department</p>
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Returns Profile</div>
+                <h3>Audit Summary</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Total Return Records:</b> {summary['sales_audit']['negative_rows']:,}</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Cumulative Dollar Value:</b> {format_currency(summary['sales_audit']['total_return_amount'], 2)}</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Top Return Dept:</b> Dept {returns_df.iloc[0]['Dept']} ({format_currency(returns_df.iloc[0]['Total_Return_Amount'], 2)})</p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>Affected Stores:</b> Up to {returns_df['Affected_Stores'].max()} stores per department</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -184,19 +183,22 @@ def render() -> None:
 
     # ── Tab 4: Continuity ──
     with tab4:
-        section_header("Store-Department Series Continuity", "⏱️")
+        section_header("Store-Department Series Continuity", "Observation longevity across 143 historical weeks")
         context_box(
-            "**Why this matters for forecasting:** 79.9% of store-department pairs are active across all 143 historical weeks. "
-            "Remaining pairs represent seasonal departments (e.g. holiday decor) or newly opened departments with fewer historical weeks."
+            "79.9% of store-department pairs are active across all 143 historical weeks. Remaining pairs represent seasonal departments (e.g. holiday decor) or newly opened departments with fewer historical weeks.",
+            title="Temporal Continuity",
         )
 
         cov_summary = coverage_df["Status"].value_counts().reset_index()
         cov_summary.columns = ["Continuity Status", "Store-Dept Pairs"]
-        st.dataframe(cov_summary, use_container_width=True, hide_index=True)
+        formatted_dataframe(
+            cov_summary,
+            title="Continuity Classification Summary",
+            description="Overview of full vs partial historical coverage across 3,331 store-department pairs.",
+        )
 
-        # Filterable coverage table
         store_sel = st.selectbox(
-            "Filter Continuity by Store",
+            "Filter Continuity by Store Location",
             options=sorted(coverage_df["Store"].unique()),
             index=0,
             key="cov_store_sel",

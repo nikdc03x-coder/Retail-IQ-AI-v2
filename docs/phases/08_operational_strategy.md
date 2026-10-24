@@ -130,3 +130,4 @@ tests/
    - Deploy the 1,800-hour weekly flex labor pool specifically to Tier 2 stores during seasonal peak weeks.
 3. **VP of Merchandising:**
    - Execute the 20% $\to$ 40% clearance markdown ladder on High-Return Risk departments (Dept 47, 54) to curtail inventory aging.
+

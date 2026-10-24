@@ -34,6 +34,7 @@ def render() -> None:
     page_header(
         "Operational Decision Strategy",
         "Prescriptive Intelligence: Store Quadrants, Dynamic Buffers & Merchandising Directives",
+        category="Prescriptive Strategy & Decision Engine",
     )
 
     page_context(
@@ -48,7 +49,7 @@ def render() -> None:
     # Verify reports exist
     if not (out_dir / "01_store_strategic_matrix.csv").exists():
         st.warning(
-            "⚠️ Strategy reports not found. Please run the execution script:\n\n"
+            "Strategy reports not found. Please run the execution script:\n\n"
             "`python scripts/08_strategy/run_strategy_engine.py`"
         )
         return
@@ -89,10 +90,10 @@ def render() -> None:
 
     # ── Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🗺️ Store Strategic Quadrants",
-        "📦 Inventory & Labor Playbook",
-        "🏷️ Department Merchandising Rules",
-        "📋 Executive Action Plan",
+        "Store Strategic Quadrants",
+        "Inventory & Labor Playbook",
+        "Department Merchandising Rules",
+        "Executive Action Plan",
     ])
 
     # ══════════════════════════════════════════════════════════════════
@@ -187,7 +188,7 @@ def render() -> None:
             st.metric("Capital Optimization", format_currency(s_row["Annual_Working_Capital_Optimization"]), "Estimated annual gain")
 
         context_box(
-            f"📋 Strategic Directive for Store {calc_store}: {s_row['Recommended_Action']}"
+            f"Strategic Directive for Store {calc_store}: {s_row['Recommended_Action']}"
         )
 
     # ══════════════════════════════════════════════════════════════════
@@ -235,22 +236,23 @@ def render() -> None:
         directives = summary["priority_executive_directives"]
         for idx, d in enumerate(directives, 1):
             st.markdown(f"""
-            <div style="background-color: {Theme.DARK_CARD}; border: 1px solid {Theme.CARD_BORDER};
-                        border-left: 4px solid {Theme.CYAN}; border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <h4 style="color: {Theme.WHITE}; margin: 0; font-size: 1.05rem;">
+            <div style="background-color: {Theme.CARD_BG}; border: 1px solid {Theme.CARD_BORDER};
+                        border-left: 4px solid {Theme.BRAND}; border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                    <div style="color: {Theme.WHITE}; font-size: 1rem; font-weight: 600;">
                         {idx}. {d['directive']}
-                    </h4>
-                    <span style="background-color: rgba(99, 102, 241, 0.2); color: {Theme.CYAN};
-                                 padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
+                    </div>
+                    <span style="background-color: rgba(99, 102, 241, 0.15); color: {Theme.BRAND}; border: 1px solid rgba(99, 102, 241, 0.3);
+                                 padding: 0.2rem 0.65rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
                         {d['target']}
                     </span>
                 </div>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem; line-height: 1.5; margin: 0 0 0.5rem 0;">
-                    <b>Prescribed Action:</b> {d['action']}
-                </p>
-                <p style="color: {Theme.GREEN}; font-size: 0.82rem; font-weight: 500; margin: 0;">
-                    🎯 <b>Expected Outcome:</b> {d['expected_outcome']}
-                </p>
+                <div style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem; line-height: 1.5; margin: 0 0 0.6rem 0;">
+                    <strong style="color: {Theme.WHITE};">Prescribed Action:</strong> {d['action']}
+                </div>
+                <div style="color: {Theme.GREEN}; font-size: 0.85rem; font-weight: 500;">
+                    <strong>Expected Outcome:</strong> {d['expected_outcome']}
+                </div>
             </div>
             """, unsafe_allow_html=True)
+

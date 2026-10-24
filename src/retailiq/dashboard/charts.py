@@ -40,7 +40,8 @@ def apply_default_layout(fig: go.Figure, title: str = "") -> go.Figure:
         ),
         margin=dict(l=60, r=30, t=60, b=50),
         hoverlabel=dict(
-            bgcolor=Theme.INDIGO,
+            bgcolor=Theme.CARD_BG,
+            bordercolor=Theme.CARD_BORDER,
             font_size=12,
             font_color=Theme.WHITE,
         ),

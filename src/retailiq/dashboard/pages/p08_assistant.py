@@ -20,14 +20,14 @@ from src.retailiq.assistant.engine import RetailIQAssistantEngine
 
 
 SUGGESTED_PROMPTS = [
-    "🏆 Which are the top 5 stores by historical sales?",
-    "🦃 How much sales lift does Thanksgiving drive vs non-holidays?",
-    "🥇 What is the forecasting model leaderboard and champion?",
-    "⚔️ How does XGBoost compare against the Previous-Week Naive baseline?",
-    "⚠️ Which store records are top priority in the anomaly queue?",
-    "🔬 What are the top 5 features driving XGBoost predictions in TreeSHAP?",
-    "📍 Explain the forecast for Store 20 on 2012-06-01",
-    "🏬 What are the top 5 departments by sales volume?",
+    "Which are the top 5 stores by historical sales?",
+    "How much sales lift does Thanksgiving drive vs non-holidays?",
+    "What is the forecasting model leaderboard and champion?",
+    "How does XGBoost compare against the Previous-Week Naive baseline?",
+    "Which store records are top priority in the anomaly queue?",
+    "What are the top 5 features driving XGBoost predictions in TreeSHAP?",
+    "Explain the forecast for Store 20 on 2012-06-01",
+    "What are the top 5 departments by sales volume?",
 ]
 
 
@@ -36,6 +36,7 @@ def render() -> None:
     page_header(
         "AI Business Assistant",
         "Evidence-Grounded Retail Intelligence & Conversational Analytics",
+        category="Conversational Analytics & Grounding",
     )
 
     page_context(
@@ -51,10 +52,11 @@ def render() -> None:
             {
                 "role": "assistant",
                 "answer": (
-                    "👋 **Hello! I am RetailIQ AI**, your evidence-grounded retail business analyst. "
-                    "I can answer questions regarding chain sales performance, holiday dynamics, forecasting accuracy, "
-                    "spatial error reliability, anomaly investigation queues, and TreeSHAP explainability.\n\n"
-                    "Select a suggested prompt below or type your question!"
+                    "**RetailIQ Intelligence Engine Active**\n\n"
+                    "Enterprise retail business analyst grounded in verified data pipelines across chain sales "
+                    "performance, promotional dynamics, forecasting accuracy, spatial reliability, anomaly queues, "
+                    "and TreeSHAP feature attributions.\n\n"
+                    "Select an inquiry below or type a custom question to begin."
                 ),
                 "metadata": {
                     "route": "system_greeting",
@@ -70,8 +72,8 @@ def render() -> None:
     if "user_gemini_key" not in st.session_state:
         st.session_state.user_gemini_key = GEMINI_API_KEY
 
-    # ── Sidebar / Configuration Drawer ──
-    with st.expander("⚙️ Assistant Configuration & API Settings", expanded=False):
+    # ── Configuration Drawer ──
+    with st.expander("Assistant Configuration & API Settings", expanded=False):
         c1, c2 = st.columns([2, 1])
         with c1:
             key_input = st.text_input(
@@ -87,7 +89,7 @@ def render() -> None:
 
         with c2:
             st.markdown("<div style='height: 1.8rem;'></div>", unsafe_allow_html=True)
-            if st.button("🗑️ Clear Chat History", use_container_width=True):
+            if st.button("Clear Conversation", use_container_width=True):
                 st.session_state.assistant_messages = st.session_state.assistant_messages[:1]
                 st.rerun()
 
@@ -97,24 +99,26 @@ def render() -> None:
     # ── Status Pill ──
     if engine.has_gemini:
         status_html = (
-            f"<div style='display: inline-block; padding: 0.3rem 0.8rem; border-radius: 9999px; "
-            f"background-color: rgba(20, 184, 166, 0.15); border: 1px solid {Theme.TEAL}; "
-            f"color: {Theme.TEAL}; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;'>"
-            f"🟢 Gemini Generative Engine Active ({GEMINI_MODEL}) with Tool Calling"
+            f"<div style='display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; "
+            f"background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); "
+            f"color: {Theme.GREEN}; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.2rem;'>"
+            f"<span style='display: inline-block; width: 7px; height: 7px; border-radius: 50%; background-color: {Theme.GREEN};'></span>"
+            f"Gemini Generative Engine Active ({GEMINI_MODEL}) · Tool Calling Enabled"
             f"</div>"
         )
     else:
         status_html = (
-            f"<div style='display: inline-block; padding: 0.3rem 0.8rem; border-radius: 9999px; "
-            f"background-color: rgba(245, 158, 11, 0.15); border: 1px solid {Theme.AMBER}; "
-            f"color: {Theme.AMBER}; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem;'>"
-            f"⚡ Deterministic Fallback Active (Offline Mode — 100% Verifiable Tool Dispatch)"
+            f"<div style='display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.85rem; border-radius: 9999px; "
+            f"background-color: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); "
+            f"color: {Theme.AMBER}; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.2rem;'>"
+            f"<span style='display: inline-block; width: 7px; height: 7px; border-radius: 50%; background-color: {Theme.AMBER};'></span>"
+            f"Deterministic Fallback Active · 100% Verifiable Tool Dispatch"
             f"</div>"
         )
     st.markdown(status_html, unsafe_allow_html=True)
 
     # ── Quick Query Suggestions ──
-    st.markdown("<p style='font-size: 0.85rem; color: #94A3B8; margin-bottom: 0.4rem;'>💡 <b>Suggested Inquiries:</b></p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; font-weight: 600; margin-bottom: 0.5rem;'>Recommended Inquiries</p>", unsafe_allow_html=True)
     chips_cols = st.columns(4)
     for idx, prompt_text in enumerate(SUGGESTED_PROMPTS):
         col = chips_cols[idx % 4]
@@ -137,7 +141,7 @@ def render() -> None:
             # Transparency drawer for assistant messages
             meta = msg.get("metadata", {})
             if msg["role"] == "assistant" and meta.get("route") != "system_greeting":
-                with st.expander("🔍 Transparency & Evidence Grounding", expanded=False):
+                with st.expander("Transparency & Evidence Grounding", expanded=False):
                     t_col1, t_col2 = st.columns(2)
                     with t_col1:
                         st.markdown(f"**Execution Route:** `{meta.get('route')}`")
@@ -146,7 +150,7 @@ def render() -> None:
                     with t_col2:
                         st.markdown(f"**Data Evidence Source:** `{meta.get('evidence_source')}`")
                         st.markdown(f"**Latency:** `{meta.get('latency_seconds', 0.0)}s`")
-                        st.markdown(f"**Mathematical Verification:** `{'✅ Passed' if meta.get('verified') else '⚠️ Unverified'}`")
+                        st.markdown(f"**Mathematical Verification:** `{'Verified' if meta.get('verified') else 'Unverified'}`")
 
                     # If data is present as tabular records, display a mini table
                     data_payload = meta.get("data")

@@ -1,8 +1,8 @@
 """
-RetailIQ AI V2 — Page 05: Forecast Reliability Analysis
+RetailIQ AI V2 — Page 05: Forecast Reliability & Error Diagnostics
 
-Interactive analysis of model reliability across locations, time periods,
-holiday volatility, and rolling historical backtests.
+Spatial error disparity, holiday vulnerability, store-by-store baseline win rates,
+and multi-fold expanding-window rolling backtest evaluations.
 """
 
 import json
@@ -20,15 +20,16 @@ from src.retailiq.dashboard.components import (
     page_context,
     render_kpi_row,
 )
-from src.retailiq.dashboard.charts import apply_default_layout, bar_chart, line_chart, scatter_chart
+from src.retailiq.dashboard.charts import apply_default_layout, bar_chart, line_chart
 from src.retailiq.dashboard.theme import context_box, page_header, section_header
 
 
 def render() -> None:
     """Render the Forecast Reliability page."""
     page_header(
-        "Forecast Reliability & Error Diagnostics",
-        "Spatial Disparity, Holiday Volatility, Baseline Win Rates & Rolling Backtests",
+        "Forecast Reliability & Spatial Risk Diagnostics",
+        "Spatial Error Disparity, Holiday Volatility Shifts, Baseline Win Rates & Rolling Backtests",
+        category="Risk & Reliability Diagnostics",
     )
 
     page_context(
@@ -40,10 +41,9 @@ def render() -> None:
 
     out_dir = REPORT_SUBDIRS["forecast_reliability"]
 
-    # Verify reports exist
     if not (out_dir / "01_store_error_summary.csv").exists():
         st.warning(
-            "⚠️ Reliability reports not found. Please run the reliability audit:\n\n"
+            "Reliability reports not found. Please run the reliability audit:\n\n"
             "`python scripts/05_forecast_reliability/run_reliability.py`"
         )
         return
@@ -84,27 +84,27 @@ def render() -> None:
     render_kpi_row([
         {"label": "Store Win Rate", "value": f"{summary['store_win_rate_vs_naive_pct']}%", "subtitle": f"35 of 45 stores beat Naive"},
         {"label": "Most Reliable Store", "value": f"Store {int(best_store['Store'])}", "subtitle": f"{best_store['WAPE_Pct']}% WAPE ({format_currency(best_store['MAE'])})"},
-        {"label": "Highest Volatility Store", "value": f"Store {int(worst_store['Store'])}", "subtitle": f"{worst_store['WAPE_Pct']}% WAPE ({format_currency(worst_store['MAE'])})"},
+        {"label": "Peak Volatility Store", "value": f"Store {int(worst_store['Store'])}", "subtitle": f"{worst_store['WAPE_Pct']}% WAPE ({format_currency(worst_store['MAE'])})"},
         {"label": "Holiday Error Shift", "value": f"{hol_change:+.1f}%", "subtitle": f"{hol_wape}% vs {non_hol_wape}% non-holiday"},
         {"label": "Backtest Consistency", "value": "100.0%", "subtitle": f"{summary['backtest_summary']['folds_outperformed']}/{summary['backtest_summary']['folds_evaluated']} folds won by XGBoost"},
     ])
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
     # ── Interactive Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🏬 Store Error Disparity",
-        "📅 Weekly & Holiday Error",
-        "⚔️ Model vs Baseline Head-to-Head",
-        "🔄 Rolling Backtest Stability",
+        "Store Error Disparity",
+        "Temporal & Holiday Volatility",
+        "Baseline Head-to-Head",
+        "Rolling Backtest Stability",
     ])
 
     # ── Tab 1: Store Disparity ──
     with tab1:
-        section_header("Store-by-Store Error Disparity (45 Stores)", "🏬")
+        section_header("Store-by-Store Error Disparity", "Spatial distribution of forecast accuracy across 45 locations")
         context_box(
-            "**Key Finding:** Forecasting error varies by a factor of 5x across locations. "
-            "High-volume, stable locations like Store 37 achieve a **2.06% WAPE**, whereas smaller or more volatile locations like Store 14 exhibit **10.59% WAPE**."
+            "Forecasting error varies by a factor of 5x across locations. High-volume, stable locations like Store 37 achieve a 2.06% WAPE, whereas smaller or more volatile locations like Store 14 exhibit 10.59% WAPE.",
+            title="Spatial Variance",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -122,11 +122,11 @@ def render() -> None:
             st.plotly_chart(fig_store_wape, use_container_width=True)
 
         with c2:
-            st.markdown("#### Top 5 Most Predictable Stores")
+            st.markdown("#### Top 5 Predictable Locations")
             top_5_rel = store_err.head(5)[["Reliability_Rank", "Store", "Type", "WAPE_Pct", "MAE", "Mean_Weekly_Sales"]]
             st.dataframe(top_5_rel, use_container_width=True, hide_index=True)
 
-            st.markdown("#### Top 5 Most Challenging Stores")
+            st.markdown("#### Top 5 Volatile Locations")
             bot_5_rel = store_err.tail(5).sort_values("WAPE_Pct", ascending=False)[["Reliability_Rank", "Store", "Type", "WAPE_Pct", "MAE", "Mean_Weekly_Sales"]]
             st.dataframe(bot_5_rel, use_container_width=True, hide_index=True)
 
@@ -138,10 +138,10 @@ def render() -> None:
 
     # ── Tab 2: Weekly & Holiday Error ──
     with tab2:
-        section_header("Temporal Error Dynamics & Holiday Vulnerability", "📅")
+        section_header("Temporal Error Dynamics & Holiday Vulnerability", "Weekly forecast error fluctuations and promotional holiday degradation")
         context_box(
-            "**Holiday Error Assessment:** During holiday weeks (e.g. Labor Day week), average WAPE increases from **3.79% to 4.58%** (+20.8% relative error shift). "
-            "Promotional swings make holiday demand inherently more volatile to predict."
+            "During holiday weeks, average WAPE increases from 3.79% to 4.58% (+20.8% relative error shift). Promotional volume swings make holiday demand inherently more volatile to forecast.",
+            title="Holiday Risk Factor",
         )
 
         c1, c2 = st.columns(2)
@@ -155,10 +155,14 @@ def render() -> None:
             st.plotly_chart(fig_week, use_container_width=True)
 
         with c2:
-            st.markdown("#### Holiday vs Non-Holiday Error Breakdown")
-            st.dataframe(hol_err, use_container_width=True, hide_index=True)
+            formatted_dataframe(
+                hol_err,
+                title="Holiday vs Baseline Error Breakdown",
+                description="Comparative metrics during promotional holiday vs standard operating weeks.",
+            )
             context_box(
-                "**Business Recommendation:** Retail inventory planners should maintain safety stock buffers during holiday windows to absorb higher forecast variance."
+                "Retail inventory planners should maintain targeted safety stock buffers during holiday windows to absorb higher forecast variance.",
+                title="Operational Takeaway",
             )
 
         formatted_dataframe(
@@ -169,15 +173,14 @@ def render() -> None:
 
     # ── Tab 3: Baseline Head-to-Head ──
     with tab3:
-        section_header("XGBoost vs Previous-Week Naive Head-to-Head", "⚔️")
+        section_header("XGBoost vs Previous-Week Naive Head-to-Head", "Granular store-by-store comparison against persistence baseline")
         context_box(
-            "**Store-Level Dominance:** XGBoost beats the naive persistence baseline in **35 out of 45 stores (77.8% win rate)**. "
-            "In the scatter plot below, points lying below the 45-degree parity line represent locations where XGBoost delivers superior accuracy."
+            "XGBoost beats the naive persistence baseline in 35 out of 45 stores (77.8% win rate). In the scatter plot below, points lying below the 45-degree parity line represent locations where XGBoost delivers superior accuracy.",
+            title="Benchmark Win Rate",
         )
 
         c1, c2 = st.columns([3, 2])
         with c1:
-            # Scatter plot: Naive WAPE vs XGB WAPE
             fig_head = px.scatter(
                 store_rel,
                 x="Naive_WAPE",
@@ -187,7 +190,6 @@ def render() -> None:
                 title="XGBoost WAPE vs Naive WAPE by Store",
                 color_discrete_sequence=Theme.CHART_COLORS,
             )
-            # Add 45-degree parity line
             max_val = max(store_rel["Naive_WAPE"].max(), store_rel["XGB_WAPE"].max()) + 1.0
             fig_head.add_trace(go.Scatter(
                 x=[0, max_val],
@@ -202,29 +204,29 @@ def render() -> None:
         with c2:
             st.markdown(f"""
             <div class="section-card">
-                <h3>Head-to-Head Summary</h3>
-                <p><b>XGBoost Wins:</b> 35 stores (77.8%)</p>
-                <p><b>Naive Wins:</b> 10 stores (22.2%)</p>
-                <p><b>Average Error Reduction:</b> -18.7% across all 45 stores</p>
-                <p><b>Insight:</b> Stores where Naive outperformed were primarily ultra-stable Type C stores with near-flat weekly demand.</p>
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Head-to-Head Stats</div>
+                <h3>Comparative Metrics</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>XGBoost Wins:</b> 35 stores (77.8%)</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Naive Wins:</b> 10 stores (22.2%)</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Mean Error Reduction:</b> -18.7% across 45 stores</p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>Observation:</b> Stores where Naive outperformed were primarily ultra-stable Type C stores with near-flat weekly demand.</p>
             </div>
             """, unsafe_allow_html=True)
 
         formatted_dataframe(
             store_rel,
-            title="Store-by-Store Win Rate Audit",
+            title="Store-by-Store Win Rate Audit Table",
             description="Direct comparison of XGBoost WAPE vs Naive WAPE and percentage error reduction.",
         )
 
     # ── Tab 4: Rolling Backtest ──
     with tab4:
-        section_header("Expanding-Window Rolling Backtest (4 Folds)", "🔄")
+        section_header("Expanding-Window Rolling Backtest (4 Folds)", "Temporal stability across consecutive historical evaluation windows")
         context_box(
-            "**Methodology:** An expanding-window backtest retrains the model on expanding historical slices and evaluates on consecutive 8-week test windows. "
-            "XGBoost outperformed the baseline in **100% of backtest folds**, demonstrating temporal stability."
+            "An expanding-window backtest retrains the model on expanding historical slices and evaluates on consecutive 8-week test windows. XGBoost outperformed the baseline in 100% of backtest folds, demonstrating temporal stability.",
+            title="Backtest Protocol",
         )
 
-        # Bar chart comparing fold WAPEs
         melted_bt = backtest[["Fold", "XGB_WAPE", "Naive_WAPE"]].melt(
             id_vars=["Fold"], var_name="Model", value_name="WAPE_Pct"
         )

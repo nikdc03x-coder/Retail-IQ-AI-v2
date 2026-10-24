@@ -1,15 +1,14 @@
 """
-RetailIQ AI V2 — Page 04: Sales Forecasting & Model Comparison
+RetailIQ AI V2 — Page 04: Sales Forecasting & Model Evaluation
 
-Interactive comparison of machine learning models against persistence baselines
-for 1-week-ahead store-level sales forecasting with chronological validation.
+Rigorous chronological benchmark comparing baseline heuristics against
+Ridge Regression, Random Forest, and champion XGBoost forecasting models.
 """
 
 import json
 from pathlib import Path
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
 from src.retailiq.config import REPORT_SUBDIRS, Theme
 from src.retailiq.dashboard.components import (
@@ -26,8 +25,9 @@ from src.retailiq.dashboard.theme import context_box, page_header, section_heade
 def render() -> None:
     """Render the Sales Forecasting page."""
     page_header(
-        "Sales Forecasting & Model Comparison",
-        "Chronological Benchmark: Baselines vs Ridge, Random Forest & XGBoost",
+        "Sales Forecasting & Model Benchmark Leaderboard",
+        "Chronological Benchmark: Naive Persistence Baselines vs Ridge, Random Forest & XGBoost",
+        category="Predictive Modeling",
     )
 
     page_context(
@@ -39,10 +39,9 @@ def render() -> None:
 
     out_dir = REPORT_SUBDIRS["sales_forecasting"]
 
-    # Verify reports exist
     if not (out_dir / "01_model_comparison_metrics.csv").exists():
         st.warning(
-            "⚠️ Forecasting reports not found. Please run the experiment script:\n\n"
+            "Forecasting reports not found. Please run the experiment script:\n\n"
             "`python scripts/04_sales_forecasting/run_forecasting.py`"
         )
         return
@@ -81,22 +80,22 @@ def render() -> None:
         {"label": "Forecast Horizon", "value": "1-Week-Ahead", "subtitle": "Strictly backward-looking features"},
     ])
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
     # ── Interactive Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
-        "🏆 Model Leaderboard",
-        "📉 Predictions vs Actuals",
-        "🎯 Feature Importance",
-        "🔬 Residual Diagnostics",
+        "Model Benchmark Leaderboard",
+        "Predictions vs Actuals",
+        "Engineered Feature Importance",
+        "Residual Diagnostics",
     ])
 
     # ── Tab 1: Leaderboard ──
     with tab1:
-        section_header("Chronological Test Set Leaderboard", "🏆")
+        section_header("Chronological Test Set Leaderboard", "Standardized out-of-sample evaluation across all 45 store locations")
         context_box(
-            "**Fair Benchmark Protocol:** All models were trained on 2011 historical records and evaluated on the exact same **990 test observations** (June 2012 - October 2012) spanning all 45 stores. "
-            "Lower MAE, RMSE, and WAPE are strictly preferred."
+            "Fair Benchmark Protocol: All models were trained on historical records and evaluated on the exact same 990 test observations (June 2012 - October 2012) spanning all 45 stores. Lower MAE, RMSE, and WAPE are strictly preferred.",
+            title="Benchmark Methodology",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -113,11 +112,12 @@ def render() -> None:
         with c2:
             st.markdown(f"""
             <div class="section-card">
-                <h3>Experiment Evaluation Insights</h3>
-                <p><b>1. XGBoost:</b> Top performer (3.83% WAPE) capturing nonlinear interactions between store size and recent momentum.</p>
-                <p><b>2. Ridge Linear:</b> Surprisingly competitive (3.91% WAPE), demonstrating high linearity in weekly store-level aggregation.</p>
-                <p><b>3. Random Forest:</b> Solid performance (4.00% WAPE), outperforming persistence baselines.</p>
-                <p><b>4. Naive Baselines:</b> Previous-week (4.93%) and 52-week seasonal (5.12%) lag behind machine learning models.</p>
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Evaluation Synthesis</div>
+                <h3>Model Performance Rankings</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>1. XGBoost:</b> Top performer (3.83% WAPE) capturing nonlinear interactions between store capacity and recent momentum.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>2. Ridge Linear:</b> Highly competitive (3.91% WAPE), demonstrating strong linearity in weekly store-level aggregation.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>3. Random Forest:</b> Solid performance (4.00% WAPE), handily outperforming baselines.</p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>4. Naive Baselines:</b> Previous-week (4.93%) and seasonal (5.12%) exhibit clear accuracy degradation.</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -129,9 +129,10 @@ def render() -> None:
 
     # ── Tab 2: Predictions vs Actuals ──
     with tab2:
-        section_header("Forecast Trajectory by Store Location", "📉")
+        section_header("Forecast Trajectory by Store Location", "Granular actual vs predicted sales series over test horizon")
         context_box(
-            "**Store Trajectory Inspection:** Select an individual store to observe how closely model predictions track ground-truth actual sales during the held-out test window (June - Oct 2012)."
+            "Select an individual store to observe how closely model predictions track ground-truth actual sales during the held-out test window (June - Oct 2012).",
+            title="Trajectory Inspection",
         )
 
         col_s1, col_s2 = st.columns([1, 2])
@@ -139,7 +140,7 @@ def render() -> None:
             selected_store = st.selectbox(
                 "Select Store Location",
                 options=sorted(preds_df["Store"].unique()),
-                index=19,  # Default to Store 20 (#1 store)
+                index=19,  # Default to Store 20
                 key="fc_store_sel",
             )
             models_to_plot = st.multiselect(
@@ -173,10 +174,10 @@ def render() -> None:
 
     # ── Tab 3: Feature Importance ──
     with tab3:
-        section_header("Predictive Feature Importance & Drivers", "🎯")
+        section_header("Predictive Feature Importance & Drivers", "Model reliance across engineered lag, rolling, and calendar signals")
         context_box(
-            "**What are we measuring?** Feature importance indicates which variables most frequently split decision trees to minimize mean squared error. "
-            "Note: High predictive importance indicates correlation and model reliance, **not real-world causation**."
+            "Feature importance indicates which variables most frequently split decision trees to minimize mean squared error. Note: High predictive importance indicates correlation and model reliance, not real-world causation.",
+            title="Model Interpretation",
         )
 
         model_imp_sel = st.radio("Select Model", options=["XGBoost", "Random Forest"], horizontal=True, key="imp_model_sel")
@@ -199,9 +200,10 @@ def render() -> None:
 
     # ── Tab 4: Residual Diagnostics ──
     with tab4:
-        section_header("Forecast Residual Analysis & Error Dispersion", "🔬")
+        section_header("Forecast Residual Analysis & Error Dispersion", "Diagnostic checks for systematic model bias")
         context_box(
-            "**Residual Formula: e = Actual - Predicted.** A well-calibrated forecasting model exhibits residuals centered at zero with minimal systematic bias."
+            "Residual Formula: e = Actual - Predicted. A well-calibrated forecasting model exhibits residuals centered near zero with symmetrical dispersion.",
+            title="Residual Calibration",
         )
 
         c1, c2 = st.columns(2)
@@ -220,7 +222,7 @@ def render() -> None:
                 x="Actual_Sales",
                 y="XGBoost_Residual",
                 color="Type",
-                title="Actual Sales vs Forecast Residual",
+                title="Actual Sales Volume vs Forecast Residual",
             )
             st.plotly_chart(fig_scatter_err, use_container_width=True)
 

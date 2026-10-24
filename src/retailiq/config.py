@@ -81,26 +81,49 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
 # ── Dashboard constants ──
 class Theme:
-    """Dashboard color palette and styling constants."""
-    NAVY = "#0F1B2D"
-    INDIGO = "#1E3A5F"
-    VIOLET = "#6C63FF"
-    TEAL = "#00D4AA"
-    AMBER = "#FFB020"
-    CORAL = "#FF6B6B"
-    WHITE = "#FFFFFF"
-    LIGHT_GRAY = "#E8ECF1"
-    DARK_GRAY = "#8B95A5"
+    """Enterprise UI design system tokens, color palette, and chart styling."""
+    # Base canvas & container surfaces (Tailwind Slate)
+    NAVY = "#0B0F19"         # Primary canvas background (Slate-950)
+    INDIGO = "#111827"       # Card & panel background (Slate-900)
+    CARD_BG = "#111827"      # Container surface
+    CARD_BORDER = "#1F2937"  # Clean card border (Slate-800)
+    BORDER_LIGHT = "#374151" # Hover & active border (Slate-700)
 
-    # Plotly color sequence for charts
-    CHART_COLORS = [VIOLET, TEAL, AMBER, CORAL, "#4ECDC4", "#C084FC", "#FB923C", "#38BDF8"]
+    # Core brand & interactive accents
+    VIOLET = "#6366F1"       # Primary brand accent (Indigo-500)
+    BRAND = "#4F46E5"        # Brand solid (Indigo-600)
+    CYAN = "#06B6D4"         # Secondary highlight (Cyan-500)
+    TEAL = "#10B981"         # Success & positive metrics (Emerald-500)
+    SUCCESS = "#10B981"
+    AMBER = "#F59E0B"        # Warning & caution (Amber-500)
+    WARNING = "#F59E0B"
+    CORAL = "#EF4444"        # Error & critical outliers (Rose-500)
+    DANGER = "#EF4444"
+
+    # High-contrast readable typography
+    WHITE = "#F9FAFB"        # Primary headings (Slate-50)
+    LIGHT_GRAY = "#CBD5E1"   # Body text & primary labels (Slate-300)
+    DARK_GRAY = "#9CA3AF"    # Secondary text, subtitles & captions (Slate-400)
+    MUTED = "#6B7280"        # Inactive elements (Slate-500)
+
+    # Harmonized Plotly chart sequence (modern data visualization palette)
+    CHART_COLORS = [
+        "#6366F1",  # Indigo
+        "#06B6D4",  # Cyan
+        "#10B981",  # Emerald
+        "#F59E0B",  # Amber
+        "#EC4899",  # Pink
+        "#8B5CF6",  # Purple
+        "#3B82F6",  # Blue
+        "#14B8A6",  # Teal
+    ]
 
     # Plotly chart template defaults
     PLOT_BG = "rgba(0,0,0,0)"
     PAPER_BG = "rgba(0,0,0,0)"
-    GRID_COLOR = "rgba(255,255,255,0.08)"
-    FONT_COLOR = LIGHT_GRAY
-    FONT_FAMILY = "Inter, system-ui, sans-serif"
+    GRID_COLOR = "rgba(255, 255, 255, 0.06)"
+    FONT_COLOR = "#CBD5E1"
+    FONT_FAMILY = "Inter, system-ui, -apple-system, sans-serif"
 
 
 # ── Store / Department known ranges ──

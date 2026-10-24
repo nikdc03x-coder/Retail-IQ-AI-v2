@@ -32,8 +32,9 @@ from src.retailiq.explainability.shap_analysis import extract_observation_waterf
 def render() -> None:
     """Render the Explainable AI (SHAP) page."""
     page_header(
-        "Explainable AI (SHAP Analysis)",
-        "TreeSHAP Interpretability: Global Attribution & Local Prediction Decomposition",
+        "Explainable AI (TreeSHAP Interpretability)",
+        "Global Feature Importance Hierarchy, Local Waterfall Decompositions & Efficiency Axiom Audit",
+        category="Model Interpretability & Governance",
     )
 
     page_context(
@@ -45,10 +46,9 @@ def render() -> None:
 
     out_dir = REPORT_SUBDIRS["explainable_ai"]
 
-    # Check for report files
     if not (out_dir / "01_global_feature_importance.csv").exists():
         st.warning(
-            "⚠️ Explainability reports not found. Please run the SHAP analysis script:\n\n"
+            "Explainability reports not found. Please run the SHAP analysis script:\n\n"
             "`python scripts/07_explainability/run_shap_analysis.py`"
         )
         return
@@ -83,37 +83,31 @@ def render() -> None:
     # ── Top KPI Row ──
     render_kpi_row([
         {"label": "Baseline Expected Value", "value": format_currency(base_val), "subtitle": "Chain average expectation (phi_0)"},
-        {"label": "#1 Global Driver", "value": f"{top_feature}", "subtitle": f"{top_pct:.1f}% total SHAP impact"},
+        {"label": "Top Global Driver", "value": f"{top_feature}", "subtitle": f"{top_pct:.1f}% total SHAP impact"},
         {"label": "Top 2 Drivers Share", "value": "72.7%", "subtitle": "lag_52 + rolling_mean_4"},
-        {"label": "Reconstruction Check", "value": "100% Verified", "subtitle": f"Max diff ${verification['max_abs_diff_dollars']:.2f} (<0.001%)"},
-        {"label": "Evaluated Records", "value": f"{len(local_df):,} Weeks", "subtitle": "Held-out test set observations"},
+        {"label": "Reconstruction Audit", "value": "100% Verified", "subtitle": f"Max diff ${verification['max_abs_diff_dollars']:.2f} (<0.001%)"},
+        {"label": "Evaluated Observations", "value": f"{len(local_df):,} Weeks", "subtitle": "Held-out test set records"},
     ])
-
-    # ── Narrative Context ──
-    context_box(
-        "🧠 Interpreting SHAP in Retail Operations",
-        "A SHAP value represents the <b>dollar contribution</b> that a specific feature made toward moving a "
-        "prediction away from the chain-wide baseline expectation (<b>$1,059,041.50</b>). "
-        "Positive SHAP values push predicted sales upward; negative values drag it downward. "
-        "Importantly, <b>model influence is not business causality</b>: observing high importance for <i>lag_52</i> "
-        "proves the model leverages annual seasonality, not that historical sales physically cause future demand.",
-    )
 
     st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
+    # ── Context Note ──
+    context_box(
+        "A SHAP value represents the dollar contribution that a specific feature made toward moving a prediction away from the chain-wide baseline expectation ($1,059,041.50). Positive values push forecasted sales upward; negative values drag it downward. Importantly, model influence is not business causality: observing high importance for lag_52 proves the model leverages annual seasonality, not that historical sales physically cause future demand.",
+        title="Interpreting SHAP Dollar Contributions",
+    )
+
     # ── Interactive Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
-        "📊 Global Feature Importance",
-        "🌊 Local Prediction Waterfall",
-        "📈 Feature Dependence & Dynamics",
-        "🛡️ Audit & Reconstruction Integrity",
+        "Global Feature Importance",
+        "Local Prediction Waterfall",
+        "Feature Dependence & Dynamics",
+        "Audit & Efficiency Verification",
     ])
 
-    # ══════════════════════════════════════════════════════════════════
-    # TAB 1: Global Feature Importance
-    # ══════════════════════════════════════════════════════════════════
+    # ── Tab 1: Global Feature Importance ──
     with tab1:
-        section_header("Global Feature Importance", "Mean Absolute SHAP Dollar Impact Across All Test Predictions")
+        section_header("Global Feature Importance", "Mean absolute dollar impact across all held-out test predictions")
 
         col1, col2 = st.columns([3, 2])
         with col1:
@@ -126,7 +120,7 @@ def render() -> None:
                 text="Mean_Abs_SHAP",
                 labels={"Mean_Abs_SHAP": "Mean |SHAP| ($)", "Feature": ""},
                 color="Mean_Abs_SHAP",
-                color_continuous_scale=[Theme.DARK_NAVY, Theme.VIOLET, Theme.CYAN],
+                color_continuous_scale=["#1E293B", "#6366F1", "#06B6D4"],
             )
             fig.update_traces(
                 texttemplate="$%{x:,.0f}",
@@ -134,46 +128,39 @@ def render() -> None:
                 marker_line_width=0,
             )
             fig.update_layout(coloraxis_showscale=False)
-            fig = apply_default_layout(fig, "Top 10 Global Features by Mean |SHAP| Impact")
+            fig = apply_default_layout(fig, "Top 10 Global Features by Mean |SHAP| Impact ($)")
             st.plotly_chart(fig, use_container_width=True)
 
         with col2:
             st.markdown(f"""
-            <div style="background-color: {Theme.DARK_CARD}; border: 1px solid {Theme.CARD_BORDER};
-                        border-radius: 8px; padding: 1.2rem; margin-top: 1rem;">
-                <h4 style="color: {Theme.WHITE}; margin: 0 0 0.8rem 0; font-size: 1rem;">
-                    Key Global Takeaways
-                </h4>
-                <ul style="color: {Theme.LIGHT_GRAY}; font-size: 0.85rem; line-height: 1.6; margin: 0; padding-left: 1.2rem;">
-                    <li><b style="color: {Theme.CYAN};">Annual Seasonality (lag_52):</b> The single dominant signal, accounting for <b>${global_imp.iloc[0]['Mean_Abs_SHAP']:,.2f}</b> (45.0%) of forecast variation.</li>
-                    <li><b style="color: {Theme.VIOLET};">Recent Trend (rolling_mean_4):</b> Explains <b>${global_imp.iloc[1]['Mean_Abs_SHAP']:,.2f}</b> (27.6%) of forecast variance.</li>
-                    <li><b style="color: {Theme.WHITE};">Store Size:</b> Ranks 6th (${global_imp.loc[global_imp['Feature']=='Size', 'Mean_Abs_SHAP'].values[0]:,.2f}), serving as the physical capacity ceiling.</li>
-                    <li><b style="color: {Theme.LIGHT_GRAY};">Macro Signals:</b> Temperature, Fuel Price, CPI, and Unemployment have minor individual influence (<2% each), acting as marginal calibrators.</li>
-                </ul>
+            <div class="section-card">
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Global Synthesis</div>
+                <h3>Key Feature Influences</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Annual Seasonality (lag_52):</b> Dominant signal accounting for <b>${global_imp.iloc[0]['Mean_Abs_SHAP']:,.2f}</b> (45.0%) of forecast variation.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Recent Trend (rolling_mean_4):</b> Explains <b>${global_imp.iloc[1]['Mean_Abs_SHAP']:,.2f}</b> (27.6%) of forecast variance.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Store Size:</b> Serves as the structural capacity ceiling (${global_imp.loc[global_imp['Feature']=='Size', 'Mean_Abs_SHAP'].values[0]:,.2f}).</p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>Macro Signals:</b> Temperature, Fuel Price, CPI, and Unemployment act as fine-tuning marginal adjustments (<2% each).</p>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
         formatted_dataframe(
             global_imp,
-            title="Complete Feature Hierarchy & Plain-English Descriptions",
+            title="Complete Feature Attribution Hierarchy",
             description="All 18 engineered features ranked by mean absolute SHAP dollar impact with relative percentage share.",
         )
 
-    # ══════════════════════════════════════════════════════════════════
-    # TAB 2: Local Prediction Waterfall
-    # ══════════════════════════════════════════════════════════════════
+    # ── Tab 2: Local Prediction Waterfall ──
     with tab2:
-        section_header("Local Prediction Waterfall", "Additive Prediction Decomposition for Any Store-Week Observation")
+        section_header("Local Prediction Waterfall", "Additive decomposition of any single store-week prediction")
 
         stores = sorted(local_df["Store"].unique())
         c_store, c_date = st.columns(2)
         with c_store:
-            selected_store = st.selectbox("Select Store", options=stores, index=13)  # default Store 14
+            selected_store = st.selectbox("Select Store Location", options=stores, index=13)  # Store 14
         
         store_dates = sorted(local_df[local_df["Store"] == selected_store]["Date"].unique())
         with c_date:
-            selected_date = st.selectbox("Select Week Date", options=store_dates, index=len(store_dates) - 1)
+            selected_date = st.selectbox("Select Weekly Observation Date", options=store_dates, index=len(store_dates) - 1)
 
         waterfall_data = extract_observation_waterfall(local_df, selected_store, selected_date, top_n=8)
         w_pred = waterfall_data["prediction"]
@@ -182,18 +169,16 @@ def render() -> None:
         w_diff = w_actual - w_pred
         w_pct_err = (w_diff / w_actual * 100.0) if w_actual != 0 else 0
 
-        # Sub KPI row for this observation
         render_kpi_row([
-            {"label": "Store & Date", "value": f"Store {selected_store}", "subtitle": selected_date},
-            {"label": "Base Average (phi_0)", "value": format_currency(w_base), "subtitle": "Chain expected value"},
-            {"label": "Model Prediction", "value": format_currency(w_pred), "subtitle": f"Net delta {format_currency(w_pred - w_base)}"},
+            {"label": "Store Location", "value": f"Store {selected_store}", "subtitle": selected_date},
+            {"label": "Base Average (phi_0)", "value": format_currency(w_base), "subtitle": "Chain expected baseline"},
+            {"label": "Model Prediction", "value": format_currency(w_pred), "subtitle": f"Net shift {format_currency(w_pred - w_base)}"},
             {"label": "Actual Sales", "value": format_currency(w_actual), "subtitle": f"Residual {format_currency(w_diff)} ({w_pct_err:+.1f}%)"},
         ])
 
         st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
 
-        # Build Plotly Waterfall Chart
-        labels = ["Base Expectation"]
+        labels = ["Base Baseline"]
         values = [w_base]
         measures = ["absolute"]
         text_labels = [format_currency(w_base)]
@@ -205,7 +190,7 @@ def render() -> None:
             measures.append("relative")
             text_labels.append(f"{val:+,.0f}")
 
-        labels.append("Final Forecast")
+        labels.append("Final Prediction")
         values.append(w_pred)
         measures.append("total")
         text_labels.append(format_currency(w_pred))
@@ -218,10 +203,10 @@ def render() -> None:
             textposition="outside",
             text=text_labels,
             y=values,
-            connector={"line": {"color": Theme.GRAY}},
-            decreasing={"marker": {"color": Theme.CORAL}},
-            increasing={"marker": {"color": Theme.CYAN}},
-            totals={"marker": {"color": Theme.VIOLET}},
+            connector={"line": {"color": "#475569"}},
+            decreasing={"marker": {"color": "#EF4444"}},
+            increasing={"marker": {"color": "#06B6D4"}},
+            totals={"marker": {"color": "#6366F1"}},
         ))
 
         fig_waterfall = apply_default_layout(
@@ -231,40 +216,29 @@ def render() -> None:
         fig_waterfall.update_layout(xaxis_tickangle=-30, margin=dict(b=90))
         st.plotly_chart(fig_waterfall, use_container_width=True)
 
-        # Operational hypothesis callout
         pos_drivers = [d for d in waterfall_data["drivers"] if d["value"] > 0 and d["feature"] != "Other"]
         neg_drivers = [d for d in waterfall_data["drivers"] if d["value"] < 0 and d["feature"] != "Other"]
         top_pos = pos_drivers[0] if pos_drivers else None
         top_neg = neg_drivers[0] if neg_drivers else None
 
-        st.markdown(f"""
-        <div style="background-color: {Theme.DARK_CARD}; border: 1px solid {Theme.CARD_BORDER};
-                    border-radius: 8px; padding: 1.2rem;">
-            <h4 style="color: {Theme.WHITE}; margin: 0 0 0.5rem 0; font-size: 0.95rem;">
-                📋 Plain-English Explanation for Store {selected_store} ({selected_date})
-            </h4>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.85rem; line-height: 1.6; margin: 0;">
-                The model started from the chain-wide baseline of <b>{format_currency(w_base)}</b>.
-                {" The primary upward pressure came from <b>" + top_pos['feature'] + "</b> (+" + format_currency(top_pos['value']) + "), " + top_pos['description'].lower() if top_pos else ""}
-                {" The primary downward offset was <b>" + top_neg['feature'] + "</b> (" + format_currency(top_neg['value']) + "), " + top_neg['description'].lower() if top_neg else ""}
-                Netting all {len(waterfall_data['drivers'])} component drivers yields a final forecast of <b>{format_currency(w_pred)}</b>
-                (within ${abs(w_diff):,.2f} of actual weekly revenue).
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+        context_box(
+            f"The model initialized from the chain-wide baseline expectation of {format_currency(w_base)}. "
+            + (f"The primary positive push was {top_pos['feature']} (+{format_currency(top_pos['value'])}). " if top_pos else "")
+            + (f"The primary downward offset was {top_neg['feature']} ({format_currency(top_neg['value'])}). " if top_neg else "")
+            + f"Summing all component drivers yields the final model forecast of {format_currency(w_pred)}.",
+            title=f"Observation Attribution Narrative (Store {selected_store}, {selected_date})",
+        )
 
-    # ══════════════════════════════════════════════════════════════════
-    # TAB 3: Feature Dependence & Dynamics
-    # ══════════════════════════════════════════════════════════════════
+    # ── Tab 3: Feature Dependence & Dynamics ──
     with tab3:
-        section_header("Feature Dependence & Non-Linear Effects", "How Feature Values Relate to Model Contributions ($)")
+        section_header("Feature Dependence & Non-Linear Effects", "Empirical feature values versus marginal SHAP dollar impacts")
 
         feature_options = [
             ("lag_52", "Annual Lag Sales (t-52)"),
             ("rolling_mean_4", "4-Week Rolling Mean"),
             ("Size", "Store Physical Size (sq ft)"),
             ("lag_1", "Previous Week Sales (t-1)"),
-            ("Temperature", "Weekly Temperature (°F)"),
+            ("Temperature", "Weekly Temperature (deg F)"),
             ("Fuel_Price", "Fuel Price ($/gal)"),
             ("CPI", "Consumer Price Index"),
             ("Unemployment", "Unemployment Rate (%)"),
@@ -288,69 +262,62 @@ def render() -> None:
             hover_data=["Store", "Date", "Actual_Sales", "Model_Prediction"],
             labels={
                 val_col: f"Feature Value: {feat_select}",
-                shap_col: f"SHAP Contribution to Sales ($)",
+                shap_col: "SHAP Contribution to Sales ($)",
                 "Type": "Store Type",
             },
             color_discrete_map={
-                "A": Theme.CYAN,
-                "B": Theme.VIOLET,
-                "C": Theme.CORAL,
+                "A": "#06B6D4",
+                "B": "#6366F1",
+                "C": "#EF4444",
             },
         )
-        # Add horizontal baseline reference at 0
-        fig_dep.add_hline(y=0, line_dash="dash", line_color=Theme.GRAY, opacity=0.7)
+        fig_dep.add_hline(y=0, line_dash="dash", line_color="#475569", opacity=0.7)
         fig_dep = apply_default_layout(fig_dep, f"Dependence Plot: {feat_select} vs SHAP Impact ($)")
         st.plotly_chart(fig_dep, use_container_width=True)
 
         context_box(
-            f"💡 Interpreting the {feat_select} Dependence Profile",
-            "Points above the zero baseline indicate cases where the feature elevated predicted revenue above average; "
-            "points below zero indicate cases where it penalized predicted revenue. "
-            "A monotonic upward trajectory confirms a positive relationship, while curvature or plateaus highlight non-linear saturation.",
+            f"Points above the zero baseline indicate cases where {feat_select} elevated forecasted revenue above the chain average; points below zero penalized the forecast. Upward slopes confirm positive relationships, while plateaus indicate non-linear saturation.",
+            title=f"Interpreting the {feat_select} Dependence Profile",
         )
 
-    # ══════════════════════════════════════════════════════════════════
-    # TAB 4: Audit & Reconstruction Integrity
-    # ══════════════════════════════════════════════════════════════════
+    # ── Tab 4: Audit & Reconstruction Integrity ──
     with tab4:
-        section_header("Audit & Efficiency Axiom Verification", "Mathematical Proof of Additive Reconstruction")
+        section_header("Audit & Efficiency Axiom Verification", "Mathematical proof of additive Shapley reconstruction")
 
         c_v1, c_v2 = st.columns([1, 1])
         with c_v1:
             st.markdown(f"""
-            <div style="background-color: {Theme.DARK_CARD}; border: 1px solid {Theme.CARD_BORDER};
-                        border-radius: 8px; padding: 1.2rem;">
-                <h4 style="color: {Theme.CYAN}; margin: 0 0 0.8rem 0; font-size: 1rem;">
-                    Efficiency Axiom Compliance
-                </h4>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.85rem; line-height: 1.6;">
-                    The core mathematical property of Shapley values states that the sum of all feature contributions
-                    plus the expected base value must exactly reconstruct the model prediction:
+            <div class="section-card">
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #10B981; margin-bottom: 0.25rem;">Mathematical Audit</div>
+                <h3>Efficiency Axiom Proof</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; line-height: 1.5;">
+                    The core mathematical guarantee of Shapley values states that the sum of all feature contributions
+                    plus the expected baseline must exactly equal the model prediction:
                 </p>
-                <div style="background-color: {Theme.DARK_NAVY}; padding: 0.8rem; border-radius: 6px;
-                            font-family: monospace; color: {Theme.WHITE}; font-size: 0.9rem; text-align: center; margin: 0.8rem 0;">
+                <div style="background-color: #0F172A; padding: 0.75rem; border-radius: 6px; border: 1px solid #1E293B;
+                            font-family: monospace; color: #F9FAFB; font-size: 0.88rem; text-align: center; margin: 0.75rem 0;">
                     f(x) = &phi;<sub>0</sub> + &sum; &phi;<sub>i</sub>
                 </div>
-                <table style="width: 100%; color: {Theme.LIGHT_GRAY}; font-size: 0.85rem; border-collapse: collapse;">
-                    <tr style="border-bottom: 1px solid {Theme.CARD_BORDER};">
-                        <td style="padding: 0.4rem 0;">Evaluated Samples:</td>
-                        <td style="text-align: right; color: {Theme.WHITE}; font-weight: 600;">{verification['sample_count']:,}</td>
+                <table style="width: 100%; color: {Theme.LIGHT_GRAY}; font-size: 0.83rem; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid #1F2937;">
+                        <td style="padding: 0.35rem 0;">Evaluated Test Observations:</td>
+                        <td style="text-align: right; color: #F9FAFB; font-weight: 600;">{verification['sample_count']:,}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid {Theme.CARD_BORDER};">
-                        <td style="padding: 0.4rem 0;">Max Absolute Discrepancy:</td>
-                        <td style="text-align: right; color: {Theme.GREEN}; font-weight: 600;">${verification['max_abs_diff_dollars']:.4f}</td>
+                    <tr style="border-bottom: 1px solid #1F2937;">
+                        <td style="padding: 0.35rem 0;">Max Absolute Discrepancy:</td>
+                        <td style="text-align: right; color: #10B981; font-weight: 600;">${verification['max_abs_diff_dollars']:.4f}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid {Theme.CARD_BORDER};">
-                        <td style="padding: 0.4rem 0;">Mean Absolute Discrepancy:</td>
-                        <td style="text-align: right; color: {Theme.GREEN}; font-weight: 600;">${verification['mean_abs_diff_dollars']:.4f}</td>
+                    <tr style="border-bottom: 1px solid #1F2937;">
+                        <td style="padding: 0.35rem 0;">Mean Absolute Discrepancy:</td>
+                        <td style="text-align: right; color: #10B981; font-weight: 600;">${verification['mean_abs_diff_dollars']:.4f}</td>
                     </tr>
-                    <tr style="border-bottom: 1px solid {Theme.CARD_BORDER};">
-                        <td style="padding: 0.4rem 0;">Max Relative Error:</td>
-                        <td style="text-align: right; color: {Theme.GREEN}; font-weight: 600;">{verification['max_rel_diff_pct']:.6f}%</td>
+                    <tr style="border-bottom: 1px solid #1F2937;">
+                        <td style="padding: 0.35rem 0;">Max Relative Error:</td>
+                        <td style="text-align: right; color: #10B981; font-weight: 600;">{verification['max_rel_diff_pct']:.6f}%</td>
                     </tr>
                     <tr>
-                        <td style="padding: 0.4rem 0;">Audit Status:</td>
-                        <td style="text-align: right; color: {Theme.GREEN}; font-weight: 700;">PASSED</td>
+                        <td style="padding: 0.35rem 0;">Governance Compliance:</td>
+                        <td style="text-align: right; color: #10B981; font-weight: 700;">PASSED (100%)</td>
                     </tr>
                 </table>
             </div>
@@ -361,13 +328,12 @@ def render() -> None:
                 local_df,
                 x="Reconstruction_Diff",
                 nbins=25,
-                labels={"Reconstruction_Diff": "Absolute Reconstruction Discrepancy ($)"},
-                color_discrete_sequence=[Theme.CYAN],
+                labels={"Reconstruction_Diff": "Absolute Discrepancy ($)"},
+                color_discrete_sequence=["#06B6D4"],
             )
             fig_hist = apply_default_layout(fig_hist, "Distribution of Reconstruction Differences ($)")
             st.plotly_chart(fig_hist, use_container_width=True)
 
-        st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
         audit_cols = [
             "Store", "Date", "Model_Prediction", "Base_Value",
             "Sum_SHAP_Contributions", "Reconstructed_Prediction", "Reconstruction_Diff"
@@ -375,6 +341,5 @@ def render() -> None:
         formatted_dataframe(
             local_df[audit_cols],
             title="Sample Additive Reconstruction Log",
-            description="Reconstructed predictions versus raw model outputs showing zero practical numerical drift.",
+            description="Reconstructed predictions versus raw model outputs confirming zero practical numerical drift.",
         )
-

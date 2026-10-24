@@ -1,8 +1,8 @@
 """
 RetailIQ AI V2 — Page 06: Anomaly Detection & Investigation Queue
 
-Interactive audit of unusual sales observations detected by Statistical Residual Z-scores
-and Multivariate Isolation Forest with prioritized operational investigation evidence.
+Interactive operational triage combining Statistical Residual Z-scores (|Z| > 3.0)
+and Multivariate Isolation Forest with prioritized evidence notes.
 """
 
 import json
@@ -20,15 +20,16 @@ from src.retailiq.dashboard.components import (
     page_context,
     render_kpi_row,
 )
-from src.retailiq.dashboard.charts import apply_default_layout, bar_chart, histogram, scatter_chart
+from src.retailiq.dashboard.charts import apply_default_layout, bar_chart
 from src.retailiq.dashboard.theme import context_box, page_header, section_header
 
 
 def render() -> None:
     """Render the Anomaly Detection & Investigation Queue page."""
     page_header(
-        "Anomaly Detection & Investigation Queue",
-        "Dual-Detector Synthesis: Statistical Z-Scores (|Z| > 3.0) & Isolation Forest",
+        "Anomaly Detection & Operational Audit Queue",
+        "Dual-Detector Synthesis: Statistical Z-Scores (|Z| > 3.0) & Multivariate Isolation Forest",
+        category="Risk & Exception Management",
     )
 
     page_context(
@@ -40,10 +41,9 @@ def render() -> None:
 
     out_dir = REPORT_SUBDIRS["anomaly_detection"]
 
-    # Verify reports exist
     if not (out_dir / "05_investigation_queue.csv").exists():
         st.warning(
-            "⚠️ Anomaly detection reports not found. Please run the anomaly script:\n\n"
+            "Anomaly detection reports not found. Please run the anomaly script:\n\n"
             "`python scripts/06_anomaly_detection/run_anomaly_detection.py`"
         )
         return
@@ -75,44 +75,43 @@ def render() -> None:
         {"label": "Investigation Queue", "value": f"{len(queue_df)} Records", "subtitle": "Prioritized for operational audit"},
         {"label": "Unanimous Flags", "value": f"{summary['unanimous_anomalies']} Records", "subtitle": "Confirmed by BOTH detectors"},
         {"label": "Detector Agreement", "value": f"{summary['detector_agreement_rate_pct']}%", "subtitle": "967 normal + 14 unanimous"},
-        {"label": "#1 Priority Flag", "value": f"Store {int(top_record['Store']) if top_record is not None else 'N/A'}", "subtitle": f"Priority Score: {top_record['Priority_Score'] if top_record is not None else 'N/A'}"},
+        {"label": "Top Priority Flag", "value": f"Store {int(top_record['Store']) if top_record is not None else 'N/A'}", "subtitle": f"Priority Score: {top_record['Priority_Score'] if top_record is not None else 'N/A'}"},
         {"label": "Peak Residual Miss", "value": format_currency(float(queue_df['Residual'].abs().max())), "subtitle": "Maximum single-week discrepancy"},
     ])
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
-    # ── Cautionary Note on Anomaly Labels ──
+    # ── Context Note ──
     context_box(
-        "⚠️ **Operational Interpretation Note:** Anomaly flags indicate statistical divergence between actual sales and model expectations. "
-        "They are **operational review hypotheses**, NOT confirmed fraud, data corruption, or system errors. "
-        "Real-world causes typically include unmodeled local events, extreme weather, competitor actions, or promotional timing shifts."
+        "Anomaly flags indicate statistical divergence between actual sales and model expectations. They are operational review hypotheses, NOT confirmed fraud, data corruption, or system errors. Real-world causes typically include unmodeled local events, extreme weather, competitor actions, or promotional timing shifts.",
+        title="Operational Governance & Interpretation Standard",
     )
 
     # ── Interactive Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
-        "📋 Prioritized Investigation Queue",
-        "🤝 Dual-Detector Agreement",
-        "📐 Statistical Z-Score Profile",
-        "🌲 Isolation Forest Space",
+        "Investigation Queue",
+        "Dual-Detector Agreement",
+        "Statistical Z-Score Profile",
+        "Isolation Forest Partition Space",
     ])
 
     # ── Tab 1: Investigation Queue ──
     with tab1:
-        section_header("Ranked Operational Investigation Queue", "📋")
+        section_header("Ranked Operational Investigation Queue", "Prioritized audit queue sorted by composite anomaly severity [0 - 100]")
         context_box(
-            "**Priority Score [0 - 100]:** Combines normalized residual magnitude (50% weight) and Isolation Forest anomaly score (50% weight). "
-            "Observations are ranked from highest to lowest review urgency with automated business evidence notes."
+            "Priority Score combines normalized residual magnitude (50% weight) and Isolation Forest anomaly score (50% weight). Observations are ranked from highest to lowest review urgency with automated business evidence notes.",
+            title="Ranking Logic",
         )
 
         c1, c2 = st.columns([1, 2])
         with c1:
             agree_filter = st.multiselect(
-                "Filter by Detector Agreement",
+                "Filter by Agreement Classification",
                 options=sorted(queue_df["Agreement_Classification"].unique()),
                 default=sorted(queue_df["Agreement_Classification"].unique()),
                 key="queue_agree_filter",
             )
-            min_priority = st.slider("Minimum Priority Score", min_value=0.0, max_value=100.0, value=50.0, step=5.0, key="min_priority_slider")
+            min_priority = st.slider("Minimum Priority Score Cutoff", min_value=0.0, max_value=100.0, value=50.0, step=5.0, key="min_priority_slider")
 
         filtered_queue = queue_df[
             (queue_df["Agreement_Classification"].isin(agree_filter)) &
@@ -122,7 +121,7 @@ def render() -> None:
         with c2:
             st.markdown(f"**Showing {len(filtered_queue)} of {len(queue_df)} queued records.**")
             if not filtered_queue.empty:
-                st.info(f"💡 **Top Investigation Target:** {filtered_queue.iloc[0]['Investigation_Evidence']}")
+                st.info(f"Top Investigation Target: {filtered_queue.iloc[0]['Investigation_Evidence']}")
 
         formatted_dataframe(
             filtered_queue,
@@ -133,11 +132,10 @@ def render() -> None:
 
     # ── Tab 2: Detector Agreement ──
     with tab2:
-        section_header("Dual-Detector Agreement & Divergence Analysis", "🤝")
+        section_header("Dual-Detector Agreement & Divergence Analysis", "Synthesis matrix comparing parametric and non-parametric outlier signals")
         context_box(
-            "**Why use two detectors?** Statistical Z-scores catch massive univariate forecasting errors (|Z| > 3.0). "
-            "Isolation Forest captures complex multidimensional outliers (e.g., normal percentage error but abnormal volume conjunction). "
-            "Where both agree, investigation priority is highest."
+            "Statistical Z-scores isolate extreme univariate forecast misses (|Z| > 3.0). Isolation Forest captures multi-dimensional conjunctions across volume, residuals, and percentage errors. Unanimous records receive highest triage priority.",
+            title="Detector Complementarity",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -152,27 +150,31 @@ def render() -> None:
             st.plotly_chart(fig_agree, use_container_width=True)
 
         with c2:
-            st.markdown("#### Agreement Classification Matrix")
-            st.dataframe(agreement_df, use_container_width=True, hide_index=True)
             st.markdown(f"""
             <div class="section-card">
-                <h3>Agreement Highlights</h3>
-                <p><b>Unanimous (Both Detectors):</b> {summary['unanimous_anomalies']} records</p>
-                <p><b>Statistical Only:</b> {summary['statistical_only_anomalies']} records</p>
-                <p><b>Isolation Forest Only:</b> {summary['isolation_forest_only_anomalies']} records</p>
-                <p><b>Total Divergence:</b> 9 records where detectors disagreed</p>
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Consensus Breakdown</div>
+                <h3>Synthesis Summary</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Unanimous (Both Detectors):</b> {summary['unanimous_anomalies']} records</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Statistical Only (|Z| > 3.0):</b> {summary['statistical_only_anomalies']} records</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Isolation Forest Only:</b> {summary['isolation_forest_only_anomalies']} records</p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>Total Divergence:</b> 9 records where detectors disagreed</p>
             </div>
             """, unsafe_allow_html=True)
 
-    # ── Tab 3: Statistical Z-Scores ──
-    with tab3:
-        section_header("Statistical Residual Standard Score (|Z| > 3.0)", "📐")
-        context_box(
-            "**Standard Threshold |Z| > 3.0:** Under a Gaussian residual assumption, observations beyond 3 standard deviations represent less than 0.27% of probability mass. "
-            "Records outside the dashed red cutoff lines represent severe under- or over-predictions."
+        formatted_dataframe(
+            agreement_df,
+            title="Agreement Classification Matrix",
+            description="Categorization of all 990 test records across both detection systems.",
         )
 
-        # Z-score distribution with cutoff lines
+    # ── Tab 3: Statistical Z-Scores ──
+    with tab3:
+        section_header("Statistical Residual Standard Score Profile", "Distribution of standardized errors with 3-sigma cutoff boundaries")
+        context_box(
+            "Standard Threshold |Z| > 3.0: Under a Gaussian residual assumption, observations beyond 3 standard deviations represent less than 0.27% of probability mass. Records outside the dashed red cutoff lines represent severe under- or over-predictions.",
+            title="3-Sigma Bounds",
+        )
+
         fig_z = px.histogram(
             comparison_df,
             x="Z_Score",
@@ -200,10 +202,10 @@ def render() -> None:
 
     # ── Tab 4: Isolation Forest Space ──
     with tab4:
-        section_header("Multivariate Isolation Forest Partition Space", "🌲")
+        section_header("Multivariate Isolation Forest Partition Space", "Nonlinear outlier scoring across actual volume, predictions, and errors")
         context_box(
-            "**Feature Space:** Isolation Forest isolates points in the joint space of Actual Sales, Predicted Sales, Absolute Residual, and Percentage Error. "
-            "Brighter color indicates higher anomaly score."
+            "Isolation Forest isolates anomalies in the joint 4D space of Actual Sales, Predicted Sales, Absolute Residual, and Percentage Error. Brighter data points indicate higher anomaly scores.",
+            title="Partitioning Rationale",
         )
 
         fig_ifor = px.scatter(
@@ -215,7 +217,6 @@ def render() -> None:
             title="Actual Sales vs XGBoost Forecast (Colored by Isolation Forest Score)",
             color_continuous_scale="Viridis",
         )
-        # Add 45-degree parity
         max_v = max(comparison_df["Actual_Sales"].max(), comparison_df["XGBoost_Pred"].max())
         fig_ifor.add_trace(go.Scatter(
             x=[0, max_v],

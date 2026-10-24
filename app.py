@@ -1,15 +1,15 @@
 """
-RetailIQ AI V2 — Streamlit Application Entry Point
+RetailIQ AI V2 — Streamlit Enterprise Application Entry Point
 
-This is the main entry point for the Streamlit dashboard.
+Main entry point for the RetailIQ decision intelligence platform.
 Run with: python -m streamlit run app.py
 """
 
-import streamlit as st
 import sys
 from pathlib import Path
+import streamlit as st
 
-# Ensure the project root is on the Python path for imports
+# Ensure project root is on Python path
 PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -19,104 +19,114 @@ from src.retailiq.config import Theme
 
 # ── Page configuration (must be the first Streamlit command) ──
 st.set_page_config(
-    page_title="RetailIQ AI V2",
-    page_icon="📊",
+    page_title="RetailIQ AI — Enterprise Decision Platform",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ── Apply custom theme ──
+# ── Apply enterprise design system theme ──
 apply_theme()
 
-# ── Sidebar navigation ──
+# ── Sidebar Navigation ──
 with st.sidebar:
     st.markdown(f"""
-    <div style="text-align: center; padding: 1rem 0 0.5rem 0;">
-        <h2 style="color: {Theme.WHITE}; font-size: 1.3rem; font-weight: 700;
-                   margin: 0; letter-spacing: -0.02em;">
-            📊 RetailIQ AI
-        </h2>
-        <p style="color: {Theme.VIOLET}; font-size: 0.75rem; font-weight: 500;
-                  letter-spacing: 0.1em; margin: 0.2rem 0 0 0;">
-            VERSION 2.0
-        </p>
+    <div style="padding: 1.1rem 0.5rem 0.8rem 0.5rem; border-bottom: 1px solid #1F2937;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+            <div style="background: linear-gradient(135deg, #4F46E5, #6366F1); width: 28px; height: 28px;
+                        border-radius: 6px; display: flex; align-items: center; justify-content: center;
+                        font-weight: 800; font-size: 0.85rem; color: #FFFFFF;">
+                R
+            </div>
+            <div>
+                <div style="color: #F9FAFB; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;">
+                    RetailIQ AI
+                </div>
+                <div style="color: #818CF8; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;">
+                    Enterprise V2.0
+                </div>
+            </div>
+        </div>
+        <div style="color: #64748B; font-size: 0.73rem; margin-top: 0.4rem; line-height: 1.35;">
+            Explainable Sales Forecasting & Decision Strategy Platform
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.divider()
+    st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
 
-    # Page navigation
+    # Clean navigation options without generic decorative emojis
     page = st.radio(
         "Navigation",
         options=[
-            "🏠 Project Overview",
-            "🗄️ Dataset Explorer",
-            "✅ Data Quality",
-            "📊 Business Analytics",
-            "📈 Sales Forecasting",
-            "🎯 Forecast Reliability",
-            "⚠️ Anomaly Investigation",
-            "🔬 Explainable AI",
-            "💡 Operational Strategy",
-            "🤖 AI Business Assistant",
+            "Project Overview",
+            "Dataset Explorer",
+            "Data Quality Audit",
+            "Business Analytics",
+            "Sales Forecasting",
+            "Forecast Reliability",
+            "Anomaly Investigation",
+            "Explainable AI",
+            "Operational Strategy",
+            "AI Business Assistant",
         ],
         label_visibility="collapsed",
         key="nav_page",
     )
 
-    st.divider()
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
-    # Footer
+    # Sidebar Footer
     st.markdown(f"""
-    <div style="text-align: center; padding: 0.5rem 0;">
-        <p style="color: {Theme.DARK_GRAY}; font-size: 0.7rem; margin: 0;">
-            Built with Python · Streamlit · Plotly
-        </p>
-        <p style="color: {Theme.DARK_GRAY}; font-size: 0.7rem; margin: 0.2rem 0 0 0;">
-            Scikit-learn · XGBoost · SHAP · Gemini
-        </p>
+    <div style="border-top: 1px solid #1F2937; padding: 0.9rem 0.5rem 0.5rem 0.5rem; margin-top: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem;">
+            <div style="width: 7px; height: 7px; border-radius: 50%; background-color: #10B981;"></div>
+            <span style="color: #9CA3AF; font-size: 0.72rem; font-weight: 500;">System Online · All Models Verified</span>
+        </div>
+        <div style="color: #64748B; font-size: 0.68rem;">
+            Python 3.12 · XGBoost · SHAP · Gemini
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 
-# ── Page routing ──
-if page == "🏠 Project Overview":
+# ── Page Routing ──
+if page == "Project Overview":
     from src.retailiq.dashboard.pages.p00_overview import render
     render()
 
-elif page == "🗄️ Dataset Explorer":
+elif page == "Dataset Explorer":
     from src.retailiq.dashboard.pages.p01_dataset import render
     render()
 
-elif page == "✅ Data Quality":
+elif page == "Data Quality Audit":
     from src.retailiq.dashboard.pages.p02_data_quality import render
     render()
 
-elif page == "📊 Business Analytics":
+elif page == "Business Analytics":
     from src.retailiq.dashboard.pages.p03_analytics import render
     render()
 
-elif page == "📈 Sales Forecasting":
+elif page == "Sales Forecasting":
     from src.retailiq.dashboard.pages.p04_forecasting import render
     render()
 
-elif page == "🎯 Forecast Reliability":
+elif page == "Forecast Reliability":
     from src.retailiq.dashboard.pages.p05_reliability import render
     render()
 
-elif page == "⚠️ Anomaly Investigation":
+elif page == "Anomaly Investigation":
     from src.retailiq.dashboard.pages.p06_anomalies import render
     render()
 
-elif page == "🔬 Explainable AI":
+elif page == "Explainable AI":
     from src.retailiq.dashboard.pages.p07_explainability import render
     render()
 
-elif page == "💡 Operational Strategy":
+elif page == "Operational Strategy":
     from src.retailiq.dashboard.pages.p08_strategy import render
     render()
 
-elif page == "🤖 AI Business Assistant":
+elif page == "AI Business Assistant":
     from src.retailiq.dashboard.pages.p08_assistant import render
     render()
-

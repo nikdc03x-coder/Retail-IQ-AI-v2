@@ -116,3 +116,4 @@ class TestStrategyReportsPersistence:
         assert "financial_impact_projections" in summary
         assert summary["financial_impact_projections"]["estimated_annual_working_capital_optimization"] > 5_000_000
         assert len(summary["priority_executive_directives"]) >= 3
+

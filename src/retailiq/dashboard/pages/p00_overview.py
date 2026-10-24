@@ -1,169 +1,143 @@
 """
 RetailIQ AI V2 — Page 00: Project Overview
 
-Landing page that introduces the platform, explains the business problem,
-and provides an overview of all six capabilities.
+Executive platform overview introducing system capabilities, data architecture,
+and operational workflows.
 """
 
 import streamlit as st
 from src.retailiq.dashboard.theme import page_header, section_header, context_box
-from src.retailiq.dashboard.components import render_kpi_row
 from src.retailiq.config import Theme
 
 
 def render() -> None:
     """Render the Project Overview page."""
-
     page_header(
-        "RetailIQ AI V2",
-        "Explainable Retail Sales Forecasting & Decision Intelligence Platform",
+        "RetailIQ AI Enterprise Platform",
+        "Explainable Retail Sales Forecasting, Anomaly Triage & Decision Strategy Platform",
+        category="Executive Overview",
     )
 
-    # ── Welcome message ──
     st.markdown("""
-    RetailIQ AI V2 transforms historical Walmart retail sales data into actionable
-    business intelligence through **six integrated capabilities** — from data quality
-    monitoring to an AI-powered conversational assistant.
+    <div style="font-size: 0.95rem; line-height: 1.6; color: #CBD5E1; margin-bottom: 1.5rem;">
+        RetailIQ AI transforms historical Walmart retail network data into verified, evidence-grounded
+        decision intelligence. Spanning seven specialized analytical disciplines—from ingestion telemetry
+        and multi-model benchmarking to TreeSHAP attribution and conversational AI—the platform delivers
+        statistically sound, mathematically verified operational guidance for merchandisers and store directors.
+    </div>
+    """, unsafe_allow_html=True)
 
-    Built with Python, Scikit-learn, XGBoost, SHAP, Plotly, and Google Gemini.
-    """)
-
-    # ── Platform capability cards ──
-    section_header("Platform Capabilities", "🎯")
+    # ── Platform Capabilities Grid ──
+    section_header("Platform Capabilities", "Core analytical modules accessible via the navigation sidebar")
 
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown(f"""
         <div class="section-card">
-            <h3>🔍 Data Engineering & Quality</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            Validated, reproducible data pipeline with quality monitoring,
-            lineage tracking, and documented transformations.
+            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 01 & 02</div>
+            <h3>Data Quality & Engineering</h3>
+            <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
+                Automated schema validation, missingness profiling, return transaction audits,
+                and continuity tracking across 421,570 historical observations.
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Data Quality Audit →", key="btn_open_quality", use_container_width=True):
-            st.session_state["nav_page"] = "✅ Data Quality"
+        if st.button("Open Data Quality Audit", key="btn_open_quality", use_container_width=True):
+            st.session_state["nav_page"] = "Data Quality Audit"
             st.rerun()
 
         st.markdown(f"""
         <div class="section-card" style="margin-top: 1rem;">
-            <h3>📈 Sales Forecasting</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            One-week-ahead store-level forecasts using ML models compared
-            against naive baselines with proper chronological evaluation.
+            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 04 & 05</div>
+            <h3>Sales Forecasting & Reliability</h3>
+            <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
+                XGBoost champion model ($R^2 = 0.9416$) evaluated with temporal splitting,
+                spatial error distributions, holiday degradation metrics, and 4-fold rolling backtests.
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Sales Forecasting →", key="btn_open_forecast", use_container_width=True):
-            st.session_state["nav_page"] = "📈 Sales Forecasting"
+        if st.button("Open Sales Forecasting", key="btn_open_forecast", use_container_width=True):
+            st.session_state["nav_page"] = "Sales Forecasting"
             st.rerun()
 
         st.markdown(f"""
         <div class="section-card" style="margin-top: 1rem;">
-            <h3>🔬 Explainable AI (SHAP)</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            SHAP-based global and local explanations showing which features
-            influence each prediction and by how much.
+            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 07</div>
+            <h3>Explainable AI (TreeSHAP)</h3>
+            <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
+                Global feature importance rankings and local prediction waterfall decompositions
+                strictly verified against the cooperative game theory efficiency axiom ($<0.0001\\%$ relative error).
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Explainable AI →", key="btn_open_shap", use_container_width=True):
-            st.session_state["nav_page"] = "🔬 Explainable AI"
+        if st.button("Open Explainable AI", key="btn_open_shap", use_container_width=True):
+            st.session_state["nav_page"] = "Explainable AI"
             st.rerun()
 
     with col2:
         st.markdown(f"""
         <div class="section-card">
-            <h3>📊 Business Analytics</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            Interactive store rankings, department analysis, holiday
-            comparisons, and sales trend exploration.
+            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 03</div>
+            <h3>Business Analytics</h3>
+            <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
+                Hierarchical sales aggregations, store revenue rankings, department Pareto curves,
+                promotional holiday demand lifts, and multi-year seasonal indices.
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Business Analytics →", key="btn_open_analytics", use_container_width=True):
-            st.session_state["nav_page"] = "📊 Business Analytics"
+        if st.button("Open Business Analytics", key="btn_open_analytics", use_container_width=True):
+            st.session_state["nav_page"] = "Business Analytics"
             st.rerun()
 
         st.markdown(f"""
         <div class="section-card" style="margin-top: 1rem;">
-            <h3>⚠️ Anomaly Investigation</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            Statistical and Isolation Forest anomaly detectors with
-            agreement analysis and a ranked investigation queue.
+            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 06</div>
+            <h3>Anomaly Triage & Investigation</h3>
+            <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
+                Dual-detector synthesis combining Statistical Z-Score ($|Z| > 3.0$) and Multivariate
+                Isolation Forest, prioritized into an evidence-backed operational audit queue.
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Anomaly Investigation →", key="btn_open_anomalies", use_container_width=True):
-            st.session_state["nav_page"] = "⚠️ Anomaly Investigation"
+        if st.button("Open Anomaly Investigation", key="btn_open_anomalies", use_container_width=True):
+            st.session_state["nav_page"] = "Anomaly Investigation"
             st.rerun()
 
         st.markdown(f"""
         <div class="section-card" style="margin-top: 1rem;">
-            <h3>💡 Operational Strategy</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            Store quadrant matrix, dynamic safety stock buffer calculator,
-            and markdown clearance rules.
+            <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 08 & 09</div>
+            <h3>Operational Strategy & AI Assistant</h3>
+            <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
+                Prescriptive 4-quadrant store matrix with dynamic safety stock allocations, plus an
+                evidence-grounded Gemini conversational analyst with 13 verified query tools.
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Open Operational Strategy →", key="btn_open_strategy", use_container_width=True):
-            st.session_state["nav_page"] = "💡 Operational Strategy"
-            st.rerun()
+        c_act1, c_act2 = st.columns(2)
+        with c_act1:
+            if st.button("Operational Strategy", key="btn_open_strategy", use_container_width=True):
+                st.session_state["nav_page"] = "Operational Strategy"
+                st.rerun()
+        with c_act2:
+            if st.button("AI Business Assistant", key="btn_open_assistant", use_container_width=True):
+                st.session_state["nav_page"] = "AI Business Assistant"
+                st.rerun()
 
-        st.markdown(f"""
-        <div class="section-card" style="margin-top: 1rem;">
-            <h3>🤖 AI Business Assistant</h3>
-            <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.88rem;">
-            Gemini-powered conversational analyst that answers free-form
-            business questions grounded in verified data evidence.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Open AI Business Assistant →", key="btn_open_assistant", use_container_width=True):
-            st.session_state["nav_page"] = "🤖 AI Business Assistant"
-            st.rerun()
+    # ── Dataset Overview ──
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
+    section_header("Dataset Architecture", "Historical retail benchmark telemetry spanning 45 store locations")
 
-    # ── Dataset overview ──
-    st.divider()
-    section_header("Dataset", "🗄️")
     st.markdown("""
-    **Source:** Public Walmart historical sales dataset
-    ([Kaggle](https://www.kaggle.com/datasets/aslanahmedov/walmart-sales-forecast))
-
-    | File | Contents | Role |
-    |------|----------|------|
-    | `train.csv` | Store-department weekly sales | Historical labeled observations |
-    | `features.csv` | Economic and promotional features | External signals |
-    | `stores.csv` | Store type and size | Static metadata |
-
-    > **Note:** This is a historical dataset (~2010–2012), not a live operational database.
-    > Analyses reflect past patterns, not current Walmart operations.
-    """)
-
-    # ── Architecture note ──
-    st.divider()
-    section_header("Architecture", "🏗️")
-    st.markdown(f"""
-    ```
-    Raw CSVs → Validated Pipeline → Analytical Dataset (Parquet)
-        ↓                                    ↓
-    Quality Reports              Analytics / Forecasting / SHAP
-        ↓                                    ↓
-    Streamlit Dashboard  ←──── Pre-computed Report CSVs
-        ↓
-    Gemini Assistant  ←──── Approved Python Tools
-    ```
-
-    - **Pipeline scripts** in `scripts/` produce reports and model artifacts
-    - **Dashboard** reads pre-computed reports — no heavy computation at render time
-    - **Gemini assistant** uses controlled tool functions, not arbitrary code execution
+    | Source File | Temporal Scope | Observations | Key Fields & Signal Content |
+    | :--- | :--- | :--- | :--- |
+    | `train.csv` | 2010-02-05 to 2012-10-26 | 421,570 rows | Store, Department, Date, Weekly Sales, Holiday Indicator |
+    | `features.csv` | 2010-02-05 to 2013-07-26 | 8,190 rows | CPI, Unemployment, Fuel Price, Temperature, MarkDown1-5 |
+    | `stores.csv` | Static Metadata | 45 stores | Store Format (Type A, B, C), Physical Square Footage |
     """)
 
     context_box(
-        "Navigate using the sidebar to explore each capability. "
-        "Each page explains what it measures, why, and what the results mean."
+        "Use the left sidebar navigation to explore individual analytical modules. "
+        "Every page provides interactive controls, empirical evidence, and methodology details.",
+        title="Navigation Guidance",
     )
-
