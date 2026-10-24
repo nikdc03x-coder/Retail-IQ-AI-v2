@@ -1,0 +1,7 @@
+Holiday_Name,Recorded_Weeks,Total_Sales,Mean_Store_Weekly_Sales,Median_Store_Weekly_Sales,Lift_Vs_Baseline_Pct
+Non-Holiday Baseline,133,6231919435.55,1041256.38,956211.2,0.0
+All Holidays Combined,10,505299551.56,1122887.89,1018538.04,7.84
+Christmas,2,86474980.04,960833.11,889821.96,-7.72
+Labor Day,3,140727684.68,1042427.29,976415.56,0.11
+Super Bowl,3,145682278.34,1079127.99,1015654.6,3.64
+Thanksgiving,2,132414608.5,1471273.43,1327536.25,41.3

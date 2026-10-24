@@ -92,7 +92,8 @@ elif page == "✅ Data Quality":
     render()
 
 elif page == "📊 Business Analytics":
-    st.info("📦 Business Analytics will be available after Phase 03.")
+    from src.retailiq.dashboard.pages.p03_analytics import render
+    render()
 
 elif page == "📈 Sales Forecasting":
     st.info("📦 Sales Forecasting will be available after Phase 04.")
