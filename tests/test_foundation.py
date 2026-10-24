@@ -54,7 +54,7 @@ class TestProjectStructure:
         expected = [
             "01_data_ingestion", "02_data_quality", "03_business_analytics",
             "04_sales_forecasting", "05_forecast_reliability",
-            "06_anomaly_detection", "07_explainable_ai",
+            "06_anomaly_detection", "07_explainability",
         ]
         for name in expected:
             assert (scripts / name).exists(), f"Missing scripts/{name}"
