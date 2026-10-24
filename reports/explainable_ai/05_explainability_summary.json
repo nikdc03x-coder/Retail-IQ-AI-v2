@@ -1,0 +1,22 @@
+{
+  "model": "XGBoost Regressor (Champion)",
+  "explainer": "TreeExplainer (TreeSHAP)",
+  "base_value_dollars": 1059041.5,
+  "total_test_observations": 990,
+  "features_analyzed": 20,
+  "top_global_feature": "lag_52",
+  "top_global_mean_abs_shap": 228670.6875,
+  "top_global_impact_pct": 45.0099983215332,
+  "reconstruction_check": {
+    "verified": true,
+    "sample_count": 990,
+    "max_abs_diff_dollars": 2.0,
+    "mean_abs_diff_dollars": 0.2815,
+    "max_rel_diff_pct": 9.5e-05,
+    "mean_rel_diff_pct": 2.6e-05,
+    "max_tolerance_dollars": 5.0,
+    "max_tolerance_relative_pct": 0.01,
+    "efficiency_axiom_holds": true
+  },
+  "runtime_seconds": 1.39
+}

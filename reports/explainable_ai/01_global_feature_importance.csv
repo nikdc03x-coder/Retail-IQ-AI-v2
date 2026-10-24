@@ -1,0 +1,21 @@
+Importance_Rank,Feature,Mean_Abs_SHAP,Relative_Impact_Pct,Feature_Description
+1,lag_52,228670.69,45.01,Sales from 52 weeks ago (t-52). Anchors annual year-over-year seasonality.
+2,rolling_mean_4,140471.14,27.65,4-week backward rolling sales average. Captures short-term monthly trend.
+3,rolling_mean_8,53905.49,10.61,8-week backward rolling sales average. Smooths medium-term trajectory.
+4,lag_4,26446.84,5.21,Sales from 4 weeks prior (t-4). Reflects prior month demand level.
+5,lag_1,11216.56,2.21,Previous week's sales (t-1). Provides baseline operational revenue momentum.
+6,lag_2,10532.44,2.07,Sales from 2 weeks prior (t-2). Intermediate autoregressive signal.
+7,Unemployment,8205.05,1.62,Regional unemployment rate percentage.
+8,Month,5677.17,1.12,Calendar month (1 to 12). Captures broad seasonal quarters.
+9,sin_week,3520.52,0.69,Cyclical sine transformation of week of year.
+10,cos_week,3509.66,0.69,Cyclical cosine transformation of week of year.
+11,Fuel_Price,2761.99,0.54,Regional fuel cost per gallon. Macroeconomic consumer cost indicator.
+12,Size,2564.95,0.5,Store physical square footage. Reflects structural sales capacity.
+13,CPI,2325.65,0.46,Consumer Price Index. Regional inflation and consumer purchasing power index.
+14,WeekOfYear,2074.74,0.41,Calendar week number (1 to 52). Tracks seasonal retail calendar.
+15,Temperature,1961.64,0.39,Average weekly temperature in store region (degrees Fahrenheit).
+16,is_holiday_num,1710.76,0.34,Binary indicator for Walmart promotional holiday week.
+17,rolling_std_4,1442.13,0.28,4-week rolling standard deviation. Measures recent sales volatility.
+18,Type_A,931.57,0.18,Indicator for Type A store (large supercenter format).
+19,Type_B,94.86,0.02,Indicator for Type B store (medium regional format).
+20,Type_C,23.4,0.0,Indicator for Type C store (small compact format).
