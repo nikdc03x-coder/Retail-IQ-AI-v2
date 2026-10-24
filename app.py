@@ -104,7 +104,8 @@ elif page == "🎯 Forecast Reliability":
     render()
 
 elif page == "⚠️ Anomaly Investigation":
-    st.info("📦 Anomaly Investigation will be available after Phase 06.")
+    from src.retailiq.dashboard.pages.p06_anomalies import render
+    render()
 
 elif page == "🔬 Explainable AI":
     st.info("📦 Explainable AI will be available after Phase 07.")

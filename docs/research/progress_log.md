@@ -182,3 +182,36 @@
 
 ### Next Steps
 - Phase 06: Anomaly Detection — residual Z-scores, Isolation Forest, agreement matrix, and ranked investigation queue
+
+## Phase 06 — Anomaly Detection & Investigation Queue
+
+**Date:** 2026-10-24
+**Branch:** `phase-06-anomaly-detection`
+**Status:** ✅ Complete
+
+### Completed
+- Implemented `statistical.py` with residual standard score (Z-score) detector (|Z| > 3.0 cutoff)
+- Implemented `isolation_forest.py` with multivariate unsupervised isolation forest (2% contamination)
+- Implemented `investigation.py` generating cross-detector agreement matrix and ranked investigation queue with automated operational review notes
+- Executed `scripts/06_anomaly_detection/run_anomaly_detection.py` in 0.77s
+- Generated 5 CSV reports and 1 JSON summary in `reports/anomaly_detection/`:
+  - `01_statistical_scores.csv`
+  - `02_isolation_forest_scores.csv`
+  - `03_detector_comparison.csv`
+  - `04_agreement_summary.csv`
+  - `05_investigation_queue.csv` (23 prioritized records)
+  - `06_anomaly_detection_summary.json`
+- Created interactive Anomaly Investigation dashboard page (`src/retailiq/dashboard/pages/p06_anomalies.py`)
+- Added 4 unit and integration tests in `tests/test_anomaly_detection.py` (80 total passing tests)
+- Authored 16-section research documentation `docs/phases/06_anomaly_detection.md`
+
+### Key Empirical Findings
+- Exactly 23 records prioritized for operational audit (2.3% of 990 test observations)
+- 14 unanimous anomaly flags confirmed by BOTH statistical and tree isolation detectors
+- 3 statistical-only flags (|Z| > 3.0) and 6 isolation-forest-only flags
+- 99.09% overall agreement rate across the test set
+- Store 14 on 2012-08-24 is the #1 priority record (Priority Score: 100.0, +$421k residual miss)
+- Clear operational guideline: flags represent review targets, not confirmed fraud or defects
+
+### Next Steps
+- Phase 07: Explainable AI — TreeSHAP global/local explanations, waterfall charts, and mathematical prediction reconstruction verification
