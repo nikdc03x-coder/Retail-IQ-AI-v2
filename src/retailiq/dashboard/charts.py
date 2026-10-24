@@ -146,3 +146,25 @@ def box_chart(
     )
     return apply_default_layout(fig, title)
 
+
+def heatmap(
+    df: pd.DataFrame,
+    title: str = "",
+    colorscale: str = "Viridis",
+    zmin: float | None = None,
+    zmax: float | None = None,
+) -> go.Figure:
+    """Create a styled heatmap from a DataFrame."""
+    fig = go.Figure(
+        data=go.Heatmap(
+            z=df.values,
+            x=list(df.columns),
+            y=list(df.index),
+            colorscale=colorscale,
+            zmin=zmin,
+            zmax=zmax,
+        )
+    )
+    return apply_default_layout(fig, title)
+
+
