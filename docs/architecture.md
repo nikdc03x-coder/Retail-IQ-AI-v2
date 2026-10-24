@@ -40,13 +40,13 @@ RetailIQ AI V2 is a single-process Python application with three layers:
          │              │    │        │        │
          ▼              ▼    ▼        ▼        ▼
     ┌──────────────────────────────────────────────┐
-    │           STREAMLIT DASHBOARD                 │
-    │  Reads pre-computed CSV/Parquet reports        │
-    │  Renders interactive Plotly visualizations     │
-    ├───────────────────────────────────────────────┤
-    │         GEMINI BUSINESS ASSISTANT              │
-    │  Approved Python tools → verified evidence     │
-    │  Natural language interpretation by Gemini     │
+    │           STREAMLIT DASHBOARD                │
+    │  Reads pre-computed CSV/Parquet reports      │
+    │  Renders interactive Plotly visualizations   │
+    ├──────────────────────────────────────────────┤
+    │         GEMINI BUSINESS ASSISTANT            │
+    │  Approved Python tools → verified evidence   │
+    │  Natural language interpretation by Gemini   │
     └──────────────────────────────────────────────┘
 ```
 
@@ -80,4 +80,3 @@ app.py             ← Entry point
 3. **Controlled AI:** Gemini selects from approved tool functions; Python performs calculations
 4. **No future leakage:** Chronological splits and backward-looking features only
 5. **Honest reporting:** No fabricated metrics; limitations are documented
-

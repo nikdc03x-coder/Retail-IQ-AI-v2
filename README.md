@@ -76,7 +76,7 @@ python -m streamlit run app.py
 | Phase | Status |
 |-------|--------|
 | Phase 00 — Foundation | ✅ Complete |
-| Phase 01 — Data Ingestion | 🔲 Pending |
+| Phase 01 — Data Ingestion | ✅ Complete |
 | Phase 02 — Data Quality | 🔲 Pending |
 | Phase 03 — Business Analytics | 🔲 Pending |
 | Phase 04 — Sales Forecasting | 🔲 Pending |
