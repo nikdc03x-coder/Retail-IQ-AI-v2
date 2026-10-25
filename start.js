@@ -29,3 +29,4 @@ const child = spawn(pythonBin, args, {
 child.on('exit', (code) => {
   process.exit(code ?? 0);
 });
+
