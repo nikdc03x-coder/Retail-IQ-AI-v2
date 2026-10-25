@@ -79,4 +79,7 @@ class RetailIQAssistantEngine:
             "latency_seconds": latency,
             "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
             "verified": fallback_res.get("verified", True),
+            "chart_type": fallback_res.get("chart_type"),
+            "followups": fallback_res.get("followups", []),
+            "deep_link_page": fallback_res.get("deep_link_page"),
         }

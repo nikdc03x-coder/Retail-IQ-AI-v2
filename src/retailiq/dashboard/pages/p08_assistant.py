@@ -5,17 +5,20 @@ Conversational business intelligence powered by Google Gemini and backed by
 deterministic tool execution on pre-computed analytical datasets:
 - Evidence-grounded natural language question answering.
 - Dual-mode routing: Google Gemini with Function Calling or Deterministic Rule-Based Fallback.
+- Dynamic interactive visualization charts (Plotly) rendered directly in conversational responses.
+- Interactive follow-up suggestion chips and deep-link navigation into analytical modules.
 - Complete execution transparency (tools invoked, source files, latency, verification).
-- Interactive quick-query suggestion chips.
 """
 
 from typing import Any
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 
 from src.retailiq.config import Theme, GEMINI_API_KEY, GEMINI_MODEL
 from src.retailiq.dashboard.components import page_context
-from src.retailiq.dashboard.theme import context_box, page_header
+from src.retailiq.dashboard.theme import page_header
+from src.retailiq.dashboard.charts import apply_default_layout
 from src.retailiq.assistant.engine import RetailIQAssistantEngine
 
 
@@ -134,14 +137,50 @@ def render() -> None:
     st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
 
     # ── Chat History Display ──
-    for msg in st.session_state.assistant_messages:
+    for msg_idx, msg in enumerate(st.session_state.assistant_messages):
         with st.chat_message(msg["role"]):
             st.markdown(msg["answer"])
 
-            # Transparency drawer for assistant messages
             meta = msg.get("metadata", {})
             if msg["role"] == "assistant" and meta.get("route") != "system_greeting":
-                with st.expander("Transparency & Evidence Grounding", expanded=False):
+                chart_type = meta.get("chart_type") or (meta.get("tools_called")[0] if meta.get("tools_called") else None)
+                data_payload = meta.get("data")
+
+                # ── 1. Interactive Visualization Widget ──
+                if chart_type and data_payload:
+                    _render_interactive_chart(chart_type, data_payload)
+
+                # ── 2. Structured Tabular Evidence Preview ──
+                if isinstance(data_payload, list) and len(data_payload) > 0 and isinstance(data_payload[0], dict):
+                    with st.expander(f"View Tabular Evidence Records ({len(data_payload)} rows)", expanded=False):
+                        df_preview = pd.DataFrame(data_payload)
+                        st.dataframe(df_preview, use_container_width=True, hide_index=True)
+
+                # ── 3. Deep-Link Navigation Shortcut ──
+                deep_link = meta.get("deep_link_page")
+                if deep_link:
+                    c_link, _ = st.columns([1, 2])
+                    with c_link:
+                        if st.button(f"Explore in {deep_link} →", key=f"nav_{msg_idx}", use_container_width=True):
+                            st.session_state["nav_page"] = deep_link
+                            st.rerun()
+
+                # ── 4. Interactive Follow-up Prompt Chips ──
+                followups = meta.get("followups", [])
+                if followups:
+                    st.markdown("<p style='font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; margin-top: 0.8rem; margin-bottom: 0.35rem;'>Suggested Follow-Ups</p>", unsafe_allow_html=True)
+                    f_cols = st.columns(min(len(followups), 3))
+                    for f_idx, followup in enumerate(followups[:3]):
+                        with f_cols[f_idx]:
+                            lbl = followup.replace("What are the ", "").replace("Which are the ", "").replace("What is the ", "").replace("How does ", "")
+                            if len(lbl) > 30:
+                                lbl = lbl[:28] + "..."
+                            if st.button(lbl, key=f"f_btn_{msg_idx}_{f_idx}", help=followup, use_container_width=True):
+                                _handle_user_query(engine, followup)
+                                st.rerun()
+
+                # ── 5. Transparency Drawer ──
+                with st.expander("Transparency & Execution Trace", expanded=False):
                     t_col1, t_col2 = st.columns(2)
                     with t_col1:
                         st.markdown(f"**Execution Route:** `{meta.get('route')}`")
@@ -152,18 +191,157 @@ def render() -> None:
                         st.markdown(f"**Latency:** `{meta.get('latency_seconds', 0.0)}s`")
                         st.markdown(f"**Mathematical Verification:** `{'Verified' if meta.get('verified') else 'Unverified'}`")
 
-                    # If data is present as tabular records, display a mini table
-                    data_payload = meta.get("data")
-                    if isinstance(data_payload, list) and len(data_payload) > 0 and isinstance(data_payload[0], dict):
-                        st.markdown("**Underlying Structured Evidence:**")
-                        df_preview = pd.DataFrame(data_payload)
-                        st.dataframe(df_preview, use_container_width=True, hide_index=True)
-
     # ── User Chat Input ──
     user_input = st.chat_input("Ask a business question about sales, models, anomalies, or SHAP...")
     if user_input:
         _handle_user_query(engine, user_input)
         st.rerun()
+
+
+def _render_interactive_chart(chart_type: str, data: Any) -> None:
+    """Render a purpose-built interactive Plotly visualization for the assistant's finding."""
+    if not data:
+        return
+
+    try:
+        if chart_type in ["get_store_rankings", "store_rankings"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x="total_sales",
+                y=[f"Store {s} (Type {t})" for s, t in zip(df_chart["store"], df_chart["type"])],
+                orientation="h",
+                color="type",
+                text=[f"${v/1e6:.1f}M ({p:.1f}%)" for v, p in zip(df_chart["total_sales"], df_chart["pct_of_chain"])],
+                labels={"total_sales": "Total Historical Sales ($)", "y": "Store Location"},
+                color_discrete_map={"A": Theme.VIOLET, "B": Theme.CYAN, "C": Theme.AMBER},
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Top Store Historical Revenue & Chain Share")
+            fig.update_layout(yaxis=dict(autorange="reversed"), height=260, showlegend=True, margin=dict(l=80, r=40, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_department_rankings", "department_rankings"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x="total_sales",
+                y=[f"Dept {d}" for d in df_chart["department"]],
+                orientation="h",
+                text=[f"${v/1e6:.1f}M ({p:.1f}%)" for v, p in zip(df_chart["total_sales"], df_chart["pct_of_chain"])],
+                labels={"total_sales": "Total Historical Sales ($)", "y": "Department"},
+                color_discrete_sequence=[Theme.CYAN],
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Department Revenue Concentration (Pareto Leaders)")
+            fig.update_layout(yaxis=dict(autorange="reversed"), height=260, margin=dict(l=60, r=40, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_holiday_performance", "holiday_performance"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x="Holiday_Name",
+                y="Mean_Store_Weekly_Sales",
+                color="Lift_Vs_Baseline_Pct",
+                text=[f"{l:+.1f}%" if l != 0 else "Baseline" for l in df_chart["Lift_Vs_Baseline_Pct"]],
+                labels={"Mean_Store_Weekly_Sales": "Mean Weekly Sales per Store ($)", "Holiday_Name": "Holiday Cycle"},
+                color_continuous_scale=["#1E293B", Theme.CYAN, Theme.GREEN],
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Holiday Store Sales vs Non-Holiday Baseline")
+            fig.update_layout(height=280, coloraxis_showscale=False, margin=dict(l=50, r=30, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_forecast_leaderboard", "forecast_leaderboard"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x="Model",
+                y="WAPE_Pct",
+                color="Model",
+                text=[f"{w:.2f}%" for w in df_chart["WAPE_Pct"]],
+                labels={"WAPE_Pct": "Forecast Error (WAPE %)", "Model": "Model Architecture"},
+                color_discrete_map={
+                    "XGBoost": Theme.GREEN,
+                    "Random Forest": Theme.CYAN,
+                    "Ridge": Theme.VIOLET,
+                    "Seasonal Naive": Theme.AMBER,
+                    "Previous-Week Naive": Theme.CORAL,
+                },
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Forecasting Error Benchmark (WAPE % — Lower is Superior)")
+            fig.update_layout(height=260, showlegend=False, margin=dict(l=50, r=30, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_global_shap_importance", "shap_importance"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x="Relative_Impact_Pct",
+                y="Feature",
+                orientation="h",
+                text=[f"{p:.1f}%" for p in df_chart["Relative_Impact_Pct"]],
+                labels={"Relative_Impact_Pct": "Relative Impact (%)", "Feature": "Feature Driver"},
+                color_discrete_sequence=[Theme.BRAND],
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Global TreeSHAP Attribution Breakdown")
+            fig.update_layout(yaxis=dict(autorange="reversed"), height=260, margin=dict(l=80, r=40, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_anomaly_records", "anomaly_records"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x=[f"Store {s}<br>{d}" for s, d in zip(df_chart["Store"], df_chart["Date"])],
+                y="Priority_Score",
+                color="Priority_Score",
+                text=[f"{s:.0f}/100" for s in df_chart["Priority_Score"]],
+                labels={"y": "Priority Score", "x": "Target"},
+                color_continuous_scale="Reds",
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Top Outlier Investigation Queue Targets")
+            fig.update_layout(height=280, coloraxis_showscale=False, margin=dict(l=50, r=30, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_store_forecast_errors", "store_forecast_errors"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x=[f"Store {s}" for s in df_chart["Store"]],
+                y="WAPE_Pct",
+                text=[f"{w:.1f}%" for w in df_chart["WAPE_Pct"]],
+                labels={"WAPE_Pct": "WAPE (%)", "x": "Store"},
+                color_discrete_sequence=[Theme.CYAN],
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Store Error Reliability (WAPE %)")
+            fig.update_layout(height=260, margin=dict(l=50, r=30, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["explain_store_prediction"] and isinstance(data, dict):
+            drivers = data.get("top_drivers", [])
+            if drivers:
+                df_drivers = pd.DataFrame(drivers)
+                fig = px.bar(
+                    df_drivers,
+                    x="SHAP_Value",
+                    y="Feature",
+                    orientation="h",
+                    color=df_drivers["SHAP_Value"] > 0,
+                    color_discrete_map={True: Theme.GREEN, False: Theme.CORAL},
+                    text=[f"{v:+,.0f}" for v in df_drivers["SHAP_Value"]],
+                    labels={"SHAP_Value": "Attribution ($)", "Feature": "Feature Driver"},
+                )
+                fig.update_traces(textposition="outside")
+                fig = apply_default_layout(fig, f"Local TreeSHAP Drivers: Store {data.get('store')} on {data.get('date')}")
+                fig.update_layout(height=280, showlegend=False, yaxis=dict(autorange="reversed"), margin=dict(l=80, r=40, t=40, b=30))
+                st.plotly_chart(fig, use_container_width=True)
+    except Exception:
+        pass
 
 
 def _handle_user_query(engine: RetailIQAssistantEngine, prompt: str) -> None:
@@ -189,5 +367,8 @@ def _handle_user_query(engine: RetailIQAssistantEngine, prompt: str) -> None:
             "latency_seconds": result.get("latency_seconds", 0.0),
             "verified": result.get("verified", True),
             "data": result.get("data"),
+            "chart_type": result.get("chart_type"),
+            "followups": result.get("followups", []),
+            "deep_link_page": result.get("deep_link_page"),
         },
     })
