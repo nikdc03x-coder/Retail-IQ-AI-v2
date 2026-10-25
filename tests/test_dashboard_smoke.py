@@ -93,6 +93,27 @@ class TestDashboardComponents:
         for attr in accessed_attrs:
             assert hasattr(Theme, attr), f"Theme is missing attribute: '{attr}' accessed in code"
 
+    def test_all_page_report_files_exist_on_disk(self):
+        import re
+        from pathlib import Path
+
+        pages_dir = Path("src/retailiq/dashboard/pages")
+        reports_dir = Path("reports")
+        data_dir = Path("data")
+
+        existing_files = {f.name for f in reports_dir.rglob("*") if f.is_file()}
+        existing_files.update({f.name for f in data_dir.rglob("*") if f.is_file()})
+
+        pattern = re.compile(r'["\']([0-9a-zA-Z_\.\-]+\.(?:csv|json|parquet))["\']')
+        for py_file in pages_dir.glob("*.py"):
+            content = py_file.read_text(encoding="utf-8")
+            matches = pattern.findall(content)
+            for m in matches:
+                # Ignore dynamic export names or non-disk artifacts
+                if m in ["retailiq_export.csv", "report.csv"]:
+                    continue
+                assert m in existing_files, f"Page {py_file.name} references non-existent data/report file: {m}"
+
 
 
 class TestDashboardCharts:

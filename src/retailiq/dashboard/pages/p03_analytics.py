@@ -52,7 +52,10 @@ def render() -> None:
         depts = pd.read_csv(out_dir / "03_department_performance.csv")
         store_week = pd.read_csv(out_dir / "04_store_week_sales.csv", parse_dates=["Date"])
         holidays = pd.read_csv(out_dir / "05_holiday_comparison.csv")
-        store_types = pd.read_csv(out_dir / "06_store_type_summary.csv")
+        type_path = out_dir / "06_store_type_performance.csv"
+        if not type_path.exists():
+            type_path = out_dir / "06_store_type_summary.csv"
+        store_types = pd.read_csv(type_path)
         monthly = pd.read_csv(out_dir / "07_monthly_seasonality.csv")
         return {
             "network": network,
