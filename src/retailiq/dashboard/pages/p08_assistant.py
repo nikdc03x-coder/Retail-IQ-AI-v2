@@ -34,6 +34,30 @@ SUGGESTED_PROMPTS = [
 ]
 
 
+PAGE_ALIASES = {
+    "Project Overview": "Project Overview",
+    "Executive Overview": "Project Overview",
+    "Dataset Architecture & Ingestion": "Dataset Explorer",
+    "Dataset Explorer": "Dataset Explorer",
+    "Data Quality & Hygiene Audit": "Data Quality Audit",
+    "Data Quality Audit": "Data Quality Audit",
+    "Exploratory Business Analytics": "Business Analytics",
+    "Business Analytics": "Business Analytics",
+    "Sales Forecasting Models": "Sales Forecasting",
+    "Sales Forecasting": "Sales Forecasting",
+    "Spatial Error Reliability": "Forecast Reliability",
+    "Forecast Reliability": "Forecast Reliability",
+    "Anomaly Detection & Audit": "Anomaly Investigation",
+    "Anomaly Investigation": "Anomaly Investigation",
+    "TreeSHAP Explainability": "Explainable AI",
+    "Explainable AI": "Explainable AI",
+    "Store Strategic Positioning": "Operational Strategy",
+    "Operational Decision Strategy": "Operational Strategy",
+    "Operational Strategy": "Operational Strategy",
+    "AI Business Assistant": "AI Business Assistant",
+}
+
+
 def render() -> None:
     """Render the AI Business Assistant page."""
     page_header(
@@ -159,10 +183,11 @@ def render() -> None:
                 # ── 3. Deep-Link Navigation Shortcut ──
                 deep_link = meta.get("deep_link_page")
                 if deep_link:
+                    clean_target = PAGE_ALIASES.get(deep_link, "Project Overview")
                     c_link, _ = st.columns([1, 2])
                     with c_link:
-                        if st.button(f"Explore in {deep_link} →", key=f"nav_{msg_idx}", use_container_width=True):
-                            st.session_state["nav_page"] = deep_link
+                        if st.button(f"Explore in {clean_target} →", key=f"nav_{msg_idx}", use_container_width=True):
+                            st.session_state["target_page"] = clean_target
                             st.rerun()
 
                 # ── 4. Interactive Follow-up Prompt Chips ──

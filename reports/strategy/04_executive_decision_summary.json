@@ -40,5 +40,5 @@
       "expected_outcome": "Improves inventory turn rate and lowers shrinkage across underperforming units."
     }
   ],
-  "execution_runtime_seconds": 0.03
+  "execution_runtime_seconds": 1.82
 }

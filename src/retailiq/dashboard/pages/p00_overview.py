@@ -44,7 +44,7 @@ def render() -> None:
         </div>
         """, unsafe_allow_html=True)
         if st.button("Open Data Quality Audit", key="btn_open_quality", use_container_width=True):
-            st.session_state["nav_page"] = "Data Quality Audit"
+            st.session_state["target_page"] = "Data Quality Audit"
             st.rerun()
 
         st.markdown(f"""
@@ -58,7 +58,7 @@ def render() -> None:
         </div>
         """, unsafe_allow_html=True)
         if st.button("Open Sales Forecasting", key="btn_open_forecast", use_container_width=True):
-            st.session_state["nav_page"] = "Sales Forecasting"
+            st.session_state["target_page"] = "Sales Forecasting"
             st.rerun()
 
         st.markdown(f"""
@@ -72,7 +72,7 @@ def render() -> None:
         </div>
         """, unsafe_allow_html=True)
         if st.button("Open Explainable AI", key="btn_open_shap", use_container_width=True):
-            st.session_state["nav_page"] = "Explainable AI"
+            st.session_state["target_page"] = "Explainable AI"
             st.rerun()
 
     with col2:
@@ -87,7 +87,7 @@ def render() -> None:
         </div>
         """, unsafe_allow_html=True)
         if st.button("Open Business Analytics", key="btn_open_analytics", use_container_width=True):
-            st.session_state["nav_page"] = "Business Analytics"
+            st.session_state["target_page"] = "Business Analytics"
             st.rerun()
 
         st.markdown(f"""
@@ -101,7 +101,7 @@ def render() -> None:
         </div>
         """, unsafe_allow_html=True)
         if st.button("Open Anomaly Investigation", key="btn_open_anomalies", use_container_width=True):
-            st.session_state["nav_page"] = "Anomaly Investigation"
+            st.session_state["target_page"] = "Anomaly Investigation"
             st.rerun()
 
         st.markdown(f"""
@@ -117,11 +117,11 @@ def render() -> None:
         c_act1, c_act2 = st.columns(2)
         with c_act1:
             if st.button("Operational Strategy", key="btn_open_strategy", use_container_width=True):
-                st.session_state["nav_page"] = "Operational Strategy"
+                st.session_state["target_page"] = "Operational Strategy"
                 st.rerun()
         with c_act2:
             if st.button("AI Business Assistant", key="btn_open_assistant", use_container_width=True):
-                st.session_state["nav_page"] = "AI Business Assistant"
+                st.session_state["target_page"] = "AI Business Assistant"
                 st.rerun()
 
     # ── Dataset Overview ──

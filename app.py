@@ -28,6 +28,27 @@ st.set_page_config(
 # ── Apply enterprise design system theme ──
 apply_theme()
 
+NAV_OPTIONS = [
+    "Project Overview",
+    "Dataset Explorer",
+    "Data Quality Audit",
+    "Business Analytics",
+    "Sales Forecasting",
+    "Forecast Reliability",
+    "Anomaly Investigation",
+    "Explainable AI",
+    "Operational Strategy",
+    "AI Business Assistant",
+]
+
+# Support safe programmatic navigation across pages without StreamlitWidgetAlreadyInstantiatedError
+if "target_page" in st.session_state:
+    target = st.session_state.pop("target_page")
+    if target in NAV_OPTIONS:
+        st.session_state["nav_page"] = target
+elif "nav_page" not in st.session_state:
+    st.session_state["nav_page"] = "Project Overview"
+
 # ── Sidebar Navigation ──
 with st.sidebar:
     st.markdown(f"""
@@ -58,18 +79,7 @@ with st.sidebar:
     # Clean navigation options without generic decorative emojis
     page = st.radio(
         "Navigation",
-        options=[
-            "Project Overview",
-            "Dataset Explorer",
-            "Data Quality Audit",
-            "Business Analytics",
-            "Sales Forecasting",
-            "Forecast Reliability",
-            "Anomaly Investigation",
-            "Explainable AI",
-            "Operational Strategy",
-            "AI Business Assistant",
-        ],
+        options=NAV_OPTIONS,
         label_visibility="collapsed",
         key="nav_page",
     )
