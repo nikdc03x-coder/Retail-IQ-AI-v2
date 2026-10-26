@@ -8,7 +8,7 @@
 
 **RetailIQ AI V2** is a portfolio- and research-grade enterprise retail intelligence platform built from the ground up on the historical Walmart weekly sales dataset. It bridges the gap between raw retail data engineering, predictive machine learning, reliability diagnostics, unsupervised anomaly auditing, cooperative game-theory interpretability (TreeSHAP), and evidence-grounded generative AI.
 
-The platform provides an end-to-end reproducible pipeline, an executive 9-page dark navy Streamlit dashboard, a dual-route conversational business analyst powered by Google Gemini with deterministic fallback, and an automated 138-test verification suite.
+The platform provides an end-to-end reproducible pipeline, an executive 10-page dark Slate-950/900 Streamlit dashboard, a dual-route conversational business analyst powered by Google Gemini with deterministic fallback and interactive Plotly visuals, and an automated 150-test verification suite.
 
 ---
 
@@ -23,9 +23,10 @@ The platform provides an end-to-end reproducible pipeline, an executive 9-page d
 | **05** | **Forecast Reliability** | Spatial error spread, holiday error shifts, 4-fold expanding backtests | 77.8% store win rate vs Naive; 100% backtest consistency across all folds |
 | **06** | **Anomaly Detection** | Residual Z-score (|Z|>3) + multivariate Isolation Forest consensus | 23 prioritized audit targets (2.3%); 14 unanimous flags; 99.09% agreement |
 | **07** | **Explainable AI (TreeSHAP)** | Global dollar attribution, local waterfall decomposition, efficiency audit | Top 2 features explain 72.66% power; 100% predictions reconstruct exactly |
-| **08** | **Enterprise Dashboard** | Multi-page Streamlit app (`app.py`), Slate-900 theme, Plotly chart factory | Sub-0.5s load times; 8 operational pages + Overview; one-click CSV exports |
-| **09** | **AI Business Assistant** | Dual-route: Gemini (`gemini-2.0-flash`) tool calling + deterministic fallback | 13 typed Python tools; zero hallucinations; auditable transparency drawer |
-| **10** | **Testing & Verification** | Automated master runner (`run_all_pipelines.py`) and Pytest test suite | 138 passing tests; full end-to-end pipeline executes in <40 seconds |
+| **08** | **Operational Decision Strategy** | 4-Quadrant Store Matrix (Volume vs WAPE), Dynamic Buffers & Markdown Rules | $12.3M annual holding cost optimization; 1,800 weekly labor flex hours |
+| **09** | **Enterprise Dashboard** | Multi-page Streamlit app (`app.py`), Material Symbols, Inter typography | Sub-0.5s load times; 10 operational pages; zero casual emojis |
+| **10** | **AI Business Assistant** | Dual-route: Gemini (`gemini-2.0-flash`) tool calling + deterministic fallback | 13 typed Python tools; interactive Plotly charts; dynamic follow-up chips |
+| **11** | **Testing & Verification** | Automated master runner (`run_all_pipelines.py`) and Pytest test suite | 150 passing tests; full end-to-end pipeline executes in <40 seconds |
 
 ---
 
@@ -63,25 +64,39 @@ The platform provides an end-to-end reproducible pipeline, an executive 9-page d
 
 ## 5. Quick Start & Reproducibility Guide
 
-### Environment Setup (Windows Git Bash / Terminal)
+### Instant Start via Node / npm (Recommended)
+You can launch the full application in a single command without manually activating your virtual environment:
+
+```bash
+# Start Streamlit application immediately (port 8501)
+npm run dev
+
+# Run automated test suite
+npm test
+```
+
+---
+
+### Python Environment Setup
 
 ```bash
 # 1. Clone repository and navigate to root
 cd ~/Documents/retailiq-ai-v2
 
 # 2. Activate Python virtual environment
-source .venv/Scripts/activate
+source .venv/Scripts/activate  # On Windows Git Bash
+# or .venv\Scripts\activate   # On Windows CMD/PowerShell
 
 # 3. Verify dependencies
 pip install -r requirements.txt
 
-# 4. Optional: Configure Gemini API Key in .env (Fallback mode works offline without it)
+# 4. Optional: Configure Gemini API Key in .env (Deterministic fallback works offline without it)
 cp .env.example .env
 # Edit .env and set GEMINI_API_KEY="your-api-key"
 ```
 
 ### Running the Entire Analytical Pipeline
-To run all 7 pipeline stages sequentially from raw CSV data to final SHAP explainability artifacts in under 40 seconds:
+To execute all 8 pipeline stages sequentially from raw CSV data to final SHAP explainability and operational decision artifacts in under 40 seconds:
 
 ```bash
 python scripts/run_all_pipelines.py
@@ -96,10 +111,11 @@ python scripts/04_sales_forecasting/run_forecasting.py
 python scripts/05_forecast_reliability/run_reliability.py
 python scripts/06_anomaly_detection/run_anomaly_detection.py
 python scripts/07_explainability/run_shap_analysis.py
+python scripts/08_strategy/run_strategy_engine.py
 ```
 
 ### Running Automated Test Suite
-To execute all 138 unit, integration, benchmark, and smoke tests:
+To execute all 150 unit, integration, benchmark, and smoke tests:
 
 ```bash
 pytest -v
@@ -109,7 +125,7 @@ pytest -v
 ```bash
 python -m streamlit run app.py
 ```
-Open `http://localhost:8501` in your browser to access the 9 interactive pages.
+Open `http://localhost:8501` in your browser to access the 10 interactive operational pages.
 
 ---
 

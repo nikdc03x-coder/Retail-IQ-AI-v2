@@ -37,6 +37,7 @@ PIPELINE_STAGES = [
     ("Phase 05: Forecast Reliability", PROJECT_ROOT / "scripts" / "05_forecast_reliability" / "run_reliability.py"),
     ("Phase 06: Anomaly Detection", PROJECT_ROOT / "scripts" / "06_anomaly_detection" / "run_anomaly_detection.py"),
     ("Phase 07: Explainable AI", PROJECT_ROOT / "scripts" / "07_explainability" / "run_shap_analysis.py"),
+    ("Phase 08: Operational Strategy", PROJECT_ROOT / "scripts" / "08_strategy" / "run_strategy_engine.py"),
 ]
 
 
@@ -50,7 +51,7 @@ def main() -> None:
     results = []
 
     for idx, (stage_name, script_path) in enumerate(PIPELINE_STAGES, 1):
-        print(f"\n[{idx}/7] Running {stage_name}...")
+        print(f"\n[{idx}/8] Running {stage_name}...")
         print(f"      Script: {script_path.relative_to(PROJECT_ROOT)}")
 
         stage_start = time.time()
@@ -77,7 +78,7 @@ def main() -> None:
         print(f"   {status_str:<8} | {name:<35} | {dur:>6.2f}s")
 
     print("-" * 75)
-    print(f"   All 7 pipeline stages executed successfully in {total_duration:.2f}s.")
+    print(f"   All {len(PIPELINE_STAGES)} pipeline stages executed successfully in {total_duration:.2f}s.")
     print("   Analytical dataset, models, reports, and SHAP artifacts are fully up-to-date.")
     print("=" * 75)
 
