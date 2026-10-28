@@ -122,3 +122,4 @@
   - Both files exist with identical content to satisfy legacy path references from earlier phases.
 - **Recommended Action:**
   - Standardize on `06_store_type_performance.csv` and use an explicit internal alias or symlink rather than committing identical physical CSVs.
+
