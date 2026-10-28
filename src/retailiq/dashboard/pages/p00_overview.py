@@ -52,8 +52,8 @@ def render() -> None:
             <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Module 04 & 05</div>
             <h3>Sales Forecasting & Reliability</h3>
             <p style="color: {Theme.DARK_GRAY}; font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem 0;">
-                XGBoost champion model ($R^2 = 0.9416$) evaluated with temporal splitting,
-                spatial error distributions, holiday degradation metrics, and 4-fold rolling backtests.
+                Rolling 1-week-ahead operational forecast benchmark: XGBoost champion (WAPE: 3.83%, MAE: $39.8K),
+                Ridge linear baseline (RMSE: $58.7K), spatial risk distributions, and 4-fold expanding-window backtests.
             </p>
         </div>
         """, unsafe_allow_html=True)

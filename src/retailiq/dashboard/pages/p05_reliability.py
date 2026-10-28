@@ -35,8 +35,8 @@ def render() -> None:
     page_context(
         why="A single aggregate error number hides operational risks. Managers must understand which stores are difficult to predict and whether accuracy degrades during promotional surges.",
         business_problem="Answers: Do errors vary by store location? Are holiday forecasts riskier? Does XGBoost consistently beat the baseline over multiple historical periods?",
-        data_source="Pre-computed reports in reports/forecast_reliability/ evaluated across 45 stores and 4 backtest folds.",
-        what_you_learn="Store 37 is the most reliable (2.06% WAPE); Store 14 is the most volatile (10.59% WAPE); XGBoost beats the baseline in 77.8% of stores and 100% of backtest folds.",
+        data_source="Pre-computed reports in reports/forecast_reliability/ evaluated across 45 stores and 4 expanding-window backtest folds (8 weeks each).",
+        what_you_learn="Store 37 is the most reliable (2.06% WAPE); Store 14 is the most volatile (10.59% WAPE); XGBoost beats the baseline in 77.8% of stores and 100% of backtest folds in rolling 1-week-ahead evaluations.",
     )
 
     out_dir = REPORT_SUBDIRS["forecast_reliability"]
@@ -223,7 +223,7 @@ def render() -> None:
     with tab4:
         section_header("Expanding-Window Rolling Backtest (4 Folds)", "Temporal stability across consecutive historical evaluation windows")
         context_box(
-            "An expanding-window backtest retrains the model on expanding historical slices and evaluates on consecutive 8-week test windows. XGBoost outperformed the baseline in 100% of backtest folds, demonstrating temporal stability.",
+            "An expanding-window backtest retrains the model on expanding historical slices and evaluates rolling 1-step-ahead forecasts across consecutive 8-week test windows (where actual sales up to t-1 are observed weekly). XGBoost outperformed the baseline in 100% of backtest folds, demonstrating temporal stability.",
             title="Backtest Protocol",
         )
 

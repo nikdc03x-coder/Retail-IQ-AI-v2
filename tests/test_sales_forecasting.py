@@ -110,3 +110,17 @@ class TestModelArtifactsAndLeaderboard:
         # Baseline check
         naive_wape = test_df.loc[test_df["Model"] == "Previous-Week Naive", "WAPE_Pct"].values[0]
         assert xgb_wape < naive_wape, "XGBoost should outperform Naive baseline!"
+
+    def test_forecasting_horizon_and_tradeoff_metadata(self):
+        """Regression test for ISSUE-11-01: Verify horizon definition and model trade-off documentation."""
+        meta_path = REPORT_SUBDIRS["sales_forecasting"] / "04_experiment_metadata.json"
+        assert meta_path.exists()
+        import json
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+        assert meta["horizon_weeks"] == 1
+        assert "Rolling 1-week-ahead" in meta.get("forecasting_paradigm", "")
+        notes = meta.get("methodology_notes", {})
+        assert "Rolling 1-step-ahead" in notes.get("evaluation_type", "")
+        assert "XGBoost" in notes.get("model_tradeoff", "")
+        assert "Ridge" in notes.get("model_tradeoff", "")

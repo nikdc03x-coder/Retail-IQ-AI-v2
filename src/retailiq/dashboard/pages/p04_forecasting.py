@@ -31,10 +31,10 @@ def render() -> None:
     )
 
     page_context(
-        why="Retail managers need predictive foresight to plan staffing, logistics, and stock replenishment one week in advance.",
-        business_problem="Answers: Can ML models reliably beat simple persistence baselines? What is the expected error margin? Which features drive predictive power?",
-        data_source="Pre-computed experiment reports in reports/sales_forecasting/ evaluated on 990 held-out test observations.",
-        what_you_learn="XGBoost is the champion model with 3.83% WAPE ($39.8k MAE), delivering a 22.3% error reduction over the Previous-Week Naive baseline.",
+        why="Retail supply chain managers need predictive foresight to plan weekly store replenishment, distribution staging, and staffing one week in advance.",
+        business_problem="Answers: Can ML models reliably beat simple persistence baselines? What is the expected weekly error margin? How do linear and tree-based models trade off volume accuracy vs outlier variance?",
+        data_source="Pre-computed experiment reports in reports/sales_forecasting/ evaluated on 990 held-out test observations (45 stores x 22 weeks).",
+        what_you_learn="XGBoost is the champion operational model with 3.83% WAPE ($39.8k MAE), delivering a 22.3% error reduction over the Previous-Week Naive baseline. Ridge achieves lower RMSE ($58.7k), presenting an operational trade-off.",
     )
 
     out_dir = REPORT_SUBDIRS["sales_forecasting"]
@@ -73,14 +73,22 @@ def render() -> None:
 
     # ── Top KPI Row ──
     render_kpi_row([
-        {"label": "Champion Model", "value": champ["Model"], "subtitle": f"WAPE: {champ['WAPE_Pct']}% on test set"},
-        {"label": "Champion Test MAE", "value": format_currency(champ["MAE"]), "subtitle": f"RMSE: {format_currency(champ['RMSE'])}"},
+        {"label": "Champion Model", "value": champ["Model"], "subtitle": f"WAPE: {champ['WAPE_Pct']}% | MAE: {format_currency(champ['MAE'])}"},
+        {"label": "Lowest RMSE Model", "value": "Ridge Linear", "subtitle": f"RMSE: $58,728 (vs XGBoost $60,392)"},
         {"label": "Baseline WAPE (Naive)", "value": f"{naive_test['WAPE_Pct']}%", "subtitle": f"MAE: {format_currency(naive_test['MAE'])}"},
-        {"label": "Error Reduction", "value": f"{error_reduction:.1f}%", "subtitle": "Improvement over Naive persistence"},
-        {"label": "Forecast Horizon", "value": "1-Week-Ahead", "subtitle": "Strictly backward-looking features"},
+        {"label": "Error Reduction", "value": f"{error_reduction:.1f}%", "subtitle": "WAPE gain over Naive persistence"},
+        {"label": "Evaluation Paradigm", "value": "Rolling 1-Wk-Ahead", "subtitle": "Historical actuals updated weekly (t-1)"},
     ])
 
     st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
+
+    # ── Horizon Methodology Callout ──
+    context_box(
+        "<b>Forecasting Horizon & Evaluation Protocol:</b> This benchmark evaluates a <b>rolling one-week-ahead operational forecast</b> across 22 out-of-time test weeks (990 store-week records from June to October 2012). "
+        "At each forecast step for week <i>t</i>, the model has access to observed actual historical sales through week <i>t-1</i> (via lag and rolling features). "
+        "This rigorously mirrors weekly store inventory replenishment workflows. It is <b>not</b> an unassisted multi-week forecast generated all at once, which would suffer autoregressive error compounding without intervening actuals.",
+        title="Operational Horizon Definition",
+    )
 
     # ── Interactive Tabs ──
     tab1, tab2, tab3, tab4 = st.tabs([
@@ -94,8 +102,9 @@ def render() -> None:
     with tab1:
         section_header("Chronological Test Set Leaderboard", "Standardized out-of-sample evaluation across all 45 store locations")
         context_box(
-            "Fair Benchmark Protocol: All models were trained on historical records and evaluated on the exact same 990 test observations (June 2012 - October 2012) spanning all 45 stores. Lower MAE, RMSE, and WAPE are strictly preferred.",
-            title="Benchmark Methodology",
+            "Fair Benchmark Protocol: All models were trained on historical records (< 2012-01-06), validated on intermediate records, and evaluated on the exact same 990 test observations (June 2012 - October 2012). "
+            "Lower MAE, RMSE, and WAPE are preferred. Notice the trade-off: XGBoost achieves the best WAPE and MAE, while Ridge achieves the lowest RMSE.",
+            title="Benchmark Methodology & Operational Trade-off",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -112,12 +121,20 @@ def render() -> None:
         with c2:
             st.markdown(f"""
             <div class="section-card">
-                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Evaluation Synthesis</div>
-                <h3>Model Performance Rankings</h3>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>1. XGBoost:</b> Top performer (3.83% WAPE) capturing nonlinear interactions between store capacity and recent momentum.</p>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>2. Ridge Linear:</b> Highly competitive (3.91% WAPE), demonstrating strong linearity in weekly store-level aggregation.</p>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>3. Random Forest:</b> Solid performance (4.00% WAPE), handily outperforming baselines.</p>
-                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>4. Naive Baselines:</b> Previous-week (4.93%) and seasonal (5.12%) exhibit clear accuracy degradation.</p>
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Evaluation Synthesis & Trade-offs</div>
+                <h3>Model Selection Criteria</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;">
+                    <b>1. XGBoost (Operational Champion):</b> Best for volume replenishment. Achieves lowest <b>WAPE (3.83%)</b> and lowest <b>MAE ($39.8K)</b> by modeling non-linear interactions between store format, promotions, and 4-week trend.
+                </p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;">
+                    <b>2. Ridge Linear (Outlier Robustness):</b> Achieves lowest <b>RMSE ($58,728)</b> and highest <b>R² (0.9879)</b>. Its L2 loss heavily penalizes extreme outlier deviations, making it appealing when catastrophic tail surprises are penalized.
+                </p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;">
+                    <b>3. Random Forest:</b> Solid generalizer (4.00% WAPE, $41.6K MAE), but slightly higher variance than XGBoost.
+                </p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;">
+                    <b>4. Baselines:</b> Previous-Week Naive (4.93%) and Seasonal 52W (5.12%) confirm that machine learning reduces forecasting error by >22%.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
