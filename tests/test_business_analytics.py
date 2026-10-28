@@ -160,3 +160,15 @@ class TestBusinessAnalyticsReportsExist:
             fpath = out_dir / fname
             assert fpath.exists(), f"Missing business analytics report {fname}"
             assert fpath.stat().st_size > 0, f"Report {fname} is empty"
+
+    def test_canonical_store_type_report_schema(self):
+        """Regression test for ISSUE-11-06: Verify canonical store type performance report schema."""
+        out_dir = REPORT_SUBDIRS["business_analytics"]
+        target = out_dir / "06_store_type_performance.csv"
+        assert target.exists(), "06_store_type_performance.csv must exist as the canonical report"
+        df = pd.read_csv(target)
+        assert len(df) == 3, f"Expected 3 store types, got {len(df)}"
+        assert set(df["Type"]) == {"A", "B", "C"}
+        expected_cols = ["Type", "Store_Count", "Total_Sales", "Mean_Weekly_Store_Sales", "Network_Sales_Share_Pct"]
+        for col in expected_cols:
+            assert col in df.columns, f"Missing column {col} in store type performance report"
