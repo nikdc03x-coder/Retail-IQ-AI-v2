@@ -75,11 +75,11 @@ def render() -> None:
     full_pct = (full_pairs / total_pairs) if total_pairs > 0 else 0.0
 
     render_kpi_row([
-        {"label": "Economic Completeness", "value": "100.0%", "subtitle": "CPI & Unemployment (0 nulls)"},
+        {"label": "Economic Completeness", "value": "100.0%", "subtitle": "Historical sales range (0 nulls)"},
+        {"label": "Raw Features CPI Nulls", "value": "585 (7.1%)", "subtitle": "Concentrated in post-2012 dates"},
         {"label": "MarkDown Sparsity", "value": f"{summary['missingness']['markdown_missing_pct']:.1f}%", "subtitle": "Structural: pre-Nov 2011"},
         {"label": "Merchandise Returns", "value": f"{summary['sales_audit']['negative_rows']:,}", "subtitle": f"{format_currency(summary['sales_audit']['total_return_amount'])} cumulative"},
         {"label": "Continuous Series", "value": f"{full_pct:.1%}", "subtitle": f"{full_pairs:,} of {total_pairs:,} pairs (143 wks)"},
-        {"label": "Return Departments", "value": str(len(returns_df)), "subtitle": "Across 45 store locations"},
     ])
 
     st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
@@ -96,8 +96,12 @@ def render() -> None:
     with tab1:
         section_header("Missing Value Audit & Classification", "Structural classification of nullity patterns across analytical features")
         context_box(
-            "Missing values are NOT random corruption. CPI and Unemployment are 100% complete across historical observations. MarkDown features were structurally uncollected by Walmart prior to November 11, 2011.",
-            title="Completeness Audit",
+            "<b>Dataset Missingness Taxonomy & Coverage Reconciliation (ISSUE-11-02):</b><br>"
+            "• <b>Raw features.csv:</b> Contains 585 missing values (7.14%) in both CPI and Unemployment. Temporal audit proves that 100% of these nulls occur in future Kaggle evaluation weeks (May to July 2013).<br>"
+            "• <b>Historical Sales Training Range (Feb 2010 to Oct 2012):</b> CPI and Unemployment are <b>100% complete with 0 missing values</b>.<br>"
+            "• <b>Analytical Dataset (analytical_dataset.parquet):</b> 100% complete for economic indicators because it inner-joins strictly with historical weekly sales records.<br>"
+            "• <b>MarkDown1–5:</b> Exhibits ~64% structural missingness prior to November 11, 2011, when Walmart officially began tracking promotional markdown events.",
+            title="Completeness & Missingness Audit",
         )
 
         c1, c2 = st.columns([3, 2])
@@ -117,10 +121,18 @@ def render() -> None:
             <div class="section-card">
                 <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Audit Telemetry</div>
                 <h3>Classification Assessment</h3>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>MarkDown1 - 5:</b> Structural missingness (~64% missing). First recorded on 2011-11-11.</p>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>CPI & Unemployment:</b> 0% missing in train window. Clean continuous signals.</p>
-                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;"><b>Weekly_Sales:</b> 0% missing. Complete historical target.</p>
-                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;"><b>Store Metadata:</b> 0% missing. Complete format and area metrics.</p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;">
+                    <b>MarkDown1 - 5:</b> Structural missingness (~64% missing). Uncollected prior to 2011-11-11.
+                </p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;">
+                    <b>CPI & Unemployment:</b> 0% missing in historical sales range (2010–2012). Raw features.csv has 585 nulls in post-2012 future dates.
+                </p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.84rem; margin-bottom: 0.4rem;">
+                    <b>Weekly_Sales:</b> 0% missing. Complete historical target across 421,570 records.
+                </p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.8rem; margin: 0;">
+                    <b>Store Metadata:</b> 0% missing across all 45 store formats and square footage.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 

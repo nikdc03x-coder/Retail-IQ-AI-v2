@@ -59,6 +59,29 @@ class TestMissingnessClassification:
         assert cpi_missing == 0, "CPI should have 0 missing values in train period"
         assert unemp_missing == 0, "Unemployment should have 0 missing values in train period"
 
+    def test_raw_vs_analytical_cpi_reconciliation(self, analytical_df: pd.DataFrame):
+        """Regression test for ISSUE-11-02: Reconcile 585 raw CPI nulls in future dates vs complete analytical dataset."""
+        raw_feat_path = Path("data/raw/features.csv")
+        assert raw_feat_path.exists()
+        raw_df = pd.read_csv(raw_feat_path)
+
+        # Raw features has 585 missing CPI and Unemployment
+        assert raw_df["CPI"].isna().sum() == 585
+        assert raw_df["Unemployment"].isna().sum() == 585
+
+        # All missing CPI are in dates >= 2013-05-03 (future Kaggle evaluation dates)
+        missing_dates = pd.to_datetime(raw_df.loc[raw_df["CPI"].isna(), "Date"])
+        assert (missing_dates >= pd.to_datetime("2013-05-03")).all()
+
+        # In historical labeled sales range (<= 2012-10-26), CPI and Unemployment are 100% complete
+        hist_raw = raw_df[pd.to_datetime(raw_df["Date"]) <= pd.to_datetime("2012-10-26")]
+        assert hist_raw["CPI"].isna().sum() == 0
+        assert hist_raw["Unemployment"].isna().sum() == 0
+
+        # Joined analytical dataset is 100% complete
+        assert analytical_df["CPI"].isna().sum() == 0
+        assert analytical_df["Unemployment"].isna().sum() == 0
+
     def test_markdown_structural_missingness(self, analytical_df: pd.DataFrame):
         missing_df = generate_missingness_profile(analytical_df)
         md1 = missing_df.loc[missing_df["Column"] == "MarkDown1"].iloc[0]

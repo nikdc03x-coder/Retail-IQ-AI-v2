@@ -56,6 +56,11 @@
   "missingness": {
     "markdown_missing_pct": 64.26,
     "cpi_missing_count": 0,
-    "unemployment_missing_count": 0
+    "unemployment_missing_count": 0,
+    "cpi_missing_count_analytical": 0,
+    "unemployment_missing_count_analytical": 0,
+    "cpi_missing_count_raw_features": 585,
+    "unemployment_missing_count_raw_features": 585,
+    "raw_missingness_note": "Raw features.csv has 585 nulls (7.14%) in CPI and Unemployment concentrated strictly in post-2012 future Kaggle test dates (2013-05-03 to 2013-07-26). Historical sales training period (2010-02-05 to 2012-10-26) is 100% complete."
   }
 }
