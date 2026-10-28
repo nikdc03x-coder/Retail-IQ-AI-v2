@@ -219,11 +219,25 @@ def compare_stores(store_ids: list[int]) -> dict[str, Any]:
                 "pct_of_chain": float(row["Sales_Share_Pct"]),
             })
 
-        summary_parts = [
-            f"Store {r['store']} (Type {r['type']}, {r['size']:,} sq ft): ${r['total_sales']:,.2f} total (${r['weekly_avg_sales']:,.2f}/wk)"
-            for r in records
-        ]
-        summary = "Store comparison: " + "; ".join(summary_parts)
+        if len(records) == 2:
+            s1, s2 = records[0], records[1]
+            diff_total = abs(s1["total_sales"] - s2["total_sales"])
+            higher = s1 if s1["total_sales"] >= s2["total_sales"] else s2
+            lower = s2 if s1["total_sales"] >= s2["total_sales"] else s1
+            pct_diff = (diff_total / lower["total_sales"] * 100.0) if lower["total_sales"] > 0 else 0.0
+            diff_weekly = abs(s1["weekly_avg_sales"] - s2["weekly_avg_sales"])
+            summary = (
+                f"Head-to-head comparison between Store {s1['store']} and Store {s2['store']}: "
+                f"Store {higher['store']} generated ${higher['total_sales']:,.2f} total (${higher['weekly_avg_sales']:,.2f}/wk, Type {higher['type']}, {higher['size']:,} sq ft) "
+                f"compared to Store {lower['store']} with ${lower['total_sales']:,.2f} (${lower['weekly_avg_sales']:,.2f}/wk, Type {lower['type']}, {lower['size']:,} sq ft). "
+                f"Store {higher['store']} sales were ${diff_total:,.2f} (+{pct_diff:.1f}%) higher overall (+${diff_weekly:,.2f}/wk)."
+            )
+        else:
+            summary_parts = [
+                f"Store {r['store']} (Type {r['type']}, {r['size']:,} sq ft): ${r['total_sales']:,.2f} total (${r['weekly_avg_sales']:,.2f}/wk)"
+                for r in records
+            ]
+            summary = "Store comparison: " + "; ".join(summary_parts)
 
         return {
             "success": True,
@@ -318,13 +332,28 @@ def compare_forecasting_models(model_a: str = "XGBoost", model_b: str = "Previou
 
         wape_diff = float(rowA["WAPE_Pct"] - rowB["WAPE_Pct"])
         mae_diff = float(rowA["MAE"] - rowB["MAE"])
+        rmse_diff = float(rowA["RMSE"] - rowB["RMSE"])
+        r2_diff = float(rowA["R2"] - rowB["R2"])
         err_reduction = float((rowB["MAE"] - rowA["MAE"]) / rowB["MAE"] * 100.0)
+
+        # Build detailed comparative narrative including trade-offs
+        tradeoff_note = ""
+        is_xgb_ridge = ("xgboost" in rowA["Model"].lower() and "ridge" in rowB["Model"].lower()) or \
+                       ("ridge" in rowA["Model"].lower() and "xgboost" in rowB["Model"].lower())
+        if is_xgb_ridge:
+            tradeoff_note = (
+                " Trade-off analysis: XGBoost achieves the lower MAE and WAPE on typical store volume, "
+                "whereas Ridge achieves lower RMSE and higher R² because its L2 objective strongly penalizes large outlier errors."
+            )
 
         summary = (
             f"Comparison between {rowA['Model']} and {rowB['Model']} on held-out test split: "
             f"{rowA['Model']} achieves WAPE of {rowA['WAPE_Pct']:.2f}% (vs {rowB['WAPE_Pct']:.2f}%), "
-            f"MAE of ${rowA['MAE']:,.2f} (vs ${rowB['MAE']:,.2f}). "
+            f"MAE of ${rowA['MAE']:,.2f} (vs ${rowB['MAE']:,.2f}), "
+            f"RMSE of ${rowA['RMSE']:,.2f} (vs ${rowB['RMSE']:,.2f}), and "
+            f"R² of {rowA['R2']:.4f} (vs {rowB['R2']:.4f}). "
             f"{rowA['Model']} delivers a {err_reduction:.1f}% reduction in mean absolute error over {rowB['Model']}."
+            f"{tradeoff_note}"
         )
 
         return {
@@ -335,6 +364,8 @@ def compare_forecasting_models(model_a: str = "XGBoost", model_b: str = "Previou
                 "model_b": rowB.to_dict(),
                 "mae_reduction_pct": round(err_reduction, 2),
                 "wape_diff_pct": round(wape_diff, 2),
+                "rmse_diff_dollars": round(rmse_diff, 2),
+                "r2_diff": round(r2_diff, 4),
             },
             "evidence_source": "reports/sales_forecasting/01_model_comparison_metrics.csv",
         }

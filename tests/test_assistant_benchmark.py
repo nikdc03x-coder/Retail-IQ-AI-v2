@@ -95,3 +95,46 @@ class TestAssistantBenchmark:
             assert k in res, f"Missing required transparency key: {k}"
         assert res["provider"] == "Deterministic Rule-Based Dispatcher (Offline Mode)"
         assert res["evidence_source"].startswith("reports/")
+
+    def test_benchmark_compare_ridge_vs_xgboost(self, engine: RetailIQAssistantEngine):
+        """Regression test for ISSUE-11-05: Model-to-model pairwise comparison."""
+        res = engine.ask("How does Ridge regression compare to XGBoost on RMSE and WAPE?")
+        assert res["route"] == "deterministic_fallback"
+        assert "compare_forecasting_models" in res["tools_called"]
+        assert "XGBoost" in res["answer"]
+        assert "Ridge" in res["answer"]
+        assert "3.83%" in res["answer"] or "3.91%" in res["answer"]
+        assert res["verified"] is True
+
+    def test_benchmark_lowest_mae_query(self, engine: RetailIQAssistantEngine):
+        """Regression test for ISSUE-11-05: Lowest MAE model retrieval."""
+        res = engine.ask("Which model has the lowest MAE?")
+        assert "XGBoost" in res["answer"]
+        assert "39,837" in res["answer"]
+
+    def test_benchmark_lowest_rmse_query(self, engine: RetailIQAssistantEngine):
+        """Regression test for ISSUE-11-05: Lowest RMSE model retrieval."""
+        res = engine.ask("Which model has the lowest RMSE?")
+        assert "Ridge" in res["answer"]
+        assert "58,728" in res["answer"]
+
+    def test_benchmark_store_14_followup_error(self, engine: RetailIQAssistantEngine):
+        """Regression test for ISSUE-11-05: Store 14 context-aware error routing."""
+        res = engine.ask("Tell me about Store 14 forecast error.")
+        assert "Store 14" in res["answer"]
+        assert "10.59%" in res["answer"]
+        assert "178,633" in res["answer"]
+
+    def test_benchmark_store_pairwise_comparison(self, engine: RetailIQAssistantEngine):
+        """Regression test for ISSUE-11-05: Store head-to-head comparison with delta."""
+        res = engine.ask("Compare Store 1 and Store 20 performance and sales.")
+        assert "compare_stores" in res["tools_called"]
+        assert "Store 1" in res["answer"]
+        assert "Store 20" in res["answer"]
+
+    def test_benchmark_invalid_store_guard(self, engine: RetailIQAssistantEngine):
+        """Regression test for ISSUE-11-05: Invalid store clarification."""
+        res = engine.ask("Tell me about Store 99.")
+        assert "Store 99" in res["answer"]
+        assert "invalid" in res["answer"].lower()
+        assert "1 to 45" in res["answer"]
