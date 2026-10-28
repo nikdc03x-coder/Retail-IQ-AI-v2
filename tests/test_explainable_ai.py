@@ -50,6 +50,20 @@ class TestGlobalFeatureImportance:
         # Primary seasonal driver (lag_52) should be #1
         assert df.iloc[0]["Feature"] == "lag_52", f"Expected lag_52 to be #1, got {df.iloc[0]['Feature']}"
 
+    def test_top_feature_driver_attribution_shares(self, explainability_dir: Path):
+        """Regression test for ISSUE-11-03: Verify exact shares for lag_52, rolling_mean_4, and lag_1."""
+        df = pd.read_csv(explainability_dir / "01_global_feature_importance.csv")
+        df["feat_clean"] = df["Feature"].str.strip()
+
+        lag_52_share = float(df.loc[df["feat_clean"] == "lag_52", "Relative_Impact_Pct"].values[0])
+        rm4_share = float(df.loc[df["feat_clean"] == "rolling_mean_4", "Relative_Impact_Pct"].values[0])
+        lag_1_share = float(df.loc[df["feat_clean"] == "lag_1", "Relative_Impact_Pct"].values[0])
+
+        assert 44.5 <= lag_52_share <= 45.5, f"lag_52 share expected ~45.01%, got {lag_52_share}%"
+        assert 27.0 <= rm4_share <= 28.5, f"rolling_mean_4 share expected ~27.65%, got {rm4_share}%"
+        assert 72.0 <= (lag_52_share + rm4_share) <= 73.5, f"Combined lag_52 + rm4 expected ~72.7%, got {lag_52_share + rm4_share}%"
+        assert 1.5 <= lag_1_share <= 3.0, f"lag_1 share expected ~2.21%, got {lag_1_share}%"
+
 
 class TestLocalPredictionAttribution:
     """Verify local prediction attributions for held-out test records."""

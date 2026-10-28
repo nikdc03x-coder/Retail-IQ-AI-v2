@@ -6,7 +6,14 @@
   "features_analyzed": 20,
   "top_global_feature": "lag_52",
   "top_global_mean_abs_shap": 228670.6875,
-  "top_global_impact_pct": 45.0099983215332,
+  "top_global_impact_pct": 45.01,
+  "top_drivers_breakdown": {
+    "lag_52_pct": 45.01,
+    "rolling_mean_4_pct": 27.65,
+    "top_2_combined_pct": 72.66,
+    "lag_1_pct": 2.21,
+    "note": "Top 2 drivers are annual seasonality (lag_52) and short-term 4-week trend (rolling_mean_4). Lag 1 accounts for 2.21% (Rank 5)."
+  },
   "reconstruction_check": {
     "verified": true,
     "sample_count": 990,
