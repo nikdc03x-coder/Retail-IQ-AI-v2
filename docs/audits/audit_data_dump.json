@@ -1,0 +1,446 @@
+{
+  "forecasting_recalculated_metrics": {
+    "Naive": {
+      "MAE": 51307.23733333332,
+      "RMSE": 77389.89142288864,
+      "WAPE": 4.931578751310945,
+      "MAPE": 4.951714364043642,
+      "R2": 0.978961861274551
+    },
+    "Seasonal": {
+      "MAE": 53266.1101010101,
+      "RMSE": 82732.60648233286,
+      "WAPE": 5.119862818426761,
+      "MAPE": 5.433764774831337,
+      "R2": 0.9759568008499164
+    },
+    "Ridge": {
+      "MAE": 40642.004929292925,
+      "RMSE": 58728.02434435997,
+      "WAPE": 3.9064517665963012,
+      "MAPE": 4.282646549095191,
+      "R2": 0.9878848269462889
+    },
+    "RandomForest": {
+      "MAE": 41641.24513131313,
+      "RMSE": 64746.18890129725,
+      "WAPE": 4.002497315019096,
+      "MAPE": 4.133473979418388,
+      "R2": 0.985274594606782
+    },
+    "XGBoost": {
+      "MAE": 39837.61341414141,
+      "RMSE": 60391.887264726865,
+      "WAPE": 3.8291347970997034,
+      "MAPE": 3.9231059594823146,
+      "R2": 0.9871886161626848
+    }
+  },
+  "reported_model_comparison": [
+    {
+      "Model": "Previous-Week Naive",
+      "Split": "Validation",
+      "Observations": 945,
+      "MAE": 69302.24,
+      "RMSE": 104775.98,
+      "WAPE_Pct": 6.75,
+      "R2": 0.9623,
+      "Bias_MPE_Pct": -0.19
+    },
+    {
+      "Model": "Previous-Week Naive",
+      "Split": "Test",
+      "Observations": 990,
+      "MAE": 51307.24,
+      "RMSE": 77389.89,
+      "WAPE_Pct": 4.93,
+      "R2": 0.979,
+      "Bias_MPE_Pct": -0.44
+    },
+    {
+      "Model": "Seasonal Naive (52-Wk)",
+      "Split": "Validation",
+      "Observations": 945,
+      "MAE": 59989.25,
+      "RMSE": 86680.33,
+      "WAPE_Pct": 5.84,
+      "R2": 0.9742,
+      "Bias_MPE_Pct": 3.15
+    },
+    {
+      "Model": "Seasonal Naive (52-Wk)",
+      "Split": "Test",
+      "Observations": 990,
+      "MAE": 53266.11,
+      "RMSE": 82732.61,
+      "WAPE_Pct": 5.12,
+      "R2": 0.976,
+      "Bias_MPE_Pct": 1.81
+    },
+    {
+      "Model": "Ridge Linear",
+      "Split": "Validation",
+      "Observations": 945,
+      "MAE": 62911.57,
+      "RMSE": 91065.35,
+      "WAPE_Pct": 6.13,
+      "R2": 0.9715,
+      "Bias_MPE_Pct": 1.69
+    },
+    {
+      "Model": "Ridge Linear",
+      "Split": "Test",
+      "Observations": 990,
+      "MAE": 40642.0,
+      "RMSE": 58728.02,
+      "WAPE_Pct": 3.91,
+      "R2": 0.9879,
+      "Bias_MPE_Pct": 0.39
+    },
+    {
+      "Model": "Random Forest",
+      "Split": "Validation",
+      "Observations": 945,
+      "MAE": 55828.46,
+      "RMSE": 84036.52,
+      "WAPE_Pct": 5.44,
+      "R2": 0.9757,
+      "Bias_MPE_Pct": -0.24
+    },
+    {
+      "Model": "Random Forest",
+      "Split": "Test",
+      "Observations": 990,
+      "MAE": 41641.25,
+      "RMSE": 64746.19,
+      "WAPE_Pct": 4.0,
+      "R2": 0.9853,
+      "Bias_MPE_Pct": -0.0
+    },
+    {
+      "Model": "XGBoost",
+      "Split": "Validation",
+      "Observations": 945,
+      "MAE": 64127.92,
+      "RMSE": 95119.81,
+      "WAPE_Pct": 6.25,
+      "R2": 0.9689,
+      "Bias_MPE_Pct": -0.49
+    },
+    {
+      "Model": "XGBoost",
+      "Split": "Test",
+      "Observations": 990,
+      "MAE": 39837.61,
+      "RMSE": 60391.89,
+      "WAPE_Pct": 3.83,
+      "R2": 0.9872,
+      "Bias_MPE_Pct": -0.2
+    }
+  ],
+  "backtest_summary": {
+    "num_folds": 4,
+    "folds": [
+      {
+        "Fold": 1,
+        "Train_Weeks": 59,
+        "Test_Weeks": 8,
+        "Test_Start_Date": "2012-03-23",
+        "Test_End_Date": "2012-05-11",
+        "XGB_WAPE": 5.82,
+        "Naive_WAPE": 7.48,
+        "WAPE_Improvement": 1.66,
+        "Error_Reduction_Pct": 22.19,
+        "XGB_MAE": 60364.32,
+        "Naive_MAE": 77533.18,
+        "XGB_R2": 0.9676,
+        "XGB_Outperformed": true
+      },
+      {
+        "Fold": 2,
+        "Train_Weeks": 67,
+        "Test_Weeks": 8,
+        "Test_Start_Date": "2012-05-18",
+        "Test_End_Date": "2012-07-06",
+        "XGB_WAPE": 3.83,
+        "Naive_WAPE": 4.52,
+        "WAPE_Improvement": 0.69,
+        "Error_Reduction_Pct": 15.27,
+        "XGB_MAE": 41153.13,
+        "Naive_MAE": 48522.12,
+        "XGB_R2": 0.9874,
+        "XGB_Outperformed": true
+      },
+      {
+        "Fold": 3,
+        "Train_Weeks": 75,
+        "Test_Weeks": 8,
+        "Test_Start_Date": "2012-07-13",
+        "Test_End_Date": "2012-08-31",
+        "XGB_WAPE": 3.49,
+        "Naive_WAPE": 4.99,
+        "WAPE_Improvement": 1.5,
+        "Error_Reduction_Pct": 30.06,
+        "XGB_MAE": 36192.45,
+        "Naive_MAE": 51733.37,
+        "XGB_R2": 0.988,
+        "XGB_Outperformed": true
+      },
+      {
+        "Fold": 4,
+        "Train_Weeks": 83,
+        "Test_Weeks": 8,
+        "Test_Start_Date": "2012-09-07",
+        "Test_End_Date": "2012-10-26",
+        "XGB_WAPE": 3.56,
+        "Naive_WAPE": 5.08,
+        "WAPE_Improvement": 1.52,
+        "Error_Reduction_Pct": 29.92,
+        "XGB_MAE": 36106.36,
+        "Naive_MAE": 51554.86,
+        "XGB_R2": 0.99,
+        "XGB_Outperformed": true
+      }
+    ],
+    "mean_xgb_wape": 4.175,
+    "mean_naive_wape": 5.5175,
+    "mean_xgb_mae": 43454.065
+  },
+  "store_error_distribution": {
+    "min_wape": 2.06,
+    "median_wape": 3.52,
+    "max_wape": 10.59,
+    "worst_stores": [
+      {
+        "Store": 14,
+        "Type": "A",
+        "Size": 200898,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 37116269.71,
+        "Mean_Weekly_Sales": 1687103.17,
+        "MAE": 178633.15,
+        "RMSE": 210050.25,
+        "Max_Abs_Error": 405996.17,
+        "Mean_Bias": -166363.44,
+        "WAPE_Pct": 10.59,
+        "Reliability_Rank": 45
+      },
+      {
+        "Store": 36,
+        "Type": "A",
+        "Size": 39910,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 6544283.04,
+        "Mean_Weekly_Sales": 297467.41,
+        "MAE": 21479.7,
+        "RMSE": 25771.28,
+        "Max_Abs_Error": 60829.76,
+        "Mean_Bias": -18186.03,
+        "WAPE_Pct": 7.22,
+        "Reliability_Rank": 44
+      },
+      {
+        "Store": 18,
+        "Type": "B",
+        "Size": 120653,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 23295855.72,
+        "Mean_Weekly_Sales": 1058902.53,
+        "MAE": 66294.78,
+        "RMSE": 102331.36,
+        "Max_Abs_Error": 392972.29,
+        "Mean_Bias": 51322.82,
+        "WAPE_Pct": 6.26,
+        "Reliability_Rank": 43
+      },
+      {
+        "Store": 16,
+        "Type": "B",
+        "Size": 57197,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 11995494.23,
+        "Mean_Weekly_Sales": 545249.74,
+        "MAE": 33142.1,
+        "RMSE": 37324.46,
+        "Max_Abs_Error": 73618.3,
+        "Mean_Bias": -28122.02,
+        "WAPE_Pct": 6.08,
+        "Reliability_Rank": 42
+      },
+      {
+        "Store": 21,
+        "Type": "B",
+        "Size": 140167,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 15231578.66,
+        "Mean_Weekly_Sales": 692344.48,
+        "MAE": 38699.5,
+        "RMSE": 42334.2,
+        "Max_Abs_Error": 66144.46,
+        "Mean_Bias": -31124.56,
+        "WAPE_Pct": 5.59,
+        "Reliability_Rank": 41
+      }
+    ],
+    "best_stores": [
+      {
+        "Store": 37,
+        "Type": "C",
+        "Size": 39910,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 11444377.24,
+        "Mean_Weekly_Sales": 520198.97,
+        "MAE": 10728.24,
+        "RMSE": 13915.13,
+        "Max_Abs_Error": 38335.15,
+        "Mean_Bias": -6942.05,
+        "WAPE_Pct": 2.06,
+        "Reliability_Rank": 1
+      },
+      {
+        "Store": 34,
+        "Type": "A",
+        "Size": 158114,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 21226185.07,
+        "Mean_Weekly_Sales": 964826.59,
+        "MAE": 22184.67,
+        "RMSE": 26292.27,
+        "Max_Abs_Error": 53505.88,
+        "Mean_Bias": 13290.42,
+        "WAPE_Pct": 2.3,
+        "Reliability_Rank": 2
+      },
+      {
+        "Store": 8,
+        "Type": "A",
+        "Size": 155078,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 19989529.67,
+        "Mean_Weekly_Sales": 908614.98,
+        "MAE": 21853.54,
+        "RMSE": 27147.45,
+        "Max_Abs_Error": 74982.48,
+        "Mean_Bias": 7136.02,
+        "WAPE_Pct": 2.41,
+        "Reliability_Rank": 3
+      },
+      {
+        "Store": 30,
+        "Type": "C",
+        "Size": 42988,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 9507522.75,
+        "Mean_Weekly_Sales": 432160.12,
+        "MAE": 10732.11,
+        "RMSE": 13432.84,
+        "Max_Abs_Error": 27550.24,
+        "Mean_Bias": 7471.59,
+        "WAPE_Pct": 2.48,
+        "Reliability_Rank": 4
+      },
+      {
+        "Store": 41,
+        "Type": "A",
+        "Size": 196321,
+        "Test_Weeks": 22,
+        "Total_Actual_Sales": 30484156.73,
+        "Mean_Weekly_Sales": 1385643.49,
+        "MAE": 35925.59,
+        "RMSE": 45716.78,
+        "Max_Abs_Error": 112681.25,
+        "Mean_Bias": 15025.51,
+        "WAPE_Pct": 2.59,
+        "Reliability_Rank": 5
+      }
+    ]
+  },
+  "shap_top_features": [
+    {
+      "Importance_Rank": 1,
+      "Feature": "lag_52",
+      "Mean_Abs_SHAP": 228670.69,
+      "Relative_Impact_Pct": 45.01,
+      "Feature_Description": "Sales from 52 weeks ago (t-52). Anchors annual year-over-year seasonality."
+    },
+    {
+      "Importance_Rank": 2,
+      "Feature": "rolling_mean_4",
+      "Mean_Abs_SHAP": 140471.14,
+      "Relative_Impact_Pct": 27.65,
+      "Feature_Description": "4-week backward rolling sales average. Captures short-term monthly trend."
+    },
+    {
+      "Importance_Rank": 3,
+      "Feature": "rolling_mean_8",
+      "Mean_Abs_SHAP": 53905.49,
+      "Relative_Impact_Pct": 10.61,
+      "Feature_Description": "8-week backward rolling sales average. Smooths medium-term trajectory."
+    },
+    {
+      "Importance_Rank": 4,
+      "Feature": "lag_4",
+      "Mean_Abs_SHAP": 26446.84,
+      "Relative_Impact_Pct": 5.21,
+      "Feature_Description": "Sales from 4 weeks prior (t-4). Reflects prior month demand level."
+    },
+    {
+      "Importance_Rank": 5,
+      "Feature": "lag_1",
+      "Mean_Abs_SHAP": 11216.56,
+      "Relative_Impact_Pct": 2.21,
+      "Feature_Description": "Previous week's sales (t-1). Provides baseline operational revenue momentum."
+    },
+    {
+      "Importance_Rank": 6,
+      "Feature": "lag_2",
+      "Mean_Abs_SHAP": 10532.44,
+      "Relative_Impact_Pct": 2.07,
+      "Feature_Description": "Sales from 2 weeks prior (t-2). Intermediate autoregressive signal."
+    },
+    {
+      "Importance_Rank": 7,
+      "Feature": "Unemployment",
+      "Mean_Abs_SHAP": 8205.05,
+      "Relative_Impact_Pct": 1.62,
+      "Feature_Description": "Regional unemployment rate percentage."
+    },
+    {
+      "Importance_Rank": 8,
+      "Feature": "Month",
+      "Mean_Abs_SHAP": 5677.17,
+      "Relative_Impact_Pct": 1.12,
+      "Feature_Description": "Calendar month (1 to 12). Captures broad seasonal quarters."
+    },
+    {
+      "Importance_Rank": 9,
+      "Feature": "sin_week",
+      "Mean_Abs_SHAP": 3520.52,
+      "Relative_Impact_Pct": 0.69,
+      "Feature_Description": "Cyclical sine transformation of week of year."
+    },
+    {
+      "Importance_Rank": 10,
+      "Feature": "cos_week",
+      "Mean_Abs_SHAP": 3509.66,
+      "Relative_Impact_Pct": 0.69,
+      "Feature_Description": "Cyclical cosine transformation of week of year."
+    }
+  ],
+  "shap_lag_importance": {
+    "lag_52_pct": 45.01,
+    "lag_1_pct": 2.21,
+    "rolling_mean_4_pct": 27.65
+  },
+  "shap_reconstruction": {
+    "verified": true,
+    "sample_count": 990,
+    "max_abs_diff_dollars": 2.0,
+    "mean_abs_diff_dollars": 0.2815,
+    "max_rel_diff_pct": 9.5e-05,
+    "mean_rel_diff_pct": 2.6e-05,
+    "max_tolerance_dollars": 5.0,
+    "max_tolerance_relative_pct": 0.01,
+    "efficiency_axiom_holds": true
+  }
+}
