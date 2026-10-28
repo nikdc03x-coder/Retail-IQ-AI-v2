@@ -55,6 +55,23 @@ class TestStoreStrategicMatrix:
         assert (df["Annual_Working_Capital_Optimization"] > 0).all()
         assert (df["Weekly_Labor_Flex_Hours"] >= 15).all()
 
+    def test_scenario_sensitivity_recalculation(self):
+        """Regression test for ISSUE-11-04: Verify parametric scenario recalculation logic."""
+        import numpy as np
+        df = build_store_strategic_matrix()
+        baseline_savings = float(df["Annual_Working_Capital_Optimization"].sum())
+        assert 12_000_000 <= baseline_savings <= 12_500_000, f"Expected ~$12.3M baseline, got {baseline_savings}"
+
+        # Test conservative scenario (2.5% holding cost, 0.8x buffer)
+        sim_buffer = df["Mean_Weekly_Sales"] * (df["Safety_Buffer_Pct"] * 0.8)
+        conservative_savings = float(np.round(sim_buffer * 52 * 0.025, 2).sum())
+        assert 5_000_000 <= conservative_savings <= 6_000_000, f"Conservative scenario out of range: {conservative_savings}"
+
+        # Test optimistic scenario (6.5% holding cost, 1.2x buffer)
+        sim_buffer_opt = df["Mean_Weekly_Sales"] * (df["Safety_Buffer_Pct"] * 1.2)
+        optimistic_savings = float(np.round(sim_buffer_opt * 52 * 0.065, 2).sum())
+        assert 20_000_000 <= optimistic_savings <= 22_500_000, f"Optimistic scenario out of range: {optimistic_savings}"
+
 
 class TestResourceAllocationPlaybook:
     """Verify aggregated supply chain and labor allocation playbook."""

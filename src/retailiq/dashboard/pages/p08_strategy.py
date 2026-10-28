@@ -38,10 +38,10 @@ def render() -> None:
     )
 
     page_context(
-        why="Predictive forecasts and explainability attributions only generate ROI when translated into concrete operational actions. This decision engine prescribes exact inventory buffers, labor staffing allocations, and markdown ladders.",
-        business_problem="Answers: Which stores require dynamic inventory buffering vs lean replenishment? Where should flexible labor hours be allocated? Which departments need immediate packaging or markdown clearance?",
+        why="Predictive forecasts and explainability attributions only generate ROI when translated into concrete operational actions. This decision engine prescribes inventory buffers, labor staffing allocations, and markdown ladders.",
+        business_problem="Answers: Which stores require dynamic inventory buffering vs lean replenishment? Where should flexible labor hours be allocated? How do holding cost assumptions impact simulated working capital optimization?",
         data_source="Pre-computed decision reports in reports/strategy/ synthesized across analytical and model reliability modules.",
-        what_you_learn="15 Core Performers generate 44.5% of chain revenue with low error; 8 Volatile Powerhouses require +18% safety stock; total working capital optimization opportunity exceeds $12.3M annually.",
+        what_you_learn="15 Core Performers generate 44.5% of chain revenue with low error; 8 Volatile Powerhouses require +18% safety stock; simulated working capital optimization reaches $12.3M under baseline 4.5% holding cost assumptions.",
     )
 
     out_dir = REPORT_SUBDIRS["strategy"]
@@ -82,15 +82,16 @@ def render() -> None:
         {"label": "Core Performers (Tier 1)", "value": f"{tier_meta['core_performers_count']} Stores", "subtitle": f"{tier_meta['core_performers_sales_share_pct']:.1f}% chain volume"},
         {"label": "Volatile Powerhouses", "value": f"{tier_meta['volatile_growth_stores_count']} Stores", "subtitle": f"+18% dynamic buffer recommended"},
         {"label": "Turnaround Targets", "value": f"{tier_meta['turnaround_target_stores_count']} Stores", "subtitle": "Priority SKU rationalization"},
-        {"label": "Working Capital Optimization", "value": format_currency(fin['estimated_annual_working_capital_optimization']), "subtitle": "Annual holding cost savings"},
-        {"label": "Chain Weekly Labor Flex", "value": f"{fin['chain_weekly_labor_flex_hours']:,} Hours", "subtitle": "Dynamic weekend capacity surge"},
+        {"label": "Simulated Savings (Baseline)", "value": format_currency(fin['estimated_annual_working_capital_optimization']), "subtitle": "Scenario estimate (4.5% holding cost)"},
+        {"label": "Chain Weekly Labor Flex", "value": f"{fin['chain_weekly_labor_flex_hours']:,} Hours", "subtitle": "Dynamic weekend surge capacity"},
     ])
 
     st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
     # ── Tabs ──
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab_scen, tab2, tab3, tab4 = st.tabs([
         "Store Strategic Quadrants",
+        "Business Scenario Analysis",
         "Inventory & Labor Playbook",
         "Department Merchandising Rules",
         "Executive Action Plan",
@@ -152,6 +153,175 @@ def render() -> None:
             view_df[display_cols],
             title=f"Store Strategy Directory ({len(view_df)} Stores)",
             description="Operational recommendations and dynamic inventory buffer requirements per store.",
+        )
+
+    # ══════════════════════════════════════════════════════════════════
+    # TAB: Business Scenario Analysis (Interactive Simulator)
+    # ══════════════════════════════════════════════════════════════════
+    with tab_scen:
+        section_header(
+            "Simulated Potential Savings — Scenario Estimate",
+            "Parametric working capital sensitivity model across inventory holding cost rates and buffer policies",
+        )
+        context_box(
+            "<b>Transparency & Audit Qualification (ISSUE-11-04):</b> This model produces a <i>simulated heuristic projection</i> based on parameterized inventory holding cost rates and safety stock buffers applied to historical mean weekly sales. "
+            "It does <b>not</b> represent confirmed, realized, or balance-sheet cash savings. The actual Walmart Kaggle dataset contains sales and promotions, not real-time warehouse inventory ledgers. "
+            "Use this tool to stress-test how cost-of-capital fluctuations impact theoretical working capital optimization.",
+            title="Model Nature & Limitations",
+        )
+
+        col_preset, col_ctrl = st.columns([1, 2])
+        with col_preset:
+            preset = st.radio(
+                "Select Strategy Scenario Preset",
+                options=[
+                    "Baseline Audited (4.5% Cost, 1.0x Buffer)",
+                    "Conservative (2.5% Cost, 0.8x Buffer)",
+                    "Optimistic (6.5% Cost, 1.2x Buffer)",
+                    "Custom Parameter Mode",
+                ],
+                index=0,
+                key="scenario_preset_sel",
+            )
+
+        if "Baseline" in preset:
+            default_holding_cost = 4.5
+            default_buffer_mult = 1.0
+            slider_disabled = True
+        elif "Conservative" in preset:
+            default_holding_cost = 2.5
+            default_buffer_mult = 0.8
+            slider_disabled = True
+        elif "Optimistic" in preset:
+            default_holding_cost = 6.5
+            default_buffer_mult = 1.2
+            slider_disabled = True
+        else:
+            default_holding_cost = 4.5
+            default_buffer_mult = 1.0
+            slider_disabled = False
+
+        with col_ctrl:
+            c_s1, c_s2 = st.columns(2)
+            with c_s1:
+                active_cost = st.slider(
+                    "Annual Holding Cost Rate (%)",
+                    min_value=1.0,
+                    max_value=12.0,
+                    value=float(default_holding_cost),
+                    step=0.5,
+                    disabled=slider_disabled,
+                    help="Assumed annual carrying cost of safety inventory (cost of capital, shrinkage, warehouse holding). Default baseline: 4.5%.",
+                    key="slider_holding_cost",
+                )
+            with c_s2:
+                active_mult = st.slider(
+                    "Safety Buffer Intensity Multiplier",
+                    min_value=0.5,
+                    max_value=2.0,
+                    value=float(default_buffer_mult),
+                    step=0.1,
+                    disabled=slider_disabled,
+                    help="Scales recommended safety buffer percentages (Tier 1: 8%*M, Tier 2: 18%*M, Tier 3: 5%*M, Tier 4: 12%*M).",
+                    key="slider_buffer_mult",
+                )
+
+        # Dynamic Recalculation
+        sim_df = matrix_df.copy()
+        sim_df["Sim_Buffer_Pct"] = sim_df["Safety_Buffer_Pct"] * active_mult
+        sim_df["Sim_Safety_Stock_Dollars"] = np.round(sim_df["Mean_Weekly_Sales"] * sim_df["Sim_Buffer_Pct"], 2)
+        sim_df["Sim_Annual_Optimization"] = np.round(sim_df["Sim_Safety_Stock_Dollars"] * 52 * (active_cost / 100.0), 2)
+
+        total_sim_savings = float(sim_df["Sim_Annual_Optimization"].sum())
+        total_sim_buffer = float(sim_df["Sim_Safety_Stock_Dollars"].sum())
+        baseline_savings = float(fin["estimated_annual_working_capital_optimization"])
+        savings_delta = total_sim_savings - baseline_savings
+        delta_pct = (savings_delta / baseline_savings * 100.0) if baseline_savings > 0 else 0.0
+
+        # Scenario KPI Metrics
+        m1, m2, m3, m4 = st.columns(4)
+        with m1:
+            st.metric(
+                "Simulated Potential Savings",
+                format_currency(total_sim_savings),
+                delta=f"{savings_delta:+,.0f} ({delta_pct:+.1f}%)" if abs(savings_delta) > 100 else "Baseline Level",
+                delta_color="normal",
+            )
+        with m2:
+            st.metric(
+                "Audited Baseline Estimate",
+                format_currency(baseline_savings),
+                "Heuristic benchmark (4.5%)",
+                delta_color="off",
+            )
+        with m3:
+            st.metric(
+                "Total Recommended Safety Stock",
+                format_currency(total_sim_buffer),
+                f"Across {len(sim_df)} store networks",
+                delta_color="off",
+            )
+        with m4:
+            st.metric(
+                "Effective Holding Cost Rate",
+                f"{active_cost:.1f}%",
+                f"Buffer mult: {active_mult:.1f}x",
+                delta_color="off",
+            )
+
+        st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
+
+        # Plotly Sensitivity Curve
+        col_chart, col_assump = st.columns([3, 2])
+        with col_chart:
+            cost_range = np.linspace(1.0, 12.0, 23)
+            curve_savings = [total_sim_buffer * 52 * (c / 100.0) for c in cost_range]
+            sens_df = pd.DataFrame({"Holding_Cost_Pct": cost_range, "Simulated_Savings": curve_savings})
+
+            fig_sens = px.line(
+                sens_df,
+                x="Holding_Cost_Pct",
+                y="Simulated_Savings",
+                title="Working Capital Optimization Sensitivity to Holding Cost Rate",
+                labels={"Holding_Cost_Pct": "Holding Cost Rate (%)", "Simulated_Savings": "Simulated Potential Savings ($)"},
+            )
+            fig_sens.add_vline(x=active_cost, line_dash="dash", line_color=Theme.CORAL, annotation_text=f"Active: {active_cost:.1f}%")
+            fig_sens.add_hline(y=total_sim_savings, line_dash="dot", line_color=Theme.CYAN, annotation_text=f"${total_sim_savings/1e6:.2f}M")
+            fig_sens = apply_default_layout(fig_sens, "Holding Cost Sensitivity Curve ($1M - $35M)")
+            st.plotly_chart(fig_sens, use_container_width=True)
+
+        with col_assump:
+            st.markdown(f"""
+            <div class="section-card">
+                <div style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; color: #818CF8; margin-bottom: 0.25rem;">Scenario Assumptions & Governance</div>
+                <h3>Economic Model Parameters</h3>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.82rem; margin-bottom: 0.35rem;">
+                    <b>Holding Cost Formula:</b> Savings = &sum;(Mean Weekly Sales &times; Buffer Pct &times; 52 &times; Holding Cost Rate).
+                </p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.82rem; margin-bottom: 0.35rem;">
+                    <b>Linear Sensitivity:</b> Because savings scale linearly with cost rate, every 1% increase in holding cost adds approx $2.73M to projected optimization.
+                </p>
+                <p style="color: {Theme.LIGHT_GRAY}; font-size: 0.82rem; margin-bottom: 0.35rem;">
+                    <b>Is Higher or Lower Preferred?</b> Lower holding costs reflect leaner operational expense; higher savings projections indicate greater theoretical upside from buffer discipline.
+                </p>
+                <p style="color: {Theme.DARK_GRAY}; font-size: 0.78rem; margin: 0;">
+                    <b>Limitations:</b> This simulation assumes uniform carrying costs across departments and does not model vendor lead-time variability or stockout penalty costs.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Assumptions Table
+        assumptions_data = pd.DataFrame([
+            {"Parameter": "Annual Inventory Holding Cost Rate", "Baseline Value": "4.5%", "Active Value": f"{active_cost:.1f}%", "Domain Rationale": "Represents cost of capital, insurance, shrinkage, and warehouse holding delta."},
+            {"Parameter": "Tier 1 (Core Performer) Buffer", "Baseline Value": "8.0%", "Active Value": f"{8.0*active_mult:.1f}%", "Domain Rationale": "High sales, low forecast error (predictable replenishment)."},
+            {"Parameter": "Tier 2 (Volatile Powerhouse) Buffer", "Baseline Value": "18.0%", "Active Value": f"{18.0*active_mult:.1f}%", "Domain Rationale": "High sales, high forecast error (requires dynamic buffer against surges)."},
+            {"Parameter": "Tier 3 (Stable Mid-Market) Buffer", "Baseline Value": "5.0%", "Active Value": f"{5.0*active_mult:.1f}%", "Domain Rationale": "Low sales, low forecast error (lean standard replenishment)."},
+            {"Parameter": "Tier 4 (Turnaround Target) Buffer", "Baseline Value": "12.0%", "Active Value": f"{12.0*active_mult:.1f}%", "Domain Rationale": "Low sales, high forecast error (drawdown buffer pending assortment cleanup)."},
+        ])
+        formatted_dataframe(
+            assumptions_data,
+            title="Active Scenario Parameter Assumptions Table",
+            description="Comparison of baseline audited assumptions against currently simulated scenario parameters.",
         )
 
     # ══════════════════════════════════════════════════════════════════
