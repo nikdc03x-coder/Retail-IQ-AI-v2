@@ -167,6 +167,12 @@ def run_forecasting_experiment(
             "experiment": "Phase 04 — Store-Level 1-Week-Ahead Sales Forecasting",
             "target": target_col,
             "horizon_weeks": 1,
+            "forecasting_paradigm": "Rolling 1-week-ahead operational forecast with weekly observed historical sales up to t-1",
+            "methodology_notes": {
+                "evaluation_type": "Rolling 1-step-ahead (1 week)",
+                "information_set": "Features at week t use actual sales observed through week t-1 (via lag_1, rolling_mean_4, etc.). Not an unassisted 22-week recursive rollout.",
+                "model_tradeoff": "XGBoost achieves champion WAPE (3.83%) and MAE ($39,837.61) on volume replenishment; Ridge Linear achieves lower RMSE ($58,728.02) and higher R2 (0.9879) under L2 error penalization.",
+            },
             "split_dates": split_meta,
             "feature_columns": feature_cols,
             "test_summary": {

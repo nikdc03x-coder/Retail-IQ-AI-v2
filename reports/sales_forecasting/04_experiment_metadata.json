@@ -1,5 +1,5 @@
 {
-  "experiment": "Phase 04 — Store-Level 1-Week-Ahead Sales Forecasting",
+  "experiment": "Phase 04 \u2014 Store-Level 1-Week-Ahead Sales Forecasting",
   "target": "Weekly_Sales",
   "horizon_weeks": 1,
   "forecasting_paradigm": "Rolling 1-week-ahead operational forecast with weekly observed historical sales up to t-1",
