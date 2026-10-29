@@ -75,8 +75,21 @@ EXPECTED_SCHEMAS = {
     },
 }
 
+def _resolve_gemini_api_key() -> str:
+    """Safely resolve Gemini API key from environment or Streamlit secrets."""
+    key = os.getenv("GEMINI_API_KEY", "")
+    if not key:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+                key = str(st.secrets["GEMINI_API_KEY"])
+        except Exception:
+            pass
+    return key
+
+
 # ── Gemini configuration ──
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_API_KEY = _resolve_gemini_api_key()
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
 # ── Dashboard constants ──
