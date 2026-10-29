@@ -78,3 +78,4 @@ def extract_context_from_history(conversation_history: list[dict[str, Any]] | No
             break
 
     return ctx
+
