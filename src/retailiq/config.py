@@ -98,7 +98,7 @@ def _resolve_gemini_model() -> str:
                 model = str(st.secrets["GEMINI_MODEL"])
         except Exception:
             pass
-    return model or "gemini-2.0-flash"
+    return model or "gemini-3.6-flash"
 
 
 # ── Gemini configuration ──
