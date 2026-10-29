@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-29 10:55:47",
+  "timestamp": "2026-10-29 11:35:58",
   "environment": "Windows 11 / Python 3.12",
   "gemini_live_available": false,
   "gemini_model_configured": "gemini-2.0-flash",
@@ -16,7 +16,7 @@
           "tool_called": [
             "get_store_rankings"
           ],
-          "latency": 0.0456,
+          "latency": 0.0166,
           "missing_tokens": []
         },
         {
@@ -26,7 +26,7 @@
           "tool_called": [
             "get_forecast_leaderboard"
           ],
-          "latency": 0.0398,
+          "latency": 0.0156,
           "missing_tokens": []
         },
         {
@@ -36,7 +36,7 @@
           "tool_called": [
             "get_forecast_leaderboard"
           ],
-          "latency": 0.0134,
+          "latency": 0.0077,
           "missing_tokens": []
         },
         {
@@ -46,7 +46,7 @@
           "tool_called": [
             "get_holiday_performance"
           ],
-          "latency": 0.0352,
+          "latency": 0.0085,
           "missing_tokens": []
         },
         {
@@ -56,7 +56,7 @@
           "tool_called": [
             "get_global_shap_importance"
           ],
-          "latency": 0.0357,
+          "latency": 0.0064,
           "missing_tokens": []
         },
         {
@@ -66,7 +66,7 @@
           "tool_called": [
             "get_store_forecast_errors"
           ],
-          "latency": 0.0348,
+          "latency": 0.0081,
           "missing_tokens": []
         }
       ]

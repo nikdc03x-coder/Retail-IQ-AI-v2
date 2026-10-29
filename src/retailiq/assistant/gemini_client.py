@@ -26,6 +26,7 @@ from src.retailiq.assistant.tools import (
     get_anomaly_records,
     get_global_shap_importance,
     explain_store_prediction,
+    get_operational_strategy_summary,
 )
 
 SYSTEM_INSTRUCTION = """
@@ -57,6 +58,7 @@ TOOLS_LIST = [
     get_anomaly_records,
     get_global_shap_importance,
     explain_store_prediction,
+    get_operational_strategy_summary,
 ]
 
 
@@ -119,22 +121,33 @@ class GeminiAssistantClient:
             )
 
             # Extract response text
-            answer_text = response.text if response.text else "No textual response generated."
+            answer_text = response.text if getattr(response, "text", None) else "No textual response generated."
 
-            # Inspect function calls from candidates if logged
+            # Inspect function calls from automatic_function_calling_history and candidates
             tools_used = []
-            if response.function_calls:
+            if hasattr(response, "automatic_function_calling_history") and response.automatic_function_calling_history:
+                for content in response.automatic_function_calling_history:
+                    if hasattr(content, "parts") and content.parts:
+                        for part in content.parts:
+                            if hasattr(part, "function_call") and part.function_call:
+                                tools_used.append({
+                                    "tool": getattr(part.function_call, "name", "unknown_tool"),
+                                    "args": dict(part.function_call.args) if getattr(part.function_call, "args", None) else {},
+                                })
+
+            if not tools_used and getattr(response, "function_calls", None):
                 for fc in response.function_calls:
                     tools_used.append({
-                        "tool": fc.name,
-                        "args": dict(fc.args) if fc.args else {},
+                        "tool": getattr(fc, "name", "unknown_tool"),
+                        "args": dict(fc.args) if getattr(fc, "args", None) else {},
                     })
 
             return {
                 "route": "gemini_function_calling",
                 "model": self.model,
                 "answer": answer_text,
-                "tools_called": tools_used,
+                "tools_called": [t["tool"] for t in tools_used] if tools_used else [],
+                "tool_details": tools_used,
                 "verified": True,
             }
 

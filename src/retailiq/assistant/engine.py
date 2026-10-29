@@ -48,6 +48,20 @@ class RetailIQAssistantEngine:
                 "verified": False,
             }
 
+        # Input length guardrail to prevent buffer abuse or denial-of-service
+        if len(q_clean) > 2000:
+            return {
+                "route": "validation_guard",
+                "answer": "Input query exceeds maximum allowed length of 2,000 characters. Please provide a more concise inquiry.",
+                "tools_called": [],
+                "evidence_source": "Input Length Guardrail",
+                "latency_seconds": 0.0,
+                "provider": "RetailIQ Guard",
+                "verified": False,
+            }
+
+        gemini_fallback_reason: str | None = None
+
         # ── Route 1: Gemini with tool calling if API key is active ──
         if self.has_gemini:
             try:
@@ -57,14 +71,15 @@ class RetailIQAssistantEngine:
                     "route": "gemini_function_calling",
                     "answer": gemini_res["answer"],
                     "tools_called": gemini_res.get("tools_called", []),
+                    "tool_details": gemini_res.get("tool_details", []),
                     "evidence_source": "Dynamic Tool Grounding via reports/",
                     "latency_seconds": latency,
                     "provider": f"Google Gemini ({self.gemini_client.model})",
                     "verified": True,
                 }
             except Exception as e:
-                # Log and fallback gracefully without failing
-                pass
+                # Capture failure reason and fallback gracefully without crashing
+                gemini_fallback_reason = f"Live Gemini API unavailable ({str(e)[:100]}). Automatically routed to deterministic tool dispatcher."
 
         # ── Route 2: Deterministic Fallback Dispatcher ──
         fallback_res = dispatch_fallback_query(q_clean, conversation_history=conversation_history)
@@ -83,4 +98,5 @@ class RetailIQAssistantEngine:
             "chart_type": fallback_res.get("chart_type"),
             "followups": fallback_res.get("followups", []),
             "deep_link_page": fallback_res.get("deep_link_page"),
+            "fallback_reason": gemini_fallback_reason,
         }

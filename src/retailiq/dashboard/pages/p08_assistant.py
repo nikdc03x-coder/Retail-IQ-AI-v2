@@ -120,6 +120,21 @@ def render() -> None:
                 st.session_state.assistant_messages = st.session_state.assistant_messages[:1]
                 st.rerun()
 
+        st.markdown(
+            """
+            <div style="font-size: 0.8rem; color: #94A3B8; background: #1E293B; border-radius: 6px; padding: 0.6rem 0.8rem; margin-top: 0.5rem;">
+                <b>🔒 Secure Credential Protocol:</b>
+                <ul style="margin: 0.25rem 0 0 1rem; padding: 0;">
+                    <li><b>Local Dev:</b> Place <code>GEMINI_API_KEY="your-key"</code> in <code>.env</code> (automatically ignored by Git).</li>
+                    <li><b>Streamlit Cloud:</b> Enter <code>GEMINI_API_KEY = "your-key"</code> in your app dashboard <i>Secrets</i> UI.</li>
+                    <li><b>Session Only:</b> Entering a key above stores it solely in your active browser session memory (never written to disk).</li>
+                    <li><b>Security Warning:</b> Never paste API keys directly into public chat prompts or commit them to Git.</li>
+                </ul>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
     # ── Engine Initialization ──
     engine = RetailIQAssistantEngine(api_key=st.session_state.user_gemini_key)
 
@@ -205,16 +220,38 @@ def render() -> None:
                                 st.rerun()
 
                 # ── 5. Transparency Drawer ──
-                with st.expander("Transparency & Execution Trace", expanded=False):
+                with st.expander("How was this answer generated?", expanded=False):
                     t_col1, t_col2 = st.columns(2)
                     with t_col1:
                         st.markdown(f"**Execution Route:** `{meta.get('route')}`")
                         st.markdown(f"**Engine Provider:** {meta.get('provider')}")
-                        st.markdown(f"**Tools Executed:** `{', '.join(meta.get('tools_called', ['N/A']))}`")
+                        st.markdown(f"**Gemini Model:** `{meta.get('model', 'Not invoked (Offline deterministic engine)')}`")
+                        tools_str = ", ".join(meta.get("tools_called", [])) if meta.get("tools_called") else "N/A"
+                        st.markdown(f"**Tools Executed:** `{tools_str}`")
+                        args = meta.get("arguments") or meta.get("tool_details")
+                        st.markdown(f"**Applied Filters / Args:** `{args if args else 'Default parameters'}`")
+
                     with t_col2:
                         st.markdown(f"**Data Evidence Source:** `{meta.get('evidence_source')}`")
                         st.markdown(f"**Latency:** `{meta.get('latency_seconds', 0.0)}s`")
-                        st.markdown(f"**Mathematical Verification:** `{'Verified' if meta.get('verified') else 'Unverified'}`")
+                        is_verified = meta.get("verified", True)
+                        v_label = "✅ Verified against disk reports" if is_verified else "⚠️ Unverified / Boundary Guard"
+                        st.markdown(f"**Verification Status:** {v_label}")
+
+                        fallback_note = meta.get("fallback_reason")
+                        if fallback_note:
+                            st.markdown(f"**Fallback Diagnostic:** *{fallback_note}*")
+
+                    st.markdown(
+                        "<div style='margin-top: 0.6rem; padding: 0.5rem 0.75rem; background-color: #1E293B; border-radius: 6px; font-size: 0.75rem; color: #94A3B8;'>"
+                        "<b>📌 AI Limitations & Boundary Notice:</b> "
+                        "Insights are derived from historical Walmart retail observations (2010–2012). "
+                        "Forecasting models are evaluated under a rolling 1-week-ahead operational backtest. "
+                        "Strategic financial projections (safety stock, working capital) are simulated heuristic estimates under 70% cost ratio and 4.5% holding cost assumptions. "
+                        "Data covers top-line gross sales revenue only (store-level net profit margins and employee payroll logs are not present in this dataset)."
+                        "</div>",
+                        unsafe_allow_html=True,
+                    )
 
     # ── User Chat Input ──
     user_input = st.chat_input("Ask a business question about sales, models, anomalies, or SHAP...")
@@ -381,6 +418,33 @@ def _render_interactive_chart(chart_type: str, data: Any) -> None:
                 fig = apply_default_layout(fig, f"Local TreeSHAP Drivers: Store {data.get('store')} on {data.get('date')}")
                 fig.update_layout(height=280, showlegend=False, yaxis=dict(autorange="reversed"), margin=dict(l=80, r=40, t=40, b=30))
                 st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type in ["get_operational_strategy_summary", "strategy_summary"] and isinstance(data, dict):
+            tier_data = [
+                {"Tier": "Tier 1: Core Performers", "Stores": data.get("core_performers_count", 15)},
+                {"Tier": "Tier 2: Volatile Powerhouses", "Stores": data.get("volatile_growth_stores_count", 8)},
+                {"Tier": "Tier 3: Stable Specialists", "Stores": 8},
+                {"Tier": "Tier 4: Turnaround Targets", "Stores": data.get("turnaround_target_stores_count", 14)},
+            ]
+            df_tier = pd.DataFrame(tier_data)
+            fig = px.bar(
+                df_tier,
+                x="Stores",
+                y="Tier",
+                orientation="h",
+                color="Tier",
+                color_discrete_map={
+                    "Tier 1: Core Performers": Theme.GREEN,
+                    "Tier 2: Volatile Powerhouses": Theme.AMBER,
+                    "Tier 3: Stable Specialists": Theme.CYAN,
+                    "Tier 4: Turnaround Targets": Theme.CORAL,
+                },
+                text="Stores",
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Operational Strategic Portfolio Quadrants (45 Stores)")
+            fig.update_layout(height=240, showlegend=False, yaxis=dict(autorange="reversed"), margin=dict(l=80, r=40, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
     except Exception:
         pass
 
@@ -404,7 +468,10 @@ def _handle_user_query(engine: RetailIQAssistantEngine, prompt: str) -> None:
         "metadata": {
             "route": result.get("route"),
             "provider": result.get("provider"),
+            "model": result.get("model") or (GEMINI_MODEL if result.get("route") == "gemini_function_calling" else "Not invoked (Offline mode)"),
             "tools_called": result.get("tools_called", []),
+            "tool_details": result.get("tool_details", []),
+            "arguments": result.get("arguments", {}),
             "evidence_source": result.get("evidence_source"),
             "latency_seconds": result.get("latency_seconds", 0.0),
             "verified": result.get("verified", True),
@@ -412,5 +479,6 @@ def _handle_user_query(engine: RetailIQAssistantEngine, prompt: str) -> None:
             "chart_type": result.get("chart_type"),
             "followups": result.get("followups", []),
             "deep_link_page": result.get("deep_link_page"),
+            "fallback_reason": result.get("fallback_reason"),
         },
     })

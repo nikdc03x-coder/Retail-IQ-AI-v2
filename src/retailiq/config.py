@@ -88,9 +88,22 @@ def _resolve_gemini_api_key() -> str:
     return key
 
 
+def _resolve_gemini_model() -> str:
+    """Safely resolve Gemini model name from environment or Streamlit secrets."""
+    model = os.getenv("GEMINI_MODEL", "")
+    if not model:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "GEMINI_MODEL" in st.secrets:
+                model = str(st.secrets["GEMINI_MODEL"])
+        except Exception:
+            pass
+    return model or "gemini-2.0-flash"
+
+
 # ── Gemini configuration ──
 GEMINI_API_KEY = _resolve_gemini_api_key()
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+GEMINI_MODEL = _resolve_gemini_model()
 
 # ── Dashboard constants ──
 class Theme:

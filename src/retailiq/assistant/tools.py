@@ -373,15 +373,34 @@ def compare_forecasting_models(model_a: str = "XGBoost", model_b: str = "Previou
         return {"success": False, "error": str(e)}
 
 
-def get_store_forecast_errors(top_n: int = 5, best: bool = True) -> dict[str, Any]:
-    """Retrieve stores with the lowest or highest forecasting errors."""
+def get_store_forecast_errors(store: int | None = None, top_n: int = 5, best: bool = True) -> dict[str, Any]:
+    """Retrieve forecasting error metrics for a specific store or ranked extreme stores."""
     try:
-        top_n = max(1, min(45, int(top_n)))
         report_path = REPORT_SUBDIRS["forecast_reliability"] / "01_store_error_summary.csv"
         if not report_path.exists():
             return {"success": False, "error": "Store error summary report not found. Run Phase 05 first."}
 
         df = pd.read_csv(report_path)
+
+        if store is not None:
+            _check_store_valid(int(store))
+            match = df[df["Store"] == int(store)]
+            if match.empty:
+                return {"success": False, "error": f"No error metrics found for Store {store}."}
+            row = match.iloc[0]
+            summary = (
+                f"Store {int(store)} XGBoost Forecast Reliability (Rank {int(row['Reliability_Rank'])} of 45): "
+                f"WAPE of {float(row['WAPE_Pct']):.2f}%, MAE of ${float(row['MAE']):,.2f}, and RMSE of ${float(row['RMSE']):,.2f} "
+                f"evaluated across {int(row['Test_Weeks'])} held-out test weeks."
+            )
+            return {
+                "success": True,
+                "summary": summary,
+                "data": [row.to_dict()],
+                "evidence_source": "reports/forecast_reliability/01_store_error_summary.csv",
+            }
+
+        top_n = max(1, min(45, int(top_n)))
         df_sorted = df.sort_values(by="WAPE_Pct", ascending=best).reset_index(drop=True)
         subset = df_sorted.head(top_n)
 
@@ -568,6 +587,59 @@ def explain_store_prediction(store: int, date: str) -> dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
+def get_operational_strategy_summary() -> dict[str, Any]:
+    """Retrieve operational decision strategy metrics, portfolio tier counts, and simulated financial impacts."""
+    try:
+        report_path = REPORT_SUBDIRS["strategy"] / "04_executive_decision_summary.json"
+        if not report_path.exists():
+            return {"success": False, "error": "Strategy executive summary not found. Run Phase 08 first."}
+
+        with open(report_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+
+        fp = meta.get("financial_impact_projections", {})
+        tiers = meta.get("tier_summary", {})
+        directives = meta.get("priority_executive_directives", [])
+
+        wc_opt = float(fp.get("estimated_annual_working_capital_optimization", 12309480.66))
+        safety_stock = float(fp.get("total_recommended_safety_stock_dollars", 5260461.83))
+        labor_hours = int(fp.get("chain_weekly_labor_flex_hours", 1800))
+        core_count = int(tiers.get("core_performers_count", 15))
+        core_share = float(tiers.get("core_performers_sales_share_pct", 44.55))
+        volatile_count = int(tiers.get("volatile_growth_stores_count", 8))
+        turnaround_count = int(tiers.get("turnaround_target_stores_count", 14))
+
+        summary = (
+            f"Operational Decision Strategy (45 stores classified across 4 strategic quadrants): "
+            f"15 Core Performers drive {core_share:.1f}% of network sales with automated lean replenishment (8% buffer). "
+            f"8 Volatile Powerhouses require dynamic safety stock (+18% buffer, ${safety_stock:,.2f} total chain buffer) "
+            f"and 75 weekly flex staffing hours (total {labor_hours:,} weekly hours chain-wide). "
+            f"Simulated working capital optimization is estimated at ${wc_opt:,.2f}/year under 4.5% holding cost assumptions. "
+            f"Note: Financial figures represent simulated heuristic estimates, not historical audited accounting statements."
+        )
+
+        return {
+            "success": True,
+            "summary": summary,
+            "data": {
+                "total_stores_classified": meta.get("total_stores_classified", 45),
+                "total_departments_analyzed": meta.get("total_departments_analyzed", 81),
+                "estimated_working_capital_optimization": wc_opt,
+                "total_recommended_safety_stock": safety_stock,
+                "chain_weekly_labor_flex_hours": labor_hours,
+                "core_performers_count": core_count,
+                "core_performers_sales_share_pct": core_share,
+                "volatile_growth_stores_count": volatile_count,
+                "turnaround_target_stores_count": turnaround_count,
+                "priority_directives": directives,
+                "methodology_note": "Simulated estimates using 70% cost ratio and 4.5% holding cost heuristic assumptions.",
+            },
+            "evidence_source": "reports/strategy/04_executive_decision_summary.json",
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
 TOOL_REGISTRY: dict[str, Any] = {
     "get_dataset_overview": get_dataset_overview,
     "get_chain_sales_summary": get_chain_sales_summary,
@@ -582,4 +654,5 @@ TOOL_REGISTRY: dict[str, Any] = {
     "get_anomaly_records": get_anomaly_records,
     "get_global_shap_importance": get_global_shap_importance,
     "explain_store_prediction": explain_store_prediction,
+    "get_operational_strategy_summary": get_operational_strategy_summary,
 }

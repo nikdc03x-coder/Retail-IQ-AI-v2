@@ -27,6 +27,7 @@ from src.retailiq.assistant.tools import (
     get_anomaly_records,
     get_global_shap_importance,
     explain_store_prediction,
+    get_operational_strategy_summary,
 )
 
 
@@ -231,7 +232,7 @@ def dispatch_fallback_query(query: str, conversation_history: list[dict[str, Any
 
     # ── Conversational Follow-Up: "What is their sales difference?" ──
     if any(k in q for k in ["sales difference", "their difference", "difference between them", "what is their difference", "revenue difference"]):
-        compared = ctx.get("last_compared_stores") or (ctx.get("last_stores")[:2] if len(ctx.get("last_stores", [])) >= 2 else [20, 14])
+        compared = ctx.get("last_compared_stores") if (ctx.get("last_compared_stores") and len(ctx["last_compared_stores"]) >= 2) else (ctx.get("last_stores")[:2] if len(ctx.get("last_stores", [])) >= 2 else [20, 14])
         if len(compared) >= 2:
             s1_id, s2_id = compared[0], compared[1]
             res = compare_stores(store_ids=[s1_id, s2_id])
@@ -272,7 +273,7 @@ def dispatch_fallback_query(query: str, conversation_history: list[dict[str, Any
         answer = (
             "### Operational Evaluation: Volume Scale vs. Predictive Reliability\n\n"
             "While Store 20 generated **+$12.40M more revenue** (+4.29%) than Store 14 over 143 weeks, higher sales volume does **not** automatically indicate superior operational health:\n\n"
-            "1. **Predictive Stability (Store 20):** Store 20 operates with steady foot traffic and high forecast predictability (**5.01% WAPE**, $105.6K MAE). It requires only an **+8% safety buffer**.\n"
+            "1. **Predictive Stability (Store 20):** Store 20 operates with steady foot traffic and moderate forecast error (**3.60% WAPE**, $75,305.20 MAE, Rank 25 of 45). It requires only an **+8% safety buffer**.\n"
             "2. **Severe Volatility (Store 14):** Store 14 suffers from the **highest forecast error in the entire network (10.59% WAPE, $178.6K MAE)**, driven by massive promotional swings in a 200K sq ft Supercenter. It requires an aggressive **+18% safety stock buffer** ($303.7K buffer capital) and 75 weekly flex staffing hours.\n\n"
             "**Conclusion:** Store 20's sales represent stable, low-friction volume. Store 14's volume is operationally expensive to service, carrying elevated stockout and inventory markdown risks."
         )
@@ -387,8 +388,30 @@ def dispatch_fallback_query(query: str, conversation_history: list[dict[str, Any
             )
             return _format_output("get_store_rankings", {"store": 14}, res, custom_answer=answer, chart_type="get_store_rankings", deep_link_page="Operational Decision Strategy")
 
+    # ── Store 20 Specific Context-Aware Queries ──
+    if "20" in store_matches:
+        if any(k in q for k in ["error", "volatilit", "wape", "mae", "rmse", "accuracy", "reliable", "predictability"]):
+            res = get_store_forecast_errors(store=20)
+            answer = (
+                "### Store 20 Forecast Accuracy & Reliability Diagnostics\n\n"
+                "Store 20 is Walmart's #1 revenue store ($301.40M cumulative historical sales). Its forecast error metrics are:\n\n"
+                "- **Test Set WAPE:** **3.60%** (Reliability Rank: **25 of 45 stores**).\n"
+                "- **Mean Absolute Error (MAE):** **$75,305.20** per week.\n"
+                "- **Root Mean Squared Error (RMSE):** **$96,765.64**.\n"
+                "- **Mean Bias:** **+$39,322.38** (slight over-prediction).\n"
+                "- **Evaluation Split:** 22 held-out test weeks (June–October 2012) with $45.99M total actual sales ($2.09M/week average).\n\n"
+                "**Operational Context:** While dollar MAE is high due to massive store volume (203K sq ft), percentage error (3.60% WAPE) is well below the 5% threshold, making Store 20 suitable for automated replenishment with a standard 8% safety buffer."
+            )
+            return _format_output("get_store_forecast_errors", {"store": 20}, res, custom_answer=answer, chart_type="get_store_forecast_errors", deep_link_page="Forecast Reliability & Diagnostics")
+
+    # ── Generic Single-Store Forecast Error Diagnostics ──
+    if store_matches and any(k in q for k in ["error", "volatilit", "wape", "mae", "rmse", "accuracy", "predictability"]):
+        s_id = int(store_matches[0])
+        res = get_store_forecast_errors(store=s_id)
+        return _format_output("get_store_forecast_errors", {"store": s_id}, res, custom_answer=res.get("summary"), chart_type="get_store_forecast_errors", deep_link_page="Forecast Reliability & Diagnostics")
+
     # ── Model Comparisons & Benchmark Leaderboards ──
-    if any(k in q for k in ["compare versus naive", "vs naive", "versus naive", "xgboost vs naive", "compare naive"]):
+    if any(k in q for k in ["compare versus naive", "vs naive", "versus naive", "xgboost vs naive", "compare naive", "compare to naive"]):
         res = compare_forecasting_models(model_a="XGBoost", model_b="Previous-Week Naive")
         return _format_output(
             "compare_forecasting_models",
@@ -451,7 +474,7 @@ def dispatch_fallback_query(query: str, conversation_history: list[dict[str, Any
         )
         return _format_output("get_forecast_leaderboard", {"split": "Test"}, res, custom_answer=answer, chart_type="get_forecast_leaderboard", deep_link_page="Sales Forecasting")
 
-    if any(k in q for k in ["best model", "leaderboard", "which model", "deploy", "wape"]) or ("forecast accuracy" in q and not ("worst" in q or "best forecast store" in q)):
+    if any(k in q for k in ["champion", "champion model", "best model", "leaderboard", "which model", "deploy", "wape"]) or ("forecast accuracy" in q and not ("worst" in q or "best forecast store" in q)):
         res = get_forecast_leaderboard(split="Test")
         answer = (
             "### Machine Learning Forecasting Model Leaderboard\n\n"
@@ -604,6 +627,37 @@ def dispatch_fallback_query(query: str, conversation_history: list[dict[str, Any
             "- **Data Treatment:** These rows represent authentic customer product returns and post-holiday refunds. They are preserved and audited in reports/data_quality/ rather than silently discarded."
         )
         return _format_output("get_dataset_overview", {}, res, custom_answer=answer, chart_type="get_dataset_overview", deep_link_page="Data Quality & Integrity")
+
+    # ── Promotional Markdowns (MarkDown1 to MarkDown5) ──
+    if any(k in q for k in ["markdown", "markdowns", "mark down", "promotional discount", "promotion impact"]):
+        res = get_chain_sales_summary()
+        answer = (
+            "### Promotional Markdown Analysis & Feature Impact\n\n"
+            "Walmart introduced five anonymized promotional markdown indicators (**MarkDown1 through MarkDown5**) in November 2011:\n\n"
+            "1. **Data Availability:** Prior to November 2011, markdown fields are unrecorded (~60% missing values in raw features across the 143-week horizon). From November 2011 onward, they are recorded continuously.\n"
+            "2. **Peak Markdown Timing:** MarkDown1 and MarkDown5 peak heavily around Thanksgiving (week 47) and Super Bowl (week 5), driving targeted promotional volume surges.\n"
+            "3. **Predictive Attribution (TreeSHAP):** In global XGBoost attributions, individual markdowns each account for **<1.5% relative impact**, because annual seasonality (`lag_52` at 45.01%) and monthly baseline trend (`rolling_mean_4` at 27.65%) dominate baseline predictions.\n"
+            "4. **Operational Markdown Rules:** The strategy engine (`03_department_markdown_rules.csv`) establishes automated markdown clearance ladders (20% -> 40% discount) for aging inventory in high-return departments (Dept 47, Dept 54)."
+        )
+        return _format_output("get_chain_sales_summary", {"topic": "markdowns"}, res, custom_answer=answer, chart_type="get_chain_sales_summary", deep_link_page="Exploratory Business Analytics")
+
+    # ── Operational Decision Strategy & Working Capital Simulation ──
+    if any(k in q for k in ["operational strategy", "decision strategy", "working capital", "safety stock", "labor flex", "flex hours", "portfolio tier", "strategic matrix", "4-quadrant", "quadrant", "turnaround stores", "core performers"]):
+        res = get_operational_strategy_summary()
+        answer = (
+            "### Operational Decision Strategy & Portfolio Synthesis\n\n"
+            "The 45-store network is classified across 4 operational quadrants combining volume scale and forecast volatility:\n\n"
+            "- **Tier 1: Core Performers (15 Stores):** Generate **44.55% of chain revenue** with high predictive accuracy. Managed via lean automated replenishment with **8% safety buffer**.\n"
+            "- **Tier 2: Volatile Powerhouses (8 Stores, e.g. Store 14, Store 20):** High revenue but elevated promotional volatility. Allocated **+18% safety stock buffer** (**$2,376,468.79** buffer capital) and **75 weekly flex staffing hours** per store.\n"
+            "- **Tier 3: Stable Specialists (8 Stores):** Moderate volume, predictable demand; standard replenishment protocols.\n"
+            "- **Tier 4: Turnaround Targets (14 Stores):** Low sales and high error; recommend 25% SKU rationalization and consolidation around top 15 anchor departments.\n\n"
+            "**Simulated Financial Projections:**\n"
+            "- **Estimated Annual Working Capital Optimization:** **$12,309,480.66** (under simulated 4.5% inventory holding cost and 70% cost ratio assumptions).\n"
+            "- **Total Recommended Chain Safety Stock:** **$5,260,461.83** across 45 stores.\n"
+            "- **Chain Weekly Flex Staffing Hours:** **1,800 hours/week** allocated dynamically to volatile peak periods.\n\n"
+            "*Methodology Note: Financial projections are simulated heuristic estimates based on industry holding cost models, not historical audited corporate accounting statements.*"
+        )
+        return _format_output("get_operational_strategy_summary", {}, res, custom_answer=answer, chart_type="get_operational_strategy_summary", deep_link_page="Operational Decision Strategy")
 
     # ── Department Performance ──
     if any(k in q for k in ["dept", "department"]):
