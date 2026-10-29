@@ -1,204 +1,224 @@
 # RetailIQ AI V2
 
-**An Explainable Retail Sales Forecasting & Decision Intelligence Platform**
+**An Explainable Retail Sales Forecasting, Decision Intelligence & AI Assistant Platform**
+
+[![Tests](https://img.shields.io/badge/pytest-167%20passed-10B981?style=flat-square&logo=pytest)](file:///tests/)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-6366F1?style=flat-square&logo=python)](file:///pyproject.toml)
+[![UI](https://img.shields.io/badge/dashboard-Streamlit%201.30+-FF4B4B?style=flat-square&logo=streamlit)](file:///app.py)
+[![Model](https://img.shields.io/badge/champion-XGBoost%20%283.83%25%20WAPE%29-06B6D4?style=flat-square)](file:///reports/sales_forecasting/)
+[![Explainability](https://img.shields.io/badge/SHAP-TreeExplainer%20100%25%20Axiom-F59E0B?style=flat-square)](file:///reports/explainable_ai/)
+[![LLM](https://img.shields.io/badge/AI%20Assistant-Gemini%20%2B%20Offline%20Fallback-8B5CF6?style=flat-square)](file:///src/retailiq/assistant/)
 
 ---
 
 ## 1. Executive Summary
 
-**RetailIQ AI V2** is a portfolio- and research-grade enterprise retail intelligence platform built from the ground up on the historical Walmart weekly sales dataset. It bridges the gap between raw retail data engineering, predictive machine learning, reliability diagnostics, unsupervised anomaly auditing, cooperative game-theory interpretability (TreeSHAP), and evidence-grounded generative AI.
+**RetailIQ AI V2** is a portfolio- and research-grade enterprise retail intelligence platform built from the ground up on historical Walmart weekly sales records across 45 stores and 81 departments. It bridges the gap between raw data engineering, time-series forecasting, spatial reliability diagnostics, dual-detector anomaly auditing, cooperative game-theory interpretability (TreeSHAP), simulated operational strategy, and an evidence-grounded conversational AI assistant powered by Google Gemini with deterministic offline failover.
 
-The platform provides an end-to-end reproducible pipeline, an executive 10-page dark Slate-950/900 Streamlit dashboard, a dual-route conversational business analyst powered by Google Gemini with deterministic fallback and interactive Plotly visuals, and an automated 150-test verification suite.
+The platform includes:
+- **Reproducible Pipelines:** 8 automated analytical pipeline stages executed in strict sequence via `python scripts/run_all_pipelines.py` (all outputs regenerated in ~135 seconds).
+- **Enterprise Dashboard:** A 10-page dark Slate-950/900 Streamlit web application (`app.py`) built with Material Symbols, Inter typography, responsive card layouts, and 15+ custom Plotly visualizations.
+- **Conversational AI Business Assistant:** Dual-route intelligence supporting freely written natural language queries, multi-turn entity continuity, pairwise store/model comparisons, chart generation, and data boundary guardrails.
+- **Automated Verification:** 167 automated pytest unit, integration, benchmark, and smoke tests (100% pass rate).
 
 ---
 
-## 2. Core Capabilities & Architecture
+## 2. Core Capabilities & Implemented Phases (01–13)
 
-| # | Capability | Technical Methodology | Key Outcome |
+| # | Pipeline Stage / Module | Technical Methodology | Key Verified Outcome |
 |:---:|:---|:---|:---|
-| **01** | **Data Engineering & Lineage** | Schema validation, duplicate checks, join integrity, Parquet storage | 421,570 rows preserved (100.0%); 0 duplicate records; 0 holiday mismatches |
-| **02** | **Data Quality & Audit** | Statistical profiling, missingness breakdown, returns audit | CPI/Unemployment 0% missing; 1,285 customer returns (-$88.2K) preserved |
-| **03** | **Business Analytics** | Hierarchical store-week rollups, Pareto shares, holiday lift analysis | Total sales: $6.74B; #1 Store 20 ($301.4M); Thanksgiving lift: +41.34% |
-| **04** | **Sales Forecasting** | 18 autoregressive features, chronological split, ML vs Naive baselines | Champion XGBoost: **3.83% WAPE** (-22.3% error reduction vs Naive) |
-| **05** | **Forecast Reliability** | Spatial error spread, holiday error shifts, 4-fold expanding backtests | 77.8% store win rate vs Naive; 100% backtest consistency across all folds |
-| **06** | **Anomaly Detection** | Residual Z-score (|Z|>3) + multivariate Isolation Forest consensus | 23 prioritized audit targets (2.3%); 14 unanimous flags; 99.09% agreement |
-| **07** | **Explainable AI (TreeSHAP)** | Global dollar attribution, local waterfall decomposition, efficiency audit | Top 2 features explain 72.66% power; 100% predictions reconstruct exactly |
-| **08** | **Operational Decision Strategy** | 4-Quadrant Store Matrix (Volume vs WAPE), Dynamic Buffers & Markdown Rules | $12.3M annual holding cost optimization; 1,800 weekly labor flex hours |
-| **09** | **Enterprise Dashboard** | Multi-page Streamlit app (`app.py`), Material Symbols, Inter typography | Sub-0.5s load times; 10 operational pages; zero casual emojis |
-| **10** | **AI Business Assistant** | Dual-route: Gemini (`gemini-2.0-flash`) tool calling + deterministic fallback | 13 typed Python tools; interactive Plotly charts; dynamic follow-up chips |
-| **11** | **Testing & Verification** | Automated master runner (`run_all_pipelines.py`) and Pytest test suite | 150 passing tests; full end-to-end pipeline executes in <40 seconds |
+| **01** | **Data Engineering & Lineage** | Schema validation, duplicate checks, join integrity, Parquet storage | 421,570 records preserved (100.0%); 0 duplicate records; 0 foreign key dropouts |
+| **02** | **Data Quality & Reconciliation** | Missingness reconciliation, statistical profiling, customer returns audit | 100% complete historical sales period; 1,285 customer returns (-$88.2K) audited |
+| **03** | **Business Analytics** | Hierarchical store-week rollups, Pareto shares, holiday lift analysis | $6.74B historical revenue; Store 20 #1 ($301.4M); Thanksgiving lift: +41.34% |
+| **04** | **Sales Forecasting** | 18 autoregressive/cyclical features, chronological train/val/test splits | Champion XGBoost: **3.83% WAPE** ($39.8K MAE); Ridge: **RMSE $58.7K**, $R^2=0.9879$ |
+| **05** | **Forecast Reliability** | Spatial error spread across 45 stores, 4-fold expanding-window backtests | 77.8% store win rate vs Naive; error spread from 2.06% (Store 37) to 10.59% (Store 14) |
+| **06** | **Anomaly Detection** | Residual Z-score (|Z|>3.0) + multivariate Isolation Forest consensus | 23 prioritized review targets (2.3%); 14 unanimous flags; 99.09% detector agreement |
+| **07** | **Explainable AI (TreeSHAP)** | Global feature attributions, local waterfall decomposition, efficiency axiom | Top 2 features explain 72.66% power (lag_52: 45.0%, rolling_mean_4: 27.7%); 100% reconstructed |
+| **08** | **Operational Strategy** | 4-Quadrant Store Matrix (Volume vs WAPE), Dynamic Buffers & Scenario Simulator | Simulated potential savings: $12.3M at 4.5% holding cost (interactive 1%–12% curve) |
+| **09** | **Enterprise Dashboard** | Multi-page Streamlit application (`app.py`), Slate design tokens, Plotly charts | Sub-second cold start; 10 operational pages; 100% responsive dark mode |
+| **10** | **AI Business Assistant** | Dual-route: Gemini (`gemini-2.0-flash`) tool calling + deterministic fallback | 13 typed Python tools; multi-turn entity context; 100% benchmark score (40/40) |
+| **11** | **Independent Scientific Audit** | Adversarial validation of claims, code contracts, and metric calculations | Discovered 6 empirical issues; established rolling 1-step operational horizon |
+| **12** | **Scientific Corrections** | Formal resolution of all 6 audit findings across codebase, UI, and reports | Resolved all 6 issues; 161 automated passing tests; corrected attribution math |
+| **13** | **Deployment Readiness** | Secret protection, security audit, CORS/XSRF configuration, 6-dim AI evaluation | 167 automated passing tests; zero secrets exposed; cloud deployment ready |
 
 ---
 
-## 3. Key Empirical Findings & Leaderboard
+## 3. Scientific Findings & Forecasting Leaderboard
 
-### Forecasting Model Leaderboard (June–October 2012 Held-Out Test Split, $N = 990$)
+### Operational Forecasting Leaderboard (June–October 2012 Held-Out Test Split, $N = 990$)
 
-| Rank | Model Architecture | WAPE (%) | MAE ($) | RMSE ($) | $R^2$ | Error vs. Naive |
-|:---:|:---|:---:|:---:|:---:|:---:|:---:|
-| **1** | **XGBoost Regressor (Champion)** | **3.83%** | **$39,837.61** | **$60,391.89** | **0.9872** | **-22.3%** |
-| 2 | Ridge Linear Regressor | 3.91% | $40,642.00 | $58,728.02 | 0.9879 | -20.8% |
-| 3 | Random Forest Regressor | 4.00% | $41,641.25 | $64,746.19 | 0.9853 | -18.8% |
-| 4 | Previous-Week Naive Baseline | 4.93% | $51,307.24 | $77,389.89 | 0.9790 | Baseline |
-| 5 | Seasonal Naive (52-Week) Baseline | 5.12% | $53,266.11 | $82,732.61 | 0.9760 | +3.8% |
+Evaluation protocol: **Rolling 1-week-ahead operational forecast ($t+1$) with observed historical sales updated at $t-1$**.
 
-### Key Empirical Takeaways
-- **Annual Seasonality & Trailing Momentum Dominate:** TreeSHAP reveals that prior-year same-week sales (`lag_52`, mean absolute impact $\$228.7\text{K}$) and trailing 4-week momentum (`rolling_mean_4`, mean impact $\$140.5\text{K}$) account for **$72.66\%$** of all predictive power.
-- **Holiday Volatility:** Thanksgiving drives a **$+41.34\%$** chain-wide sales lift, but increases forecast error volatility by **$+20.8\%$** (4.58% WAPE vs 3.79% non-holiday).
-- **Spatial Reliability Disparity:** Store forecast accuracy varies by a factor of $5\times$ across locations (Store 37 leads with $2.06\%$ WAPE; Store 14 exhibits $10.59\%$ WAPE).
-- **Outlier Audit Prioritization:** Exactly 23 observations are flagged for operational review (led by Store 14 on 2012-08-24 with a $+\$421\text{K}$ residual miss).
+| Rank | Model Architecture | WAPE (%) | MAE ($) | RMSE ($) | $R^2$ | Operational Specialty |
+|:---:|:---|:---:|:---:|:---:|:---:|:---|
+| **1** | **XGBoost Regressor (Champion)** | **3.83%** | **$39,837.61** | **$60,391.89** | **0.9872** | **Best for Volume Replenishment:** Minimizes absolute dollar deviations (-22.3% vs Naive). |
+| 2 | Ridge Linear Regressor | 3.91% | $40,642.00 | **$58,728.02** | **0.9879** | **Best for Tail Outlier Protection:** L2 loss penalizes large errors, achieving lowest RMSE. |
+| 3 | Random Forest Regressor | 4.00% | $41,641.25 | $64,746.19 | 0.9853 | Non-linear ensemble baseline. |
+| 4 | Previous-Week Naive Baseline | 4.93% | $51,307.24 | $77,389.89 | 0.9790 | Naive operational persistence heuristic ($y_t = y_{t-1}$). |
+| 5 | Seasonal Naive (52-Week) Baseline | 5.12% | $53,266.11 | $82,732.61 | 0.9760 | Annual seasonality persistence heuristic ($y_t = y_{t-52}$). |
 
----
-
-## 4. Technology Stack
-
-- **Data Processing:** Python 3.12, Pandas, NumPy, PyArrow (Parquet)
-- **Machine Learning:** Scikit-learn, XGBoost, Joblib
-- **Interpretability & Explainability:** SHAP (TreeExplainer)
-- **Generative AI & Tool Calling:** Google Gemini API (`gemini-2.0-flash` via `google-genai` SDK)
-- **Interactive Visualizations:** Plotly Express & Plotly Graph Objects
-- **Dashboard Application:** Streamlit
-- **Testing & Quality Control:** Pytest
+### Objective-Dependent Model Trade-Off
+- **XGBoost:** Preferred for store inventory allocation and weekly replenishment orders because it minimizes mean absolute error ($39.8K) across 95% of typical trading weeks.
+- **Ridge Regression:** Preferred for financial liquidity reserves and cash stress-testing because its quadratic L2 loss strongly suppresses catastrophic outlier mistakes (lowest RMSE: $58.7K).
 
 ---
 
-## 5. Quick Start & Reproducibility Guide
+## 4. Explainable AI & TreeSHAP Attributions
+
+Global feature importances computed via TreeSHAP on held-out test predictions establish empirical decision weights:
+
+| Rank | Feature Name | Mean Absolute SHAP ($) | Relative Impact (%) | Operational Meaning |
+|:---:|:---|:---:|:---:|:---|
+| **1** | `lag_52` | $228,670.69 | **45.01%** | Same week prior year ($t-52$). Anchors annual seasonality. |
+| **2** | `rolling_mean_4` | $140,471.14 | **27.65%** | Trailing 4-week moving average. Captures recent monthly momentum. |
+| **3** | `rolling_mean_8` | $53,905.49 | **10.61%** | Trailing 8-week moving average. Smooths medium-term trend. |
+| **4** | `lag_4` | $26,446.84 | **5.21%** | Sales from 4 weeks prior ($t-4$). |
+| **5** | `lag_1` | $11,216.56 | **2.21%** | Immediate preceding week sales ($t-1$). Weekly baseline momentum. |
+| **6** | `lag_2` | $10,532.44 | **2.07%** | Intermediate autoregressive lag ($t-2$). |
+| 7–20| Macro & Store Metadata | <$9,000.00 each | <2.0% each | Unemployment (1.62%), CPI (0.46%), Size (0.50%), Fuel Price (0.54%). |
+
+> **Key Scientific Takeaway:** Together, **`lag_52` (45.01%) and `rolling_mean_4` (27.65%) account for 72.66% (~72.7%) of total model decision weight**. Macroeconomic indicators serve purely as fine-tuning adjustments.
+
+---
+
+## 5. Technology Stack & Architecture
+
+```mermaid
+flowchart TD
+    RawCSV["Raw Data (train.csv, features.csv, stores.csv)"] --> P01["01 Ingestion & Parquet Creation"]
+    P01 --> P02["02 Data Quality Audit & Profiling"]
+    P02 --> P03["03 Business Analytics & Aggregations"]
+    P03 --> P04["04 Autoregressive Feature Eng. & Forecasting"]
+    P04 --> P05["05 Spatial Reliability & 4-Fold Backtesting"]
+    P05 --> P06["06 Dual Anomaly Detection (Z-Score + IsoForest)"]
+    P06 --> P07["07 TreeSHAP Global & Local Attribution"]
+    P07 --> P08["08 Operational Decision Engine & Scenario Sim."]
+    P08 --> Streamlit["Streamlit 10-Page Dashboard (app.py)"]
+    P08 --> Assistant["Conversational AI Business Assistant"]
+    Assistant --> Gemini["Google Gemini (Tool Calling)"]
+    Assistant --> Fallback["Deterministic Fallback Engine (Offline)"]
+```
+
+- **Languages & Frameworks:** Python 3.12, Streamlit 1.30+, Node.js (npm scripts)
+- **Data Engineering:** Pandas 2.1+, NumPy 1.26+, PyArrow 14.0+
+- **Machine Learning:** Scikit-learn 1.4+, XGBoost 2.0+, Joblib
+- **Interpretability:** SHAP 0.43+ (TreeExplainer)
+- **Visualization:** Plotly Express & Plotly Graph Objects 5.18+
+- **Generative AI:** Google Gemini API (`google-genai` SDK)
+- **Testing & Quality Assurance:** Pytest 8.0+ (167 passing tests)
+
+---
+
+## 6. Quick Start & Execution Guide
 
 ### Instant Start via Node / npm (Recommended)
-You can launch the full application in a single command without manually activating your virtual environment:
+Launch the application immediately without manually managing shell paths:
 
 ```bash
-# Start Streamlit application immediately (port 8501)
+# Start Streamlit application on http://localhost:8501
 npm run dev
 
-# Run automated test suite
+# Run automated 167-test pytest suite
 npm test
 ```
 
----
-
-### Python Environment Setup
+### Python CLI Setup
 
 ```bash
 # 1. Clone repository and navigate to root
-cd ~/Documents/retailiq-ai-v2
+git clone <repo-url>
+cd retailiq-ai-v2
 
-# 2. Activate Python virtual environment
-source .venv/Scripts/activate  # On Windows Git Bash
-# or .venv\Scripts\activate   # On Windows CMD/PowerShell
+# 2. Activate virtual environment
+source .venv/Scripts/activate  # Windows Git Bash
+# or .venv\Scripts\activate   # Windows CMD/PowerShell
 
 # 3. Verify dependencies
 pip install -r requirements.txt
 
-# 4. Optional: Configure Gemini API Key in .env (Deterministic fallback works offline without it)
+# 4. Optional: Configure Gemini API Key in .env (Deterministic fallback works 100% offline without it)
 cp .env.example .env
 # Edit .env and set GEMINI_API_KEY="your-api-key"
 ```
 
-### Running the Entire Analytical Pipeline
-To execute all 8 pipeline stages sequentially from raw CSV data to final SHAP explainability and operational decision artifacts in under 40 seconds:
+### Running the End-to-End Pipeline
+To regenerate all 44 reports, trained models, Parquet tables, and TreeSHAP attributions from source CSVs:
 
 ```bash
 python scripts/run_all_pipelines.py
 ```
 
-Or execute individual pipeline modules:
+### Running the Test Suite
 ```bash
-python scripts/01_data_ingestion/run_ingestion.py
-python scripts/02_data_quality/run_quality_checks.py
-python scripts/03_business_analytics/run_analytics.py
-python scripts/04_sales_forecasting/run_forecasting.py
-python scripts/05_forecast_reliability/run_reliability.py
-python scripts/06_anomaly_detection/run_anomaly_detection.py
-python scripts/07_explainability/run_shap_analysis.py
-python scripts/08_strategy/run_strategy_engine.py
+# Run complete 167-test suite
+pytest -q
+
+# Run targeted AI evaluation suite
+python scripts/run_independent_ai_evaluation.py
 ```
 
-### Running Automated Test Suite
-To execute all 150 unit, integration, benchmark, and smoke tests:
-
-```bash
-pytest -v
-```
-
-### Launching the Interactive Streamlit Dashboard
+### Launching the Dashboard
 ```bash
 python -m streamlit run app.py
 ```
-Open `http://localhost:8501` in your browser to access the 10 interactive operational pages.
 
 ---
 
-## 6. Directory Structure
+## 7. AI Business Assistant & Supported Multi-Turn Dialogue
 
+The RetailIQ Business Assistant features dual-route intelligence:
+1. **Live Generative Mode (Online):** Powered by Google Gemini with typed function calling across 13 native analytical tools.
+2. **Deterministic Fallback Mode (Offline):** Instant (<0.05s) rule-based dispatcher with conversational context tracking, multi-turn entity continuity, and Plotly visualization generation.
+
+### Example Multi-Turn Conversation Supported:
+- **User:** *"Which store had the highest historical sales?"*  
+  **Assistant:** Identifies **Store 20** ($301,397,792.46 total revenue across 143 weeks, Type A Supercenter).
+- **User:** *"Compare it with Store 14."*  
+  **Assistant:** Resolves "it" to Store 20 and executes a pairwise comparison with Store 14 ($288,999,911.34).
+- **User:** *"What is their sales difference?"*  
+  **Assistant:** Calculates exact delta: Store 20 generated **+$12,397,881.12** (+4.29%) more sales overall (+**$86,698.47/wk**).
+- **User:** *"Show the comparison as a chart."*  
+  **Assistant:** Generates an interactive Plotly bar chart comparing Store 20 vs Store 14 side-by-side.
+- **User:** *"Is the difference necessarily good?"*  
+  **Assistant:** Delivers operational analysis: Store 20 has steady foot traffic and low forecast error (5.01% WAPE), while Store 14 is the network's most volatile store (10.59% WAPE) requiring a large +18% safety buffer.
+- **User:** *"Which forecasting model has the lowest RMSE?"*  
+  **Assistant:** Identifies **Ridge Linear Regression** ($58,728.02 RMSE, $R^2=0.9879$).
+- **User:** *"Why does that differ from the model with the lowest MAE?"*  
+  **Assistant:** Explains L2 squared loss geometry (Ridge penalizing extreme tail surprises) vs non-linear decision trees (XGBoost minimizing absolute dollar volume error).
+- **User:** *"Can I trust next month's forecast?"*  
+  **Assistant:** Explains that the 3.83% WAPE benchmark measures a **rolling 1-week-ahead operational forecast ($t+1$)**, warning that an unassisted 4-week forecast will suffer autoregressive error compounding without weekly updates.
+- **User:** *"What happens if I ask about a store that does not exist?"*  
+  **Assistant:** Explains the `STORE_RANGE 1..45` input validation guardrail.
+- **User:** *"What was customer foot traffic in Store 20?"*  
+  **Assistant:** Acknowledges data limitations: foot traffic is not tracked in the dataset.
+
+---
+
+## 8. Research Integrity, Limitations & Production Disclaimers
+
+To maintain strict scientific defense standards, RetailIQ AI V2 distinguishes empirical measurements from operational hypotheses:
+
+1. **Simulated vs. Measured Financial ROI:**  
+   The $12.3M annual inventory holding cost optimization is a **scenario estimate** computed using standard supply chain heuristics ($1.282 \times \text{MAE}$ buffer, $70\%$ unit cost, $4.5\%$ annual holding cost delta). It has not been verified on enterprise ledgers via live A/B store trials. Use the interactive Scenario Simulator in Page 08 to explore custom holding costs (1% to 12%).
+2. **Forecast Horizon Semantic Distinction:**  
+   The reported 3.83% WAPE reflects a **rolling 1-step-ahead weekly operational evaluation**. It represents weekly store replenishment ordering where register actuals from week $t-1$ are available. It does **not** represent a static 6-month recursive forecast.
+3. **Observational vs. Causal Explainability:**  
+   TreeSHAP attributions quantify predictive statistical influence within the trained decision tree model. They do not prove counterfactual causality (e.g. cutting promotional markdowns will not automatically generate the SHAP-indicated revenue change without controlled causal experiments).
+4. **Data Scope:**  
+   The historical Walmart dataset contains gross departmental sales and regional macro indices. It does not contain customer foot traffic, basket size, net profit margins, store addresses, or employee turnover data.
+
+---
+
+## 9. License & Scholarly Citation
+
+Academic research and engineering portfolio project — not licensed for commercial store management.
+
+```bibtex
+@misc{retailiq_ai_v2_2026,
+  author = {RetailIQ AI Research Team},
+  title = {RetailIQ AI V2: Explainable Retail Sales Forecasting & Decision Intelligence Platform},
+  year = {2026},
+  publisher = {GitHub},
+  howpublished = {\url{https://github.com/retailiq-ai-v2}}
+}
 ```
-retailiq-ai-v2/
-├── app.py                             # Streamlit application entry point & router
-├── pyproject.toml                     # Project packaging and tool configuration
-├── requirements.txt                   # Frozen production dependencies
-├── .env.example                       # Template for environment variables
-├── data/
-│   ├── raw/                           # Immutable source files (train, features, stores)
-│   └── processed/                     # Analytical dataset (Parquet, 421.5k rows)
-├── models/                            # Trained models (Ridge, Random Forest, XGBoost)
-├── reports/                           # Output artifacts per analysis phase
-│   ├── data_quality/                  # Statistical profiles & missingness audits
-│   ├── business_analytics/            # Store/dept rankings, holiday lift reports
-│   ├── sales_forecasting/             # Leaderboard metrics, predictions, importance
-│   ├── forecast_reliability/          # Store error spread, rolling backtest results
-│   ├── anomaly_detection/             # Z-score, isolation forest, investigation queue
-│   └── explainable_ai/                # Global SHAP importance, local attributions
-├── src/retailiq/                      # Source Python package
-│   ├── config.py                      # Central configuration, schemas, theme tokens
-│   ├── data/                          # Loader, schema validator, ingestion pipeline
-│   ├── quality/                       # Data profiling and returns auditing
-│   ├── analytics/                     # Store-week aggregations, rankings, holiday lift
-│   ├── forecasting/                   # Features, chronological splitter, models, evaluation
-│   ├── reliability/                   # Spatial error distributions, backtesting
-│   ├── anomalies/                     # Statistical & Isolation Forest outlier detectors
-│   ├── explainability/                # TreeSHAP explainer, efficiency axiom verification
-│   ├── assistant/                     # 13 typed analytics tools, fallback, Gemini engine
-│   └── dashboard/                     # Theme styles, components, chart factory, 8 pages
-├── scripts/                           # Reproducible CLI pipeline runners
-│   ├── run_all_pipelines.py           # Master end-to-end pipeline orchestrator
-│   ├── 01_data_ingestion/             # run_ingestion.py
-│   ├── 02_data_quality/               # run_quality_checks.py
-│   ├── 03_business_analytics/         # run_analytics.py
-│   ├── 04_sales_forecasting/          # run_forecasting.py
-│   ├── 05_forecast_reliability/       # run_reliability.py
-│   ├── 06_anomaly_detection/          # run_anomaly_detection.py
-│   └── 07_explainability/             # run_shap_analysis.py
-├── tests/                             # 138-test automated pytest verification suite
-└── docs/                              # Comprehensive research documentation
-    ├── architecture.md                # System layers, components, dependency map
-    ├── data_flow.md                   # Full data transformation lifecycle
-    ├── phases/                        # 16-section reports for Phases 00 through 10
-    └── research/                      # Progress logs and research milestones
-```
-
----
-
-## 7. Ethical AI & Scientific Boundaries
-
-To uphold software quality and research integrity, RetailIQ AI V2 explicitly states the following operational boundaries:
-1. **Influence vs. Causation:** SHAP values quantify internal model attribution weights, not physical real-world levers. High historical sales influence future predictions because of consumer habits, not because prior revenue physically causes future revenue.
-2. **Audit Targets vs. Confirmed Fraud:** Anomaly flags highlight observations with unusually large forecast residuals or multidimensional distance. They serve as operational review targets, not confirmed employee theft, accounting defects, or system failure.
-3. **Historical Scope:** Historical sales reflect consumer demand at recorded prices and inventory levels. They do not equal operational profit or margin, and cannot simulate live inventory stockouts without dedicated supply chain telemetry.
-4. **Controlled Generative AI:** Google Gemini is strictly constrained to executing pre-approved typed analytical functions. It does not execute arbitrary code or query live external databases unassisted.
-
----
-
-## 8. Research & Scholarship Defense Positioning
-
-For third-year B.Tech project presentations, technical interviews, and postgraduate scholarship applications, this platform provides concrete proof of:
-- **Data Engineering Discipline:** 100% row preservation, zero silent dropping, and structured Parquet engineering.
-- **Machine Learning Rigor:** Fair chronological time-series splitting, leakage-free lag construction, and benchmarking ML against naive baselines.
-- **Reliability Engineering:** Auditing error distributions across store geographies and expanding historical horizons.
-- **Explainability:** Auditing the cooperative game theory efficiency axiom ($f(x) = \phi_0 + \sum \phi_i$) within $<0.0001\%$ precision.
-- **Software Quality:** Clean package modularity, 138 automated tests, and sub-second UI rendering.
-
----
-
-## 9. License
-
-Academic research and demonstration project — not licensed for commercial operations.
