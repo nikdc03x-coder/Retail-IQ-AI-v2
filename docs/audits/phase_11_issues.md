@@ -44,7 +44,7 @@
   - Provide model comparison transparency noting the operational trade-offs between Ridge (superior RMSE/R²) and XGBoost (superior MAE/WAPE).
 - **Resolution (Phase 12 — Commit `e2ca9a3`):**
   - Updated `p04_forecasting.py`, `p00_overview.py`, and `p05_reliability.py` to explicitly describe the benchmark as a **Rolling 1-Week-Ahead Operational Horizon ($t+1$) with historical observations updated at $t-1$**.
-  - Added operational trade-off banners explaining that XGBoost minimizes absolute dollar deviations (MAE 39.8K, WAPE 3.83%) while Ridge minimizes variance and penalizes large outliers (RMSE 59.8K, R² 0.9875).
+  - Added operational trade-off banners explaining that XGBoost minimizes absolute dollar deviations (MAE 39.8K, WAPE 3.83%) while Ridge minimizes variance and penalizes large outliers (RMSE $58,728.02, R² 0.9879).
   - Updated `reports/sales_forecasting/04_experiment_metadata.json` with formal `horizon_definition`, `feature_availability`, and `model_tradeoffs` metadata.
   - Added regression test `test_forecasting_horizon_and_tradeoff_metadata`.
 

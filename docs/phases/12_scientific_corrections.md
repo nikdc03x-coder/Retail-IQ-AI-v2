@@ -41,7 +41,7 @@ The primary objective of Phase 12 was to eliminate scientific ambiguity, establi
     > *"Rolling 1-Week-Ahead Operational Horizon: Features for week $t$ incorporate observed actuals from week $t-1$. This measures weekly replenishment accuracy when re-run continuously, not an unassisted 22-week recursive projection."*
   - Objective-dependent model trade-off banner:
     - **XGBoost:** Optimizes absolute dollar error (**MAE: \$39,838**, **WAPE: 3.83%**). Best for weekly replenishment budgeting and store stock allocations.
-    - **Ridge Regression:** Minimizes squared variance and extreme tail penalties (**RMSE: \$59,820**, **R²: 0.9875**). Best for cash reserve stress testing and risk-averse financial projections.
+    - **Ridge Regression:** Minimizes squared variance and extreme tail penalties (**RMSE: \$58,728.02**, **R²: 0.9879**). Best for cash reserve stress testing and risk-averse financial projections.
 
 ### 4.2. SHAP Explainability & Observational Causality (ISSUE-11-03)
 - **Files Modified:**
@@ -82,7 +82,7 @@ The primary objective of Phase 12 was to eliminate scientific ambiguity, establi
      - Handles head-to-head queries (e.g. *"How does Ridge regression compare to XGBoost on RMSE and WAPE?"*).
      - Outputs complete comparative matrix (WAPE, MAE, RMSE, R²) and articulates the Ridge vs. XGBoost operational trade-off.
   3. **Metric-Specific Dispatching:**
-     - Correctly isolates questions asking for *lowest MAE* (XGBoost at \$39,838) vs *lowest RMSE* (Ridge at \$59,820).
+     - Correctly isolates questions asking for *lowest MAE* (XGBoost at \$39,838) vs *lowest RMSE* (Ridge at \$58,728).
   4. **Context-Aware Store 14 Routing:**
      - Store 14 is the top error store, highest anomaly store, and highest dollar volume store. Instead of a single blanket interceptor, `fallback.py` routes Store 14 queries contextually based on intent (forecasting error, anomaly detection, SHAP predictions, or operational buffer directives).
   5. **Out-of-Bounds Store Guardrail:**
