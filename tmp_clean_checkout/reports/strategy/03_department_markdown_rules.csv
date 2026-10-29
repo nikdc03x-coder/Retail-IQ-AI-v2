@@ -1,0 +1,82 @@
+Dept,Pareto_Category,Total_Sales,Sales_Share_Pct,Return_Rate_Pct,Merchandising_Archetype,Recommended_Markdown_Cadence,Operational_Directive
+92,A,483943341.87,7.18,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+95,A,449320162.52,6.67,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+38,A,393118136.92,5.84,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+72,A,305725152.21,4.54,0.001,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+90,A,291068463.68,4.32,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+40,A,288936022.05,4.29,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+2,A,280611174.43,4.17,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+91,A,216781705.73,3.22,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+13,A,197321569.95,2.93,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+8,A,194280780.73,2.88,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+94,A,189912450.33,2.82,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+4,A,167146745.58,2.48,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+93,A,159698663.19,2.37,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+7,A,155477562.75,2.31,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+79,A,141396544.14,2.1,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+23,A,138180330.78,2.05,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+5,A,135607358.57,2.01,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+9,A,128393256.65,1.91,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+46,A,128344411.44,1.91,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+1,A,123638776.54,1.84,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+10,A,117897387.58,1.75,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+81,A,99552029.31,1.48,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+82,A,99547080.33,1.48,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+14,A,95694666.45,1.42,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+11,A,93329276.38,1.39,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+16,A,91670682.27,1.36,0.001,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+97,A,89496511.9,1.33,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+74,A,88781985.57,1.32,0.0,Core Revenue Anchor,Minimal (Promotional only),Prime front-of-store & end-cap placement; priority automated vendor restocking; zero stockout tolerance.
+87,B,85760075.61,1.27,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+34,B,83223625.43,1.24,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+3,B,75892449.95,1.13,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+96,B,73833916.16,1.1,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+80,B,71774060.2,1.07,0.006,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+17,B,65319816.63,0.97,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+55,B,59970455.35,0.89,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+22,B,59723107.36,0.89,0.001,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+25,B,57111218.62,0.85,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+67,B,47880777.68,0.71,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+26,B,43900009.6,0.65,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+32,B,40698960.81,0.6,0.006,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+98,B,39828919.37,0.59,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+18,B,36897489.06,0.55,0.005,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+49,B,36572901.71,0.54,0.004,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+33,B,34883969.93,0.52,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+24,B,34347586.26,0.51,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+20,B,33349645.11,0.5,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+42,B,33219291.57,0.49,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+21,B,32064645.08,0.48,0.0,Core Seasonal & Supporting,Seasonal Clearance Ladder,Maintain baseline shelf allocation; tie reorders directly to 4-week rolling ML forecasts.
+71,C,30383022.89,0.45,0.002,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+29,C,30009602.42,0.45,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+6,C,28420667.14,0.42,0.021,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.
+12,C,26760119.51,0.4,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+44,C,25449612.96,0.38,0.001,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+56,C,22511522.87,0.33,0.001,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+30,C,21789381.43,0.32,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+83,C,19988830.84,0.3,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+58,C,16255763.57,0.24,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+35,C,15472775.08,0.23,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+31,C,14193384.22,0.21,0.001,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+85,C,13710696.21,0.2,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+52,C,12086936.99,0.18,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+36,C,10709513.77,0.16,0.002,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+41,C,10600265.07,0.16,0.002,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+27,C,8897336.59,0.13,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+37,C,8017243.35,0.12,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+19,C,6816183.11,0.1,0.015,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+65,C,6498163.99,0.1,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+59,C,4240394.52,0.06,0.01,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+50,C,4153197.13,0.06,0.002,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+28,C,3785153.25,0.06,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+48,C,2342804.61,0.03,0.113,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+60,C,2005020.96,0.03,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+54,C,516294.63,0.01,0.935,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.
+99,C,358149.85,0.01,0.072,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+77,C,49344.27,0.0,1.109,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.
+45,C,44937.63,0.0,1.245,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.
+51,C,30572.83,0.0,1.434,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.
+78,C,1714.71,0.0,20.54,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.
+39,C,177.98,0.0,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+43,C,14.32,0.0,0.0,Long-Tail Candidate,Aggressive Discontinuation (50%+),SKU rationalization; downsize shelf footprint by 25%; migrate slow movers to regional DC fulfillment.
+47,C,-4962.93,-0.0,-1071.707,High-Return Risk,Targeted Clearance (20% -> 40% ladder),Vendor quality audit; inspect return telemetry; revise sizing & display packaging.

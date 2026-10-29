@@ -1,0 +1,61 @@
+{
+  "total_observations": 421570,
+  "total_columns": 20,
+  "date_range": {
+    "min": "2010-02-05",
+    "max": "2012-10-26",
+    "total_weeks": 143
+  },
+  "stores": {
+    "count": 45,
+    "type_breakdown": {
+      "A": 215478,
+      "B": 163495,
+      "C": 42597
+    }
+  },
+  "departments": {
+    "count": 81,
+    "active_pairs": 3331,
+    "full_coverage_pairs": 2660,
+    "partial_coverage_pairs": 671
+  },
+  "sales_audit": {
+    "negative_rows": 1285,
+    "zero_rows": 73,
+    "positive_rows": 420212,
+    "total_return_amount": -88161.56,
+    "top_return_departments": [
+      {
+        "Dept": 47,
+        "Total_Return_Amount": -53188.06,
+        "Return_Count": 254
+      },
+      {
+        "Dept": 6,
+        "Total_Return_Amount": -5841.64,
+        "Return_Count": 18
+      },
+      {
+        "Dept": 54,
+        "Total_Return_Amount": -4829.81,
+        "Return_Count": 146
+      },
+      {
+        "Dept": 80,
+        "Total_Return_Amount": -4231.48,
+        "Return_Count": 68
+      },
+      {
+        "Dept": 72,
+        "Total_Return_Amount": -3047.58,
+        "Return_Count": 34
+      }
+    ]
+  },
+  "missingness": {
+    "markdown_missing_pct": 64.26,
+    "cpi_missing_count": 0,
+    "unemployment_missing_count": 0
+  }
+}

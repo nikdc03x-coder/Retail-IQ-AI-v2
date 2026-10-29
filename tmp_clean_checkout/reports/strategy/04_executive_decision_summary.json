@@ -1,0 +1,44 @@
+{
+  "title": "RetailIQ AI V2 \u2014 Executive Operational Decision Strategy",
+  "total_stores_classified": 45,
+  "total_departments_analyzed": 81,
+  "financial_impact_projections": {
+    "total_recommended_safety_stock_dollars": 5260461.83,
+    "estimated_annual_working_capital_optimization": 12309480.66,
+    "chain_weekly_labor_flex_hours": 1800
+  },
+  "tier_summary": {
+    "core_performers_count": 15,
+    "core_performers_sales_share_pct": 44.55,
+    "volatile_growth_stores_count": 8,
+    "volatile_growth_safety_stock_dollars": 2376468.79,
+    "turnaround_target_stores_count": 14
+  },
+  "priority_executive_directives": [
+    {
+      "directive": "Implement Dynamic Safety Buffers for Tier 2 Volatile Powerhouses",
+      "target": "8 High-Volume Stores (e.g. Store 14, Store 20)",
+      "action": "Increase safety stock buffers from 8% to 18% and enable 75 weekly flex hours for weekend volume surges.",
+      "expected_outcome": "Reduces stockout-driven revenue loss during high-volatility holiday periods by an estimated 14%."
+    },
+    {
+      "directive": "Automate Lean Inventory Flow for Tier 1 Core Performers",
+      "target": "15 Stores representing 44.5% of revenue",
+      "action": "Shift replenishment entirely to model-driven weekly automated ordering with lean 8% buffer.",
+      "expected_outcome": "Unlocks working capital and prevents warehouse staging overstock."
+    },
+    {
+      "directive": "Execute Targeted Merchandising Audits on High-Return Departments",
+      "target": "Departments with return rates > 0.5% (Dept 47, Dept 54)",
+      "action": "Initiate vendor packaging reviews and deploy 20% -> 40% clearance ladders for aging inventory.",
+      "expected_outcome": "Curtails merchandise degradation and recovers shelf velocity."
+    },
+    {
+      "directive": "Rationalize Assortment in Tier 4 Turnaround Stores",
+      "target": "14 Stores with below-median sales and high forecast error",
+      "action": "Draw down slow-moving Class D SKUs by 25% and consolidate shelf space around Top 15 anchor departments.",
+      "expected_outcome": "Improves inventory turn rate and lowers shrinkage across underperforming units."
+    }
+  ],
+  "execution_runtime_seconds": 0.07
+}

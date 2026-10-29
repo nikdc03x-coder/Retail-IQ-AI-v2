@@ -1,0 +1,11 @@
+Model,Split,Observations,MAE,RMSE,WAPE_Pct,R2,Bias_MPE_Pct
+Previous-Week Naive,Validation,945,69302.24,104775.98,6.75,0.9623,-0.19
+Previous-Week Naive,Test,990,51307.24,77389.89,4.93,0.979,-0.44
+Seasonal Naive (52-Wk),Validation,945,59989.25,86680.33,5.84,0.9742,3.15
+Seasonal Naive (52-Wk),Test,990,53266.11,82732.61,5.12,0.976,1.81
+Ridge Linear,Validation,945,62911.57,91065.35,6.13,0.9715,1.69
+Ridge Linear,Test,990,40642.0,58728.02,3.91,0.9879,0.39
+Random Forest,Validation,945,55828.46,84036.52,5.44,0.9757,-0.24
+Random Forest,Test,990,41641.25,64746.19,4.0,0.9853,-0.0
+XGBoost,Validation,945,64127.92,95119.81,6.25,0.9689,-0.49
+XGBoost,Test,990,39837.61,60391.89,3.83,0.9872,-0.2

@@ -1,0 +1,21 @@
+Column,Total_Rows,Missing_Count,Missing_Pct,Classification,First_Observed_Date,Last_Observed_Date
+Store,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Dept,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Date,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Year,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Month,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+WeekOfYear,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+DayOfMonth,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Weekly_Sales,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+IsHoliday,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Type,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Size,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Temperature,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Fuel_Price,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+MarkDown1,421570,270889,64.26,Structural (Not collected by Walmart prior to Nov 2011),2011-11-11,2012-10-26
+MarkDown2,421570,310322,73.61,Structural (Not collected by Walmart prior to Nov 2011),2011-11-11,2012-10-26
+MarkDown3,421570,284479,67.48,Structural (Not collected by Walmart prior to Nov 2011),2011-11-11,2012-10-26
+MarkDown4,421570,286603,67.98,Structural (Not collected by Walmart prior to Nov 2011),2011-11-11,2012-10-26
+MarkDown5,421570,270138,64.08,Structural (Not collected by Walmart prior to Nov 2011),2011-11-11,2012-10-26
+CPI,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26
+Unemployment,421570,0,0.0,Complete (0% missing),2010-02-05,2012-10-26

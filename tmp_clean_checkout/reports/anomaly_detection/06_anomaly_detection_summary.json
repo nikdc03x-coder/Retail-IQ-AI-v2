@@ -1,0 +1,34 @@
+{
+  "experiment": "Phase 06 \u2014 Dual-Detector Anomaly Investigation",
+  "statistical_summary": {
+    "method": "Statistical Residual Z-Score",
+    "threshold_z": 3.0,
+    "residual_mean": 1450.7,
+    "residual_std": 60404.98,
+    "total_evaluated": 990,
+    "anomalies_flagged": 17,
+    "anomaly_rate_pct": 1.72,
+    "under_predictions": 5,
+    "over_predictions": 12
+  },
+  "isolation_forest_summary": {
+    "method": "Multivariate Isolation Forest",
+    "contamination": 0.02,
+    "n_estimators": 100,
+    "total_evaluated": 990,
+    "anomalies_flagged": 20,
+    "anomaly_rate_pct": 2.02,
+    "min_score": -0.1387,
+    "max_score": 0.2407
+  },
+  "synthesis_summary": {
+    "total_evaluated": 990,
+    "total_flagged": 23,
+    "unanimous_anomalies": 14,
+    "statistical_only_anomalies": 3,
+    "isolation_forest_only_anomalies": 6,
+    "detector_agreement_rate_pct": 99.09,
+    "top_priority_store": 14,
+    "top_priority_date": "2012-08-24"
+  }
+}

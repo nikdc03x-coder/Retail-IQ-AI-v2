@@ -1,0 +1,69 @@
+{
+  "experiment": "Phase 04 \u2014 Store-Level 1-Week-Ahead Sales Forecasting",
+  "target": "Weekly_Sales",
+  "horizon_weeks": 1,
+  "forecasting_paradigm": "Rolling 1-week-ahead operational forecast with weekly observed historical sales up to t-1",
+  "methodology_notes": {
+    "evaluation_type": "Rolling 1-step-ahead (1 week)",
+    "information_set": "Features at week t use actual sales observed through week t-1 (via lag_1, rolling_mean_4, etc.). Not an unassisted 22-week recursive rollout.",
+    "model_tradeoff": "XGBoost achieves champion WAPE (3.83%) and MAE ($39,837.61) on volume replenishment; Ridge Linear achieves lower RMSE ($58,728.02) and higher R2 (0.9879) under L2 error penalization."
+  },
+  "split_dates": {
+    "train": {
+      "rows": 2160,
+      "start_date": "2011-02-04",
+      "end_date": "2011-12-30",
+      "weeks": 48,
+      "stores": 45
+    },
+    "validation": {
+      "rows": 945,
+      "start_date": "2012-01-06",
+      "end_date": "2012-05-25",
+      "weeks": 21,
+      "stores": 45
+    },
+    "test": {
+      "rows": 990,
+      "start_date": "2012-06-01",
+      "end_date": "2012-10-26",
+      "weeks": 22,
+      "stores": 45
+    }
+  },
+  "feature_columns": [
+    "lag_1",
+    "lag_2",
+    "lag_4",
+    "lag_52",
+    "rolling_mean_4",
+    "rolling_std_4",
+    "rolling_mean_8",
+    "Month",
+    "WeekOfYear",
+    "sin_week",
+    "cos_week",
+    "is_holiday_num",
+    "Size",
+    "Type_A",
+    "Type_B",
+    "Type_C",
+    "Temperature",
+    "Fuel_Price",
+    "CPI",
+    "Unemployment"
+  ],
+  "test_summary": {
+    "naive_mae": 51307.24,
+    "naive_wape": 4.93,
+    "seasonal_mae": 53266.11,
+    "seasonal_wape": 5.12,
+    "ridge_mae": 40642.0,
+    "ridge_wape": 3.91,
+    "rf_mae": 41641.25,
+    "rf_wape": 4.0,
+    "xgboost_mae": 39837.61,
+    "xgboost_wape": 3.83,
+    "champion_model": "XGBoost"
+  }
+}

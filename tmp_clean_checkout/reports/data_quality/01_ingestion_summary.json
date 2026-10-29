@@ -1,0 +1,171 @@
+{
+  "pipeline": "Phase 01 \u2014 Data Ingestion & Transformation",
+  "status": "SUCCESS",
+  "output_file": "C:\\Users\\x03xN\\Documents\\retailiq-ai-v2\\data\\processed\\analytical_dataset.parquet",
+  "raw_counts": {
+    "train_rows": 421570,
+    "train_cols": 5,
+    "features_rows": 8190,
+    "features_cols": 12,
+    "stores_rows": 45,
+    "stores_cols": 3
+  },
+  "processed_counts": {
+    "analytical_rows": 421570,
+    "analytical_cols": 20,
+    "row_count_preservation_ratio": 1.0
+  },
+  "dimensions": {
+    "unique_stores": 45,
+    "unique_departments": 81,
+    "unique_dates": 143,
+    "min_date": "2010-02-05",
+    "max_date": "2012-10-26",
+    "store_types": {
+      "A": 215478,
+      "B": 163495,
+      "C": 42597
+    }
+  },
+  "validations": {
+    "train_duplicates": 0,
+    "features_join_match_rate": 1.0,
+    "stores_join_match_rate": 1.0,
+    "holiday_consistency": true
+  },
+  "sales_profile": {
+    "total_observations": 421570,
+    "positive_count": 420212,
+    "positive_pct": 99.68,
+    "zero_count": 73,
+    "zero_pct": 0.017,
+    "negative_count": 1285,
+    "negative_pct": 0.3,
+    "min_sales": -4988.94,
+    "max_sales": 693099.36,
+    "median_sales": 7612.03,
+    "mean_sales": 15981.26
+  },
+  "missing_values": [
+    {
+      "Column": "MarkDown2",
+      "Missing_Count": 310322,
+      "Missing_Pct": 73.61,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "MarkDown4",
+      "Missing_Count": 286603,
+      "Missing_Pct": 67.98,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "MarkDown3",
+      "Missing_Count": 284479,
+      "Missing_Pct": 67.48,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "MarkDown1",
+      "Missing_Count": 270889,
+      "Missing_Pct": 64.26,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "MarkDown5",
+      "Missing_Count": 270138,
+      "Missing_Pct": 64.08,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "Date",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "datetime64[ns]"
+    },
+    {
+      "Column": "Dept",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "Store",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "Year",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "Month",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "DayOfMonth",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "WeekOfYear",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "Temperature",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "Size",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "int32"
+    },
+    {
+      "Column": "Type",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "category"
+    },
+    {
+      "Column": "IsHoliday",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "bool"
+    },
+    {
+      "Column": "Weekly_Sales",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "Fuel_Price",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "CPI",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "float64"
+    },
+    {
+      "Column": "Unemployment",
+      "Missing_Count": 0,
+      "Missing_Pct": 0.0,
+      "Dtype": "float64"
+    }
+  ]
+}

@@ -87,6 +87,9 @@ with st.sidebar:
     st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
     # Sidebar Footer
+    if "use_live_gemini" not in st.session_state:
+        st.session_state["use_live_gemini"] = False
+    st.checkbox("Enable live Gemini (may incur quota usage)", key="use_live_gemini")
     st.markdown(f"""
     <div style="border-top: 1px solid #1F2937; padding: 0.9rem 0.5rem 0.5rem 0.5rem; margin-top: 1rem;">
         <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem;">

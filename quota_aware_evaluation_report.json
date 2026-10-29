@@ -66,7 +66,7 @@
         }
       ],
       "evidence_source": "reports/business_analytics/02_store_performance.csv",
-      "latency_seconds": 0.813,
+      "latency_seconds": 0.582,
       "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
       "verified": true,
       "chart_type": "get_store_rankings",
@@ -146,7 +146,7 @@
         }
       ],
       "evidence_source": "reports/business_analytics/02_store_performance.csv",
-      "latency_seconds": 0.397,
+      "latency_seconds": 0.545,
       "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
       "verified": true,
       "chart_type": "get_store_rankings",
@@ -184,7 +184,7 @@
         "trough_week_sales": 39599852.99
       },
       "evidence_source": "reports/business_analytics/01_weekly_sales.csv",
-      "latency_seconds": 0.445,
+      "latency_seconds": 0.463,
       "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
       "verified": true,
       "chart_type": "get_chain_sales_summary",

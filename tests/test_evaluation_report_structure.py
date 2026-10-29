@@ -30,3 +30,4 @@ def test_report_structure():
         # answer should be a dict with at least a 'verified' flag
         assert isinstance(entry.get("answer"), dict), "Answer should be a dict"
         assert "verified" in entry["answer"], "Answer missing 'verified' key"
+

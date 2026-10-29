@@ -1,0 +1,200 @@
+[
+  {
+    "question_id": "q1",
+    "prompt": "Which store has the highest cumulative historical sales?",
+    "live_attempted": false,
+    "provider": "DeterministicEngine",
+    "model": "N/A",
+    "live_success": false,
+    "fallback": true,
+    "fallback_reason": "Live request limit reached (0)",
+    "answer": {
+      "route": "deterministic_fallback",
+      "answer": "### Store Historical Revenue Leaderboard\n\nAcross 143 historical weeks, **Store 20** (Format Type A, 203,742 sq ft) ranks **#1 in the chain** generating **$301,397,792.46** in cumulative sales ($2,107,676.87 weekly average), accounting for **4.47%** of network revenue.\n\n- **#2 Store 4:** $299.54M ($2.09M/wk).\n- **#3 Store 14:** $288.99M ($2.02M/wk).\n- **#4 Store 13:** $286.52M ($2.00M/wk).\n- **#5 Store 2:** $275.38M ($1.93M/wk).\n\nAll top 5 stores are high-capacity Type A Supercenters exceeding 200,000 sq ft.",
+      "tools_called": [
+        "get_store_rankings"
+      ],
+      "arguments": {
+        "top_n": 5,
+        "ascending": false
+      },
+      "data": [
+        {
+          "rank": 1,
+          "store": 20,
+          "type": "A",
+          "size": 203742,
+          "total_sales": 301397792.46,
+          "weekly_avg_sales": 2107676.87,
+          "pct_of_chain": 4.47
+        },
+        {
+          "rank": 2,
+          "store": 4,
+          "type": "A",
+          "size": 205863,
+          "total_sales": 299543953.38,
+          "weekly_avg_sales": 2094712.96,
+          "pct_of_chain": 4.45
+        },
+        {
+          "rank": 3,
+          "store": 14,
+          "type": "A",
+          "size": 200898,
+          "total_sales": 288999911.34,
+          "weekly_avg_sales": 2020978.4,
+          "pct_of_chain": 4.29
+        },
+        {
+          "rank": 4,
+          "store": 13,
+          "type": "A",
+          "size": 219622,
+          "total_sales": 286517703.8,
+          "weekly_avg_sales": 2003620.31,
+          "pct_of_chain": 4.25
+        },
+        {
+          "rank": 5,
+          "store": 2,
+          "type": "A",
+          "size": 202307,
+          "total_sales": 275382440.98,
+          "weekly_avg_sales": 1925751.34,
+          "pct_of_chain": 4.09
+        }
+      ],
+      "evidence_source": "reports/business_analytics/02_store_performance.csv",
+      "latency_seconds": 0.813,
+      "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
+      "verified": true,
+      "chart_type": "get_store_rankings",
+      "followups": [],
+      "deep_link_page": "Exploratory Business Analytics",
+      "fallback_reason": "Live Gemini API unavailable (Gemini API request failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded ). Automatically routed to deterministic tool dispatcher."
+    },
+    "tools_called": [],
+    "tool_details": [],
+    "numeric_correct": null,
+    "quota_used": 0
+  },
+  {
+    "question_id": "q2",
+    "prompt": "Give the top 3 stores by sales.",
+    "live_attempted": false,
+    "provider": "DeterministicEngine",
+    "model": "N/A",
+    "live_success": false,
+    "fallback": true,
+    "fallback_reason": "Live request limit reached (0)",
+    "answer": {
+      "route": "deterministic_fallback",
+      "answer": "### Store Historical Revenue Leaderboard\n\nAcross 143 historical weeks, **Store 20** (Format Type A, 203,742 sq ft) ranks **#1 in the chain** generating **$301,397,792.46** in cumulative sales ($2,107,676.87 weekly average), accounting for **4.47%** of network revenue.\n\n- **#2 Store 4:** $299.54M ($2.09M/wk).\n- **#3 Store 14:** $288.99M ($2.02M/wk).\n- **#4 Store 13:** $286.52M ($2.00M/wk).\n- **#5 Store 2:** $275.38M ($1.93M/wk).\n\nAll top 5 stores are high-capacity Type A Supercenters exceeding 200,000 sq ft.",
+      "tools_called": [
+        "get_store_rankings"
+      ],
+      "arguments": {
+        "top_n": 5,
+        "ascending": false
+      },
+      "data": [
+        {
+          "rank": 1,
+          "store": 20,
+          "type": "A",
+          "size": 203742,
+          "total_sales": 301397792.46,
+          "weekly_avg_sales": 2107676.87,
+          "pct_of_chain": 4.47
+        },
+        {
+          "rank": 2,
+          "store": 4,
+          "type": "A",
+          "size": 205863,
+          "total_sales": 299543953.38,
+          "weekly_avg_sales": 2094712.96,
+          "pct_of_chain": 4.45
+        },
+        {
+          "rank": 3,
+          "store": 14,
+          "type": "A",
+          "size": 200898,
+          "total_sales": 288999911.34,
+          "weekly_avg_sales": 2020978.4,
+          "pct_of_chain": 4.29
+        },
+        {
+          "rank": 4,
+          "store": 13,
+          "type": "A",
+          "size": 219622,
+          "total_sales": 286517703.8,
+          "weekly_avg_sales": 2003620.31,
+          "pct_of_chain": 4.25
+        },
+        {
+          "rank": 5,
+          "store": 2,
+          "type": "A",
+          "size": 202307,
+          "total_sales": 275382440.98,
+          "weekly_avg_sales": 1925751.34,
+          "pct_of_chain": 4.09
+        }
+      ],
+      "evidence_source": "reports/business_analytics/02_store_performance.csv",
+      "latency_seconds": 0.397,
+      "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
+      "verified": true,
+      "chart_type": "get_store_rankings",
+      "followups": [],
+      "deep_link_page": "Exploratory Business Analytics",
+      "fallback_reason": "Live Gemini API unavailable (Gemini API request failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded ). Automatically routed to deterministic tool dispatcher."
+    },
+    "tools_called": [],
+    "tool_details": [],
+    "numeric_correct": null,
+    "quota_used": 0
+  },
+  {
+    "question_id": "q3",
+    "prompt": "What is the total sales for Store 20?",
+    "live_attempted": false,
+    "provider": "DeterministicEngine",
+    "model": "N/A",
+    "live_success": false,
+    "fallback": true,
+    "fallback_reason": "Live request limit reached (0)",
+    "answer": {
+      "route": "deterministic_fallback",
+      "answer": "### Chain-Wide Sales Performance & Revenue Baseline\n\n- **Total Historical Revenue:** **$6,737,218,987.11** recorded over 143 consecutive weeks (February 2010 to October 2012).\n- **Weekly Run Rate:** Average total chain sales equal **$47.11M per week**.\n- **All-Time Peak Week:** **$80.93M** during Thanksgiving Week (2010-11-26), producing a +71.8% surge.\n- **Trough Week:** $39.57M in late January 2011 during post-holiday lull.",
+      "tools_called": [
+        "get_chain_sales_summary"
+      ],
+      "arguments": {},
+      "data": {
+        "total_sales": 6737218987.110001,
+        "mean_weekly_chain_sales": 47113419.49027973,
+        "peak_week_date": "2010-12-24",
+        "peak_week_sales": 80931415.6,
+        "trough_week_date": "2011-01-28",
+        "trough_week_sales": 39599852.99
+      },
+      "evidence_source": "reports/business_analytics/01_weekly_sales.csv",
+      "latency_seconds": 0.445,
+      "provider": "Deterministic Rule-Based Dispatcher (Offline Mode)",
+      "verified": true,
+      "chart_type": "get_chain_sales_summary",
+      "followups": [],
+      "deep_link_page": "Executive Overview",
+      "fallback_reason": "Live Gemini API unavailable (Gemini API request failed: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded ). Automatically routed to deterministic tool dispatcher."
+    },
+    "tools_called": [],
+    "tool_details": [],
+    "numeric_correct": null,
+    "quota_used": 0
+  }
+]

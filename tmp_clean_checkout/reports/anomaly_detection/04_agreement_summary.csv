@@ -1,0 +1,5 @@
+Classification,Record_Count,Percentage
+Normal Operation,967,97.68
+Unanimous Anomaly (Both Detectors),14,1.41
+Isolation Forest Only,6,0.61
+Statistical Only (|Z| > 3.0),3,0.3
