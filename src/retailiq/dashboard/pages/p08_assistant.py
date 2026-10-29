@@ -262,6 +262,22 @@ def _render_interactive_chart(chart_type: str, data: Any) -> None:
             fig.update_layout(yaxis=dict(autorange="reversed"), height=260, margin=dict(l=60, r=40, t=40, b=30))
             st.plotly_chart(fig, use_container_width=True)
 
+        elif chart_type in ["compare_stores"] and isinstance(data, list):
+            df_chart = pd.DataFrame(data)
+            fig = px.bar(
+                df_chart,
+                x=[f"Store {s} (Type {t})" for s, t in zip(df_chart["store"], df_chart["type"])],
+                y="total_sales",
+                color=[f"Store {s}" for s in df_chart["store"]],
+                text=[f"${v/1e6:.1f}M ({p:.1f}%)" for v, p in zip(df_chart["total_sales"], df_chart["pct_of_chain"])],
+                labels={"total_sales": "Total Historical Sales ($)", "x": "Store Location"},
+                color_discrete_sequence=[Theme.VIOLET, Theme.CYAN, Theme.AMBER],
+            )
+            fig.update_traces(textposition="outside")
+            fig = apply_default_layout(fig, "Head-to-Head Store Revenue Comparison")
+            fig.update_layout(height=270, showlegend=False, margin=dict(l=50, r=30, t=40, b=30))
+            st.plotly_chart(fig, use_container_width=True)
+
         elif chart_type in ["get_holiday_performance", "holiday_performance"] and isinstance(data, list):
             df_chart = pd.DataFrame(data)
             fig = px.bar(
@@ -377,8 +393,9 @@ def _handle_user_query(engine: RetailIQAssistantEngine, prompt: str) -> None:
         "answer": prompt,
     })
 
-    # Execute through engine
-    result = engine.ask(prompt)
+    # Execute through engine with conversational context
+    history = st.session_state.assistant_messages[:-1]
+    result = engine.ask(prompt, conversation_history=history)
 
     # Append assistant response
     st.session_state.assistant_messages.append({

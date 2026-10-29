@@ -79,11 +79,12 @@ class GeminiAssistantClient:
         """Check if client is initialized with a valid API key."""
         return self._client is not None and bool(self.api_key)
 
-    def generate_response(self, user_prompt: str) -> dict[str, Any]:
+    def generate_response(self, user_prompt: str, conversation_history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
         """Generate an evidence-grounded answer using Gemini tool calling.
 
         Args:
             user_prompt: Natural language question from the user.
+            conversation_history: Optional list of past chat messages to resolve multi-turn dialogue.
 
         Returns:
             Dictionary with response text, tools executed, and execution metadata.
@@ -98,9 +99,22 @@ class GeminiAssistantClient:
                 system_instruction=SYSTEM_INSTRUCTION,
             )
 
+            # Build multi-turn contents if history exists
+            contents: Any = user_prompt
+            if conversation_history:
+                formatted_contents = []
+                for msg in conversation_history[-6:]:
+                    role = "user" if msg.get("role") == "user" else "model"
+                    text = msg.get("answer") or msg.get("content") or ""
+                    if text:
+                        formatted_contents.append(types.Content(role=role, parts=[types.Part.from_text(text=text)]))
+                if formatted_contents:
+                    formatted_contents.append(types.Content(role="user", parts=[types.Part.from_text(text=user_prompt)]))
+                    contents = formatted_contents
+
             response = self._client.models.generate_content(
                 model=self.model,
-                contents=user_prompt,
+                contents=contents,
                 config=config,
             )
 

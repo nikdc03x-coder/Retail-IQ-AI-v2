@@ -25,11 +25,12 @@ class RetailIQAssistantEngine:
         """Return True if a Gemini API client is active and configured."""
         return self.gemini_client.is_available
 
-    def ask(self, query: str) -> dict[str, Any]:
+    def ask(self, query: str, conversation_history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
         """Process a natural language business inquiry.
 
         Args:
             query: Question string.
+            conversation_history: Optional list of past chat messages to resolve multi-turn dialogue.
 
         Returns:
             Dictionary containing answer, execution route, transparency evidence, and latency.
@@ -50,7 +51,7 @@ class RetailIQAssistantEngine:
         # ── Route 1: Gemini with tool calling if API key is active ──
         if self.has_gemini:
             try:
-                gemini_res = self.gemini_client.generate_response(q_clean)
+                gemini_res = self.gemini_client.generate_response(q_clean, conversation_history=conversation_history)
                 latency = round(time.time() - start_time, 2)
                 return {
                     "route": "gemini_function_calling",
@@ -66,7 +67,7 @@ class RetailIQAssistantEngine:
                 pass
 
         # ── Route 2: Deterministic Fallback Dispatcher ──
-        fallback_res = dispatch_fallback_query(q_clean)
+        fallback_res = dispatch_fallback_query(q_clean, conversation_history=conversation_history)
         latency = round(time.time() - start_time, 3)
 
         return {
